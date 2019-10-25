@@ -1,0 +1,46 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateNotifiesTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('notified', static function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('email', 150)->index();
+            $table->boolean('success');
+            $table->unsignedInteger('application_id')->nullable(true);
+            $table->unsignedInteger('message_id')->nullable(true);
+
+            $table->foreign('application_id')
+                ->references('id')
+                ->on('applications')
+                ->onDelete('set null');
+
+            $table->foreign('message_id')
+                ->references('id')
+                ->on('messages')
+                ->onDelete('set null');
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('notifies');
+    }
+}
