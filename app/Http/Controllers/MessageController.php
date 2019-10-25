@@ -21,7 +21,7 @@ class MessageController extends Controller
 
     public function getMessage(int $id)
     {
-         
+
     }
 
     public function create()
