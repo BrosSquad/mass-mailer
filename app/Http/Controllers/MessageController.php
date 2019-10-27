@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\MessageContract;
+use App\Dto\CreateMessage;
+use App\Http\Requests\MessageRequest;
 use App\Jobs\NotifyUser;
 use Illuminate\Http\Request;
 
@@ -24,14 +26,18 @@ class MessageController extends Controller
 
     public function getMessage(int $id)
     {
-
+        try {
+            return response()->json(['message' => $this->messageService->getMessage($id)]);
+        }catch (\Exception $e) {
+            return response()->json(['message' => 'Message was not found'], 404);
+        }
     }
 
-    public function create(int $applicationId, Request $request)
+    public function create(MessageRequest $request)
     {
         try {
-            $createMessage = $request->validated();
-            $message = $this->messageService->createMessage($request->user(), $applicationId, $createMessage);
+            $createMessage = new CreateMessage($request->validated());
+            $message = $this->messageService->createMessage($request->user(), $request->input('applicationId'), $createMessage);
             NotifyUser::dispatch($message)
                 ->onQueue('notifications')
                 ->delay(now()->addSeconds(10));

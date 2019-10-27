@@ -11,6 +11,7 @@ class CreateApplication extends Base
     protected $dbHost;
     protected $dbDriver;
     protected $dbUser;
+    protected $dbPort;
     protected $dbPassword;
     protected $dbTable;
     protected $emailField;

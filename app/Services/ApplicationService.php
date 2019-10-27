@@ -57,6 +57,7 @@ class ApplicationService implements ApplicationContract
                 'db_host' => $application->dbHost,
                 'db_driver' => $application->dbDriver,
                 'db_user' => $application->dbUser,
+                'db_port' => $application->dbPort,
                 'db_password' => $application->dbPassword,
                 'db_table' => $application->dbTable,
                 'email_field' => $application->emailField,

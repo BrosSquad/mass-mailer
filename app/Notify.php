@@ -17,11 +17,11 @@ class Notify extends Model
     ];
 
     public function message(): BelongsTo {
-        return $this->belongsTo(Message::class);
+        return $this->belongsTo(Message::class, 'message_id', 'id');
     }
 
     public function application(): BelongsTo {
-        return $this->belongsTo(Application::class);
+        return $this->belongsTo(Application::class, 'application_id', 'id');
     }
 
     public function sendGridKey(): BelongsTo {

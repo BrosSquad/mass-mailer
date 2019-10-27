@@ -50,7 +50,6 @@ class ApplicationController extends Controller
             return response()->json(['message' => $e->getMessage()]);
         }
     }
-    //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
     public function update(int $id, Request $request)
     {
 

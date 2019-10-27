@@ -33,9 +33,10 @@ class ApplicationRequest extends FormRequest
             'dbUser' => 'required',
             'dbPassword' => 'required',
             'dbTable' => 'required',
-            'emailField' => 'required|email',
+            'dbPort' => 'required',
+            'emailField' => 'required',
             'sendgridKey' => 'required',
-//            'sendGridNumberOfMessages' => '',
+            'sendGridNumberOfMessages' => 'required',
         ];
     }
 }

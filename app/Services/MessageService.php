@@ -56,4 +56,13 @@ class MessageService implements MessageContract
            return Message::destroy($id) > 0;
         });
     }
+
+    public function getMessage(int $id)
+    {
+        return Message::with([
+            'notified', 'application', 'user'
+        ])
+            ->orderByDesc('created_at')
+            ->findOrFail($id);
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
+        'id',
         'password',
         'remember_token',
         'email_verified_at',
@@ -47,11 +47,11 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     public function applications(): HasMany {
-        return $this->hasMany(Application::class);
+        return $this->hasMany(Application::class, 'user_id', 'id');
     }
 
     public function messages(): HasMany {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'user_id', 'id');
     }
 
     /**
@@ -77,4 +77,5 @@ class User extends Authenticatable implements JWTSubject
             'email' => $this->email
         ];
     }
+
 }

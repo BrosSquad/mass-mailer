@@ -25,12 +25,13 @@ Route::middleware(['auth:api'])->prefix('application')->group(static function ()
     Route::delete('/{id}', 'ApplicationController@delete');
 });
 
-Route::prefix('users')->group(static function() {
+Route::middleware('auth:api')->prefix('users')->group(static function() {
     Route::post('/', 'UserController@create');
 });
 
-Route::prefix('messages')->group(static function () {
+Route::middleware(['auth:api'])->prefix('messages')->group(static function () {
     Route::get('/{page}/{perPage}', 'MessageController@getMessages');
-    Route::post('/{applicationId}', 'MessageController@create');
+    Route::post('/', 'MessageController@create');
+    Route::get('/{id}', 'MessageController@getMessage');
     Route::delete('/{id}', 'MessageController@delete');
 });

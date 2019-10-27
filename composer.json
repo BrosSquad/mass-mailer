@@ -9,12 +9,14 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "barryvdh/laravel-cors": "^0.11.4",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^1.0",
-        "tymon/jwt-auth": "1.0.0-rc.5",
-        "ext-pdo": "*",
-        "sendgrid/sendgrid": "~7"
+        "sendgrid/sendgrid": "~7",
+        "tymon/jwt-auth": "1.0.0-rc.5"
     },
     "require-dev": {
         "roave/security-advisories": "dev-master",

@@ -9,8 +9,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PDO;
 
 class NotifyUser implements ShouldQueue
@@ -37,11 +39,14 @@ class NotifyUser implements ShouldQueue
     public function handle(): void
     {
         /** @var Application $application */
-        $application = $this->message->application();
-        if (Config::get('database.connections.' . $application->name, null) === null) {
+        $application = $this->message->application;
+
+        Log::info($application);
+        if (Config::get('database.connections.' . $application->app_name, null) === null) {
             $options = $this->addConnection($application);
-            Config::set('database.connections.' . $application->name, $options);
+            Config::set('database.connections.' . $application->app_name, $options);
         }
+
 
         $where = [];
 
@@ -49,16 +54,22 @@ class NotifyUser implements ShouldQueue
             $where[] = [$criteria->field, $criteria->operator, $criteria->value];
         }
 
-        $sendGrid = new \SendGrid($application->sendGridKey()->key);
+        $sendGrid = new \SendGrid($application->sendGridKey->key);
 
-        DB::connection($application->name)
+
+        Log::info('SendGrid client created');
+        DB::connection($application->app_name)
             ->table($application->db_table)
             ->select([$application->email_field])
             ->where($where)
-            ->chunk(200, static function ($user) use ($sendGrid) {
-                SendMessage::dispatch($sendGrid, $user->email, $this->message)
-                    ->onQueue('messages')
-                    ->delay(now()->addSeconds(20));
+            ->orderBy($application->email_field)
+            ->chunk(100, function (Collection $users) use ($sendGrid, $application) {
+                Log::info(get_class($users));
+                foreach ($users as $user) {
+                    SendMessage::dispatch($application, $sendGrid, $user->email, $this->message)
+                        ->onQueue('messages')
+                        ->delay(now()->addSeconds(20));
+                }
             });
     }
 

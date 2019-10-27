@@ -24,7 +24,7 @@ class SendGridKey extends Model
     protected $table = 'sendgrid_keys';
 
     public function application(): BelongsTo {
-        return $this->belongsTo(Application::class);
+        return $this->belongsTo(Application::class, 'application_id', 'id');
     }
 
     public function messages(): HasMany {
