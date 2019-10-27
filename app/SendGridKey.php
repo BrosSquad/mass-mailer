@@ -4,15 +4,20 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SendGridKey extends Model
 {
     protected $fillable = [
-        'key'
+        'key',
+        'number_of_messages'
     ];
 
     protected $hidden =[
+        'id',
         'key',
+        'created_at',
+        'number_of_messages',
         'updated_at'
     ];
 
@@ -20,5 +25,9 @@ class SendGridKey extends Model
 
     public function application(): BelongsTo {
         return $this->belongsTo(Application::class);
+    }
+
+    public function messages(): HasMany {
+        return $this->hasMany(Notify::class, 'sendgrid_id', 'id');
     }
 }

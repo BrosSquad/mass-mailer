@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,12 +14,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('auth')->group(static function () {
-    Route::get('login', 'LoginController@login');
+    Route::post('login', 'LoginController@login');
 });
 
-Route::prefix('application')->group(static function () {
-    Route::get('/{page}/{perPage}', 'ApplicationController@getAppllications');
-    Route::get('/{id}', 'ApplicationController@getAppllication');
+Route::middleware(['auth:api'])->prefix('application')->group(static function () {
+    Route::get('/{page}/{perPage}', 'ApplicationController@getApplication');
+    Route::get('/{id}', 'ApplicationController@getApplications');
     Route::post('/', 'ApplicationController@create');
     Route::patch('/{id}', 'ApplicationController@update');
     Route::delete('/{id}', 'ApplicationController@delete');
@@ -31,6 +30,7 @@ Route::prefix('users')->group(static function() {
 });
 
 Route::prefix('messages')->group(static function () {
-    Route::get('/', 'MessageController@getMessages');
-    Route::post('/', 'MessageController@create');
+    Route::get('/{page}/{perPage}', 'MessageController@getMessages');
+    Route::post('/{applicationId}', 'MessageController@create');
+    Route::delete('/{id}', 'MessageController@delete');
 });

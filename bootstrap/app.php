@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Create The Application
+| Create The CreateApplication
 |--------------------------------------------------------------------------
 |
 | The first thing we will do is create a new Laravel application instance
@@ -43,7 +43,7 @@ $app->singleton(
 
 /*
 |--------------------------------------------------------------------------
-| Return The Application
+| Return The CreateApplication
 |--------------------------------------------------------------------------
 |
 | This script returns the application instance. The instance is given to

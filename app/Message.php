@@ -13,6 +13,8 @@ class Message extends Model
         'from_email',
         'from_name',
         'reply_to',
+        'subject',
+        'application_id'
     ];
 
     public function criteria(): HasMany {

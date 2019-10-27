@@ -23,4 +23,8 @@ class Notify extends Model
     public function application(): BelongsTo {
         return $this->belongsTo(Application::class);
     }
+
+    public function sendGridKey(): BelongsTo {
+        return $this->belongsTo(SendGridKey::class, 'sendgrid_id', 'id');
+    }
 }

@@ -20,6 +20,7 @@ class CreateApplicationsTable extends Migration
             $table->string('db_host', 100)->index();
             $table->string('db_driver', 30);
             $table->string('db_user', 30);
+            $table->unsignedSmallInteger('db_port');
             $table->string('db_password', 70);
             $table->string('db_table', 70);
             $table->string('email_field', 70);

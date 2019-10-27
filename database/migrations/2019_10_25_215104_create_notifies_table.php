@@ -18,12 +18,18 @@ class CreateNotifiesTable extends Migration
             $table->string('email', 150)->index();
             $table->boolean('success');
             $table->unsignedInteger('application_id')->nullable(true);
+            $table->unsignedInteger('sendgrid_id')->nullable(true);
             $table->unsignedInteger('message_id')->nullable(true);
 
             $table->foreign('application_id')
                 ->references('id')
                 ->on('applications')
                 ->onDelete('set null');
+
+            $table->foreign('sendgrid_id')
+                ->references('id')
+                ->on('sendgrid_keys')
+                ->onDelete('cascade');
 
             $table->foreign('message_id')
                 ->references('id')
