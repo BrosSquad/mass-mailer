@@ -98,4 +98,4 @@
         </div>
     </body>
 </html>
-<?php /**PATH /home/dusan/Projects/mass-mailer/backend/resources/views/welcome.blade.php ENDPATH**/ ?>
+<?php /**PATH /var/www/mass-mailer/backend/resources/views/welcome.blade.php ENDPATH**/ ?>

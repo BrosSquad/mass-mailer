@@ -8,6 +8,7 @@ use App\Dto\CreateNewNotification;
 use App\Message;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Egulias\EmailValidator\EmailValidator;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,6 +18,9 @@ use SendGrid;
 use SendGrid\Mail\Mail;
 use SendGrid\Mail\TypeException;
 use Throwable;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
 
 class SendMessage implements ShouldQueue
 {
@@ -53,6 +57,17 @@ class SendMessage implements ShouldQueue
     public function handle(NotificationContract $notificationContract): void
     {
 
+        $validators = new MultipleValidationWithAnd([
+            new RFCValidation(),
+            new DNSCheckValidation()
+        ]);
+        
+        $emailValidator = new EmailValidator();
+        
+        if(!$emailValidator->isValid($this->to, $validators)) {
+            return;
+        }
+
         // TODO: Validate first if the email exists
         $mail = new Mail();
 
@@ -80,7 +95,7 @@ class SendMessage implements ShouldQueue
                 'email' => $this->to,
                 'application_id' => $this->application->id,
                 'message_id' => $this->message->id,
-                'successful' => $success
+                'success' => $success
             ]));
         } catch (Exception | Throwable $e) {
             Log::critical($e->getMessage());
