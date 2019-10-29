@@ -5,23 +5,27 @@ namespace App\Services;
 
 
 use App\Contracts\MessageContract;
+use App\Criteria;
 use App\Dto\CreateMessage;
 use App\Message;
 use App\User;
+use Exception;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class MessageService implements MessageContract
 {
 
-    public function getMessages(int $page, int $perPage)
+    public function getMessages(int $page, int $perPage): Paginator
     {
         return Message::query()
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function getNumberOfMessagesSentByKey()
+    public function getNumberOfMessagesSentByKey(): int
     {
+        return 0;
 //        Notify::query()
 //            ->with('sendGridKey')
 //            ->select('')
@@ -45,6 +49,21 @@ class MessageService implements MessageContract
                 throw new RuntimeException('Message cannot be created');
             }
 
+            if(!is_array($createMessage->criteria)) {
+                throw new RuntimeException('Criteria must be and array');
+            }
+
+            $criteria = [];
+            foreach($createMessage->criteria as $criterion) {
+                $criteria[] = new Criteria([
+                    'field' => $criterion->field,
+                    'operator' => $criterion->operator,
+                    'value' => $criterion->value
+                ]);
+            }
+
+            $message->criteria()->saveMany($criteria);
+
             return $message;
         });
     }
@@ -60,7 +79,9 @@ class MessageService implements MessageContract
     public function getMessage(int $id)
     {
         return Message::with([
-            'notified', 'application', 'user'
+            'notified',
+            'application',
+            'user'
         ])
             ->orderByDesc('created_at')
             ->findOrFail($id);

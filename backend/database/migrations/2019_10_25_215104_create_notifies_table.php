@@ -16,7 +16,7 @@ class CreateNotifiesTable extends Migration
         Schema::create('notified', static function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('email', 150)->index();
-            $table->boolean('success');
+            $table->boolean('success')->default(false);
             $table->unsignedInteger('application_id')->nullable(true);
             $table->unsignedInteger('sendgrid_id')->nullable(true);
             $table->unsignedInteger('message_id')->nullable(true);

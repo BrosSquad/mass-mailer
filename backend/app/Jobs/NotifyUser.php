@@ -4,6 +4,10 @@ namespace App\Jobs;
 
 use App\Application;
 use App\Message;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\MultipleValidationWithAnd;
+use Egulias\EmailValidator\Validation\RFCValidation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,8 +16,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use PDO;
+use RuntimeException;
+use SendGrid;
 
 class NotifyUser implements ShouldQueue
 {
@@ -40,8 +45,6 @@ class NotifyUser implements ShouldQueue
     {
         /** @var Application $application */
         $application = $this->message->application;
-
-        Log::info($application);
         if (Config::get('database.connections.' . $application->app_name, null) === null) {
             $options = $this->addConnection($application);
             Config::set('database.connections.' . $application->app_name, $options);
@@ -54,19 +57,23 @@ class NotifyUser implements ShouldQueue
             $where[] = [$criteria->field, $criteria->operator, $criteria->value];
         }
 
-        $sendGrid = new \SendGrid($application->sendGridKey->key);
+        $sendGrid = new SendGrid($application->sendGridKey->key);
+        $validators = new MultipleValidationWithAnd([
+            new RFCValidation(),
+            new DNSCheckValidation()
+        ]);
 
+        $emailValidator = new EmailValidator();
 
-        Log::info('SendGrid client created');
         DB::connection($application->app_name)
             ->table($application->db_table)
             ->select([$application->email_field])
             ->where($where)
             ->orderBy($application->email_field)
-            ->chunk(100, function (Collection $users) use ($sendGrid, $application) {
-                Log::info(get_class($users));
+            ->chunk(100, function (Collection $users)
+                use ($sendGrid, $application, $emailValidator, $validators) {
                 foreach ($users as $user) {
-                    SendMessage::dispatch($application, $sendGrid, $user->email, $this->message)
+                    SendMessage::dispatch($emailValidator, $validators, $application, $sendGrid, $user->email, $this->message)
                         ->onQueue('messages')
                         ->delay(now()->addSeconds(20));
                 }
@@ -117,7 +124,7 @@ class NotifyUser implements ShouldQueue
                 ]);
                 break;
             default:
-                throw new \RuntimeException('Database driver is not supported');
+                throw new RuntimeException('Database driver is not supported');
         }
 
         return $options;

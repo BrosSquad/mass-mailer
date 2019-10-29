@@ -22,7 +22,7 @@ class NotificationService implements NotificationContract
             'email' => $notification->email,
             'application_id' => $notification->applicationId,
             'message_id' => $notification->messageId,
-            'successful' => $notification->successful
+            'success' => $notification->success
         ]);
 
         $n->saveOrFail();

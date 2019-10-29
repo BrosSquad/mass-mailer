@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="notifications@localhost" uuid="1d410b37-a9e8-4c96-8c1c-5b79ff587425">
+    <data-source source="LOCAL" name="tg_users@localhost" uuid="f565c395-58e0-4a9f-94e1-4dd86738df26">
       <driver-ref>mariadb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mariadb://localhost:3306/notifications</jdbc-url>
+      <jdbc-url>jdbc:mariadb://localhost:3306/tg_users</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
         <property name="zeroDateTimeBehavior" value="convertToNull" />

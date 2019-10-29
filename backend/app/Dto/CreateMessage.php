@@ -11,4 +11,5 @@ class CreateMessage extends Base
     protected $fromName;
     protected $replyTo;
     protected $subject;
+    protected $criteria = [];
 }

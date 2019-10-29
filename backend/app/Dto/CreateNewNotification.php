@@ -9,5 +9,5 @@ class CreateNewNotification extends Base
     protected $email;
     protected $applicationId;
     protected $messageId;
-    protected $successful;
+    protected $success;
 }

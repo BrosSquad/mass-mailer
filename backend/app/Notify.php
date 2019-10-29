@@ -13,7 +13,7 @@ class Notify extends Model
         'email',
         'application_id',
         'message_id',
-        'successful'
+        'success'
     ];
 
     public function message(): BelongsTo {
