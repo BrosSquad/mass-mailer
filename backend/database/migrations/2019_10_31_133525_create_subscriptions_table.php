@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApplicationsTable extends Migration
+class CreateSubscriptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,17 @@ class CreateApplicationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('applications', static function (Blueprint $table) {
+        Schema::create('subscriptions', static function (Blueprint $table) {
             $table->increments('id');
-            $table->string('app_name', 150)->unique();
-            $table->unsignedInteger('user_id');
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->string('name', 50);
+            $table->string('surname', 50);
+            $table->unsignedInteger('application_id');
+            
+            
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      *
@@ -33,6 +31,6 @@ class CreateApplicationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('applications');
+        Schema::dropIfExists('subscriptions');
     }
 }
