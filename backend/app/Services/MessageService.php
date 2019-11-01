@@ -9,7 +9,6 @@ use App\Criteria;
 use App\Dto\CreateMessage;
 use App\Message;
 use App\User;
-use Exception;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
