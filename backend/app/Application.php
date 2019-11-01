@@ -15,26 +15,10 @@ class Application extends Model
 {
     protected $fillable = [
         'app_name',
-        'db_name',
-        'db_host',
-        'db_driver',
-        'db_port',
-        'db_user',
-        'db_password',
-        'db_table',
-        'email_field',
     ];
 
     protected $hidden = [
         'updated_at',
-        'db_name',
-        'db_port',
-        'db_host',
-        'db_driver',
-        'db_user',
-        'db_password',
-        'db_table',
-        'email_field',
     ];
 
     public function user(): BelongsTo

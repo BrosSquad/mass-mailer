@@ -17,6 +17,7 @@ class CreateSubscriptionsTable extends Migration
             $table->increments('id');
             $table->string('name', 50);
             $table->string('surname', 50);
+            $table->string('email', 255)->unique();
             $table->unsignedInteger('application_id');
             
             

@@ -16,7 +16,7 @@ class ApplicationSubscriptions extends Migration
         Schema::table('application_subscriptions', static function(Blueprint $table) {
             $table->unsignedInteger('application_id');
             $table->unsignedInteger('subscription_id');
-            
+            $table->boolean('is_subscribed')->default(true);
             $table->primary(['application_id', 'subscription_id']);
             
             $table->foreign('subscription_id')
@@ -38,8 +38,8 @@ class ApplicationSubscriptions extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
-        //
+        Schema::dropIfExists('application_subscriptions');
     }
 }
