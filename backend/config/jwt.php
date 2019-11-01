@@ -286,6 +286,7 @@ return [
         |
         */
 
+        // TODO: Make custom provider for hashids
         'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
 
         /*
