@@ -8,6 +8,8 @@ use App\User;
 use App\Dto\CreateNewUser;
 use Illuminate\Support\Str;
 use App\Contracts\UserContract;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\PasswordReset;
 use App\Dto\ChangePassword as ChangePasswordDto;
 use App\Dto\CreateUser;
 use App\Notifications\ChangePassword;
@@ -52,7 +54,7 @@ class UserService implements UserContract
         return $user;
     }
 
-    public function deleteUser(int $id)
+    public function deleteUser(int $id): bool
     {
         return DB::transaction(static function () use ($id) {
            return User::destroy($id) > 0;
@@ -64,7 +66,7 @@ class UserService implements UserContract
         // TODO: Implement updateUserAccount() method.
     }
 
-    public function requestChangePassword(string $email) {
-
+    public function requestChangePassword(string $email)
+    {
     }
 }

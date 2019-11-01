@@ -13,7 +13,12 @@ use Tymon\JWTAuth\JWTAuth;
 
 class LoginService implements LoginContract
 {
+    /**
+     * @var JWTAuth
+     */
     private $auth;
+
+    
     private $hasher;
 
     public function __construct(JWTAuth $auth, Hasher $hasher)
@@ -41,13 +46,14 @@ class LoginService implements LoginContract
             throw new IncorrectPassword();
         }
 
+        $ttl = config('jwt.ttl');
         return [
             'user' => $user->getJWTCustomClaims(),
             'token' => [
                 'token' => $this->auth->fromSubject($user),
                 'authType' => 'Bearer',
-                'expiresIn' => 120,
-                'expiresAt' => now()->addMinutes(120)
+                'expiresIn' => $ttl,
+                'expiresAt' => now()->addMinutes($ttl)
             ]
         ];
     }
