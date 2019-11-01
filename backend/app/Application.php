@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int id
@@ -14,26 +15,10 @@ class Application extends Model
 {
     protected $fillable = [
         'app_name',
-        'db_name',
-        'db_host',
-        'db_driver',
-        'db_port',
-        'db_user',
-        'db_password',
-        'db_table',
-        'email_field',
     ];
 
     protected $hidden = [
         'updated_at',
-        'db_name',
-        'db_port',
-        'db_host',
-        'db_driver',
-        'db_user',
-        'db_password',
-        'db_table',
-        'email_field',
     ];
 
     public function user(): BelongsTo
@@ -54,5 +39,13 @@ class Application extends Model
     public function notifiedUsers(): HasMany
     {
         return $this->hasMany(Notify::class, 'application_id', 'id');
+    }
+    
+    public function keys(): HasMany {
+        return $this->hasMany(AppKeys::class, 'application_id', 'id');
+    }
+    
+    public function subscriptions(): BelongsToMany {
+        return $this->belongsToMany(Subscription::class, 'application_subscriptions');
     }
 }

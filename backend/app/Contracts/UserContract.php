@@ -4,9 +4,18 @@
 namespace App\Contracts;
 
 
+use App\Dto\CreateUser;
+use App\User;
+use Throwable;
+
 interface UserContract
 {
-    public function createUser();
+    /**
+     * @param CreateUser $createUser
+     * @return User
+     * @throws Throwable
+     */
+    public function createUser(CreateUser $createUser): User;
     public function deleteUser();
     public function updateUserAccount();
 }
