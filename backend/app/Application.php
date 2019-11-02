@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +10,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @property int id
+ * Class Application
+ *
+ * @package App
+ * @property integer $id
+ * @property string $app_name
+ * @property integer $user_id
+ * @property AppKey $appKey
+ * @property User $user
+ * @property SendGridKey $sendGridKey
+ * @property Notify[] $notifiedUsers
+ * @property Subscription[] $subscriptions
+ * @property CarbonInterface $created_at
+ * @property CarbonInterface $updated_at
  */
 class Application extends Model
 {
@@ -40,11 +53,11 @@ class Application extends Model
     {
         return $this->hasMany(Notify::class, 'application_id', 'id');
     }
-    
-    public function keys(): HasMany {
-        return $this->hasMany(AppKeys::class, 'application_id', 'id');
+
+    public function appKey(): HasOne {
+        return $this->hasOne(AppKey::class, 'application_id', 'id');
     }
-    
+
     public function subscriptions(): BelongsToMany {
         return $this->belongsToMany(Subscription::class, 'application_subscriptions');
     }

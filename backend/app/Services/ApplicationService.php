@@ -4,34 +4,52 @@
 namespace App\Services;
 
 
+use App\AppKey;
 use App\Application;
 use App\Contracts\ApplicationContract;
 use App\Dto\CreateApplication;
-use App\Dto\UpdateApplicationDatabaseCredentials;
+use App\Http\Resources\Key;
 use App\SendGridKey;
 use App\User;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
+use Illuminate\Support\Str;
+use Throwable;
+
 
 class ApplicationService implements ApplicationContract
 {
-    public function getApplications(int $page, int $perPage)
+    public function getApplications(int $page, int $perPage, array $orderBy = [])
     {
-        return Application::query()
-            ->paginate($perPage, ['*'], 'page', $page);
+        $builder = Application::query()->with(['appKeys']);
+
+        foreach ($orderBy as $order => $value) {
+            if (isset($value['desc'])) {
+                $builder->orderByDesc($order);
+            } else {
+                $builder->orderBy($order);
+            }
+        }
+
+        return
+            $builder->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getApplication(int $id)
     {
-        return Application::query()->find($id);
+        return Application::query()
+            ->with(['appKey'])
+            ->find($id);
     }
 
-    public function getApplicationByName(string $name)
+    public function getApplicationByName(string $name): Application
     {
-        return Application::query()
+        /** @var Application $application */
+        $application = Application::query()
+            ->with(['appKey'])
             ->where('app_name', '=', $name)
             ->firstOrFail();
 
+        return $application;
     }
 
     public function updateSendGridKey(int $appId, string $key): bool
@@ -51,28 +69,25 @@ class ApplicationService implements ApplicationContract
     public function createApplication(User $user, CreateApplication $application): Application
     {
         return DB::transaction(static function () use ($user, $application) {
-            $app = new Application([
-                'app_name' => $application->appName,
-                'db_name' => $application->dbName,
-                'db_host' => $application->dbHost,
-                'db_driver' => $application->dbDriver,
-                'db_user' => $application->dbUser,
-                'db_port' => $application->dbPort,
-                'db_password' => $application->dbPassword,
-                'db_table' => $application->dbTable,
-                'email_field' => $application->emailField,
+
+            /** @var Application $app */
+            $app = $user->applications()->create([
+                'app_name' => $application->appName
             ]);
 
-            if (!$user->applications()->save($app)) {
-                throw new RuntimeException('Cannot save new application');
-            }
+            $app->saveOrFail();
 
-            if (!$app->sendGridKey()->create([
+            $app->sendGridKey()->create([
                 'key' => $application->sendgridKey,
                 'number_of_messages' => $application->sendGridNumberOfMessages
-            ])) {
-                throw new RuntimeException('Cannot insert new sendgrid key');
-            }
+            ])->saveOrFail();
+
+
+            $app->appKey()->create([
+                'key' => $this->generateKey($app->app_name),
+                'secret' => Str::random(50),
+                'user_id' => $user->id,
+            ])->saveOrFail();
 
             return $app;
         });
@@ -85,19 +100,30 @@ class ApplicationService implements ApplicationContract
         });
     }
 
-    public function updateDatabaseCredentials(int $id, UpdateApplicationDatabaseCredentials $databaseCredentials): bool
+    private function generateKey(string $appName): string
     {
-        return DB::transaction(static function () use ($id, $databaseCredentials) {
-            return Application::query()->where('id', '=', $id)
-                    ->update([
-                        'db_name' => $databaseCredentials->dbName,
-                        'db_host' => $databaseCredentials->dbHost,
-                        'db_driver' => $databaseCredentials->dbDriver,
-                        'db_user' => $databaseCredentials->dbUser,
-                        'db_password' => $databaseCredentials->dbPassword,
-                        'db_table' => $databaseCredentials->dbTable,
-                        'email_field' => $databaseCredentials->emailField,
-                    ]) > 0;
-        });
+        return sha1(now()->getTimestamp() . $appName);
     }
+
+    /**
+     * @param int $id
+     * @return Key
+     * @throws Throwable
+     */
+    public function generateNewKey(int $id): Key
+    {
+        /** @var AppKey $key */
+        $key = AppKey::query()
+            ->with(['application'])
+            ->where('application_id', '=', $id)
+            ->firstOrFail();
+
+        $key->key = $this->generateKey($key->application->app_name);
+        $key->secret = Str::random(50);
+
+        $key->saveOrFail();
+
+        return new Key($key);
+    }
+
 }

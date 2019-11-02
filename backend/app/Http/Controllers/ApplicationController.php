@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\ApplicationContract;
 use App\Dto\CreateApplication;
 use App\Http\Requests\ApplicationRequest;
+use App\Http\Resources\Application;
 use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
@@ -18,8 +19,9 @@ class ApplicationController extends Controller
 
     public function getApplications(int $page, int $perPage)
     {
+        $applications = $this->applicationService->getApplications($page, $perPage);
         return response()->json([
-            'applications' => $this->applicationService->getApplications($page, $perPage)
+            'applications' => Application::collection($applications)
         ]);
     }
 
@@ -34,7 +36,7 @@ class ApplicationController extends Controller
         }
 
         return response()->json([
-            'application' => $app
+            'application' => new Application($app)
         ]);
     }
 
@@ -45,7 +47,7 @@ class ApplicationController extends Controller
 
             $application = $this->applicationService->createApplication($request->user(), $createApplication);
 
-            return response()->json(['application' => $application], 201);
+            return response()->json(['application' => new Application($application)], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
@@ -57,7 +59,8 @@ class ApplicationController extends Controller
 
     public function updateSendGridKey(int $applicationId, Request $request) {
         try {
-            $updated = $this->applicationService->updateSendGridKey($applicationId, $request->input('sendGridKey'));
+            $updated = $this->applicationService
+                ->updateSendGridKey($applicationId, $request->input('sendGridKey'));
 
             if($updated) {
                 return response()->json(null, 204);
@@ -66,6 +69,15 @@ class ApplicationController extends Controller
             return response()->json(null, 500);
         }catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateAppKey(int $applicationId) {
+        try {
+            $key = $this->applicationService->generateNewKey($applicationId);
+            return response()->json(['key' => $key], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => 'An error has occurred']);
         }
     }
 

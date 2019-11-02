@@ -4,17 +4,58 @@
 namespace App\Contracts;
 
 
+use App\Application;
 use App\Dto\CreateApplication;
-use App\Dto\UpdateApplicationDatabaseCredentials;
+use App\Http\Resources\Key;
 use App\User;
+use Throwable;
 
 interface ApplicationContract
 {
-    public function getApplications(int $page, int $perPage);
+    /**
+     * @param int $page
+     * @param int $perPage
+     * @param array $orderBy
+     * @return mixed
+     */
+    public function getApplications(int $page, int $perPage, array $orderBy = []);
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
     public function getApplication(int $id);
-    public function getApplicationByName(string $name);
-    public function updateSendGridKey(int $appId, string $key);
-    public function createApplication(User $user, CreateApplication $application);
+
+    /**
+     * @param string $name
+     * @return Application
+     */
+    public function getApplicationByName(string $name): Application;
+
+    /**
+     * @param int $appId
+     * @param string $key
+     * @return bool
+     */
+    public function updateSendGridKey(int $appId, string $key): bool;
+
+    /**
+     * @param User $user
+     * @param CreateApplication $application
+     * @return Application
+     */
+    public function createApplication(User $user, CreateApplication $application): Application;
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
     public function deleteApplication(int $id);
-    public function updateDatabaseCredentials(int $id, UpdateApplicationDatabaseCredentials $databaseCredentials);
+
+    /**
+     * @param int $id
+     * @return Key
+     * @throws Throwable
+     */
+    public function generateNewKey(int $id): Key;
 }

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Contracts\LoginContract;
 use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller

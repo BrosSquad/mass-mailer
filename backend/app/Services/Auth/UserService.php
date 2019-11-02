@@ -4,29 +4,31 @@
 namespace App\Services;
 
 
+use App\Notifications\RequestNewPassword;
 use App\User;
-use App\Dto\CreateNewUser;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Str;
 use App\Contracts\UserContract;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Auth\Events\PasswordReset;
 use App\Dto\ChangePassword as ChangePasswordDto;
 use App\Dto\CreateUser;
 use App\Notifications\ChangePassword;
 use App\Notifications\UserRegistered;
 use Illuminate\Contracts\Hashing\Hasher;
 use Throwable;
-use Tymon\JWTAuth\JWTAuth;
+use Tymon\JWTAuth\Manager;
 
 class UserService implements UserContract
 {
     private $hasher;
-    private $auth;
+    private $manager;
+    private $urlGenerator;
 
-    public function __construct(Hasher $hasher, JWTAuth $auth)
+    public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator)
     {
         $this->hasher = $hasher;
-        $this->auth = $auth;
+        $this->manager = $manager;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -48,7 +50,7 @@ class UserService implements UserContract
         $user->saveOrFail();
 
         $user->notify(new UserRegistered($user));
-        $user->notify(new ChangePassword(ChangePasswordDto::fromUser($user), $this->auth));
+        $user->notify(new ChangePassword(ChangePasswordDto::fromUser($user), $this->manager));
 
 
         return $user;
@@ -61,12 +63,10 @@ class UserService implements UserContract
         });
     }
 
-    public function updateUserAccount()
+    public function updateUserAccount(User $user)
     {
         // TODO: Implement updateUserAccount() method.
     }
 
-    public function requestChangePassword(string $email)
-    {
-    }
+
 }

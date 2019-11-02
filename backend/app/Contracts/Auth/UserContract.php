@@ -17,5 +17,5 @@ interface UserContract
      */
     public function createUser(CreateUser $createUser): User;
     public function deleteUser(int $id): bool;
-    public function updateUserAccount();
+    public function updateUserAccount(User $user);
 }
