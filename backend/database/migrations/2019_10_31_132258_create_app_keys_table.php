@@ -15,23 +15,23 @@ class CreateAppKeysTable extends Migration
     {
         Schema::create('app_keys', static function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key', 50)->unique();
-            $table->string('secret', 150)->unique();
+            $table->string('key', 194)->unique();
+            $table->string('secret', 100)->unique();
             $table->unsignedInteger('application_id');
             $table->unsignedInteger('user_id');
-            
+
             $table->foreign('application_id')
                 ->references('id')
                 ->on('applications')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            
+
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            
+
             $table->timestamps();
         });
     }

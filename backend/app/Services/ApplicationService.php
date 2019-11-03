@@ -83,9 +83,10 @@ class ApplicationService implements ApplicationContract
             ])->saveOrFail();
 
 
+            $secret = Str::random(100);
             $app->appKey()->create([
-                'key' => $this->generateKey($app->app_name),
-                'secret' => Str::random(50),
+                'key' => $this->generateKey($app->app_name, $secret),
+                'secret' => $secret,
                 'user_id' => $user->id,
             ])->saveOrFail();
 
@@ -100,9 +101,11 @@ class ApplicationService implements ApplicationContract
         });
     }
 
-    private function generateKey(string $appName): string
+    private function generateKey(string $appName, string $secret): string
     {
-        return sha1(now()->getTimestamp() . $appName);
+        $key = hash('sha3-256',now()->getTimestamp() . $appName);
+
+        return $key . '.' . hash_hmac('sha3-512', $key, $secret);
     }
 
     /**
@@ -118,8 +121,8 @@ class ApplicationService implements ApplicationContract
             ->where('application_id', '=', $id)
             ->firstOrFail();
 
-        $key->key = $this->generateKey($key->application->app_name);
-        $key->secret = Str::random(50);
+        $key->secret = Str::random(100);
+        $key->key = $this->generateKey($key->application->app_name, $key->secret);
 
         $key->saveOrFail();
 
