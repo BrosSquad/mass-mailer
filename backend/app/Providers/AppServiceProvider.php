@@ -14,6 +14,7 @@ use App\Services\LoginService;
 use App\Services\MessageService;
 use App\Services\NotificationService;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -40,6 +41,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
     }
 }

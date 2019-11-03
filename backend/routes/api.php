@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/request-password-change', 'PasswordChangeController@requestNewPassword');
-Route::middleware(['auth:api'])->post('/change-password', 'PasswordChangeController@changePassword');
+Route::post('/request-password-change', 'Auth\PasswordChangeController@requestNewPassword');
+Route::middleware(['auth:api'])
+    ->post('/change-password', 'Auth\PasswordChangeController@changePassword');
 
 
 Route::prefix('auth')->group(static function () {
-    Route::post('login', 'LoginController@login');
+    Route::post('login', 'Auth\LoginController@login');
 });
 
 Route::middleware(['auth:api'])->prefix('application')->group(static function () {
@@ -31,8 +32,9 @@ Route::middleware(['auth:api'])->prefix('application')->group(static function ()
 });
 
 Route::middleware('auth:api')->prefix('users')->group(static function() {
-    Route::post('/', 'UserController@create');
-    Route::delete('/{id}', 'UserController@delete');
+    Route::middleware(['admin'])
+        ->post('/', 'Auth\UserController@create');
+    Route::delete('/{id}', 'Auth\UserController@delete');
 });
 
 Route::middleware(['auth:api'])->prefix('messages')->group(static function () {

@@ -15,7 +15,7 @@ class CreateSendGridKeysTable extends Migration
     {
         Schema::create('sendgrid_keys', static function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key', 255)->index();
+            $table->string('key', 255)->unique();
             $table->unsignedInteger('number_of_messages')->default(100);
             $table->unsignedInteger('application_id');
 

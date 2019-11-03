@@ -14,6 +14,7 @@
         "barryvdh/laravel-cors": "^0.11.4",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
+        "laravel/telescope": "^2.1",
         "laravel/tinker": "^1.0",
         "sendgrid/sendgrid": "~7",
         "silber/bouncer": "v1.0.0-rc.6",

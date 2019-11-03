@@ -68,7 +68,7 @@ class ApplicationService implements ApplicationContract
      */
     public function createApplication(User $user, CreateApplication $application): Application
     {
-        return DB::transaction(static function () use ($user, $application) {
+        return DB::transaction(function () use ($user, $application) {
 
             /** @var Application $app */
             $app = $user->applications()->create([
