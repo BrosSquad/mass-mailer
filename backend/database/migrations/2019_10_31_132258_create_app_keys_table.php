@@ -15,8 +15,7 @@ class CreateAppKeysTable extends Migration
     {
         Schema::create('app_keys', static function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key', 194)->unique();
-            $table->string('secret', 100)->unique();
+            $table->string('key', 68)->unique();
             $table->unsignedInteger('application_id');
             $table->unsignedInteger('user_id');
 

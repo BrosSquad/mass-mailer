@@ -11,18 +11,18 @@ class Application extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      */
     public function toArray($request)
     {
         /** @var \App\Application $application */
-        $application = $this->resource;
+        $application = $this->resource['app'];
         return [
             'appName' => $application->app_name,
             'id' => $application->id,
             'createdAt' => $application->created_at,
-            'key' => new Key($application->appKey)
+            'key' => $this->resource['key']
         ];
     }
 }

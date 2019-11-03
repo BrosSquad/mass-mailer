@@ -54,8 +54,8 @@ class Application extends Model
         return $this->hasMany(Notify::class, 'application_id', 'id');
     }
 
-    public function appKey(): HasOne {
-        return $this->hasOne(AppKey::class, 'application_id', 'id');
+    public function appKey(): HasMany {
+        return $this->hasMany(AppKey::class, 'application_id', 'id');
     }
 
     public function subscriptions(): BelongsToMany {
