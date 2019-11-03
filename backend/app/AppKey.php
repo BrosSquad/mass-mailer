@@ -23,7 +23,6 @@ class AppKey extends Model
 {
     protected $fillable = [
         'key',
-        'secret',
         'user_id'
     ];
 

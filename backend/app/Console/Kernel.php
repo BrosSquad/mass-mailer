@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune')->daily();
-        $schedule->command('key:generate')->monthly();
-        $schedule->command('jwt:secret')->monthly();
+        $schedule->command('key:generate --no-interaction --force')->monthly();
+        $schedule->command('jwt:secret --no-interaction --force --no-ansi')->monthly();
     }
 
     /**
