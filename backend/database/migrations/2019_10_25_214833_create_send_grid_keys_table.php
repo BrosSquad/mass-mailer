@@ -22,7 +22,8 @@ class CreateSendGridKeysTable extends Migration
             $table->foreign('application_id')
                 ->references('id')
                 ->on('applications')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

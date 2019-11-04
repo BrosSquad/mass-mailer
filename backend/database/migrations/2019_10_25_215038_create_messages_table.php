@@ -27,12 +27,14 @@ class CreateMessagesTable extends Migration
             $table->foreign('application_id')
                 ->references('id')
                 ->on('applications')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->timestamps();
         });

@@ -20,6 +20,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $remember_token
  * @property CarbonInterface $email_verified_at
  * @property CarbonInterface $created_at
+ * @property CarbonInterface $last_login
  * @property CarbonInterface $updated_at
  */
 class User extends Authenticatable implements JWTSubject
@@ -60,6 +61,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login' => 'datetime',
     ];
 
     public function applications(): HasMany {

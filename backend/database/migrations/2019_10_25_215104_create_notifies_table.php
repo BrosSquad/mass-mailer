@@ -24,17 +24,20 @@ class CreateNotifiesTable extends Migration
             $table->foreign('application_id')
                 ->references('id')
                 ->on('applications')
-                ->onDelete('set null');
+                ->onDelete('set null')
+                ->onUpdate('cascade');
 
             $table->foreign('sendgrid_id')
                 ->references('id')
                 ->on('sendgrid_keys')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
 
             $table->foreign('message_id')
                 ->references('id')
                 ->on('messages')
-                ->onDelete('set null');
+                ->onDelete('set null')
+                ->onUpdate('cascade');
 
             $table->timestamps();
         });

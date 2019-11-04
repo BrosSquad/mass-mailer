@@ -23,7 +23,8 @@ class CreateCriteriasTable extends Migration
             $table->foreign('message_id')
                 ->references('id')
                 ->on('messages')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

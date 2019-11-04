@@ -15,9 +15,9 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-         // Telescope::night();
+        Telescope::night();
 
         $this->hideSensitiveRequestDetails();
 
@@ -27,10 +27,10 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             }
 
             return $entry->isReportableException() ||
-                   $entry->isFailedRequest() ||
-                   $entry->isFailedJob() ||
-                   $entry->isScheduledTask() ||
-                   $entry->hasMonitoredTag();
+                $entry->isFailedRequest() ||
+                $entry->isFailedJob() ||
+                $entry->isScheduledTask() ||
+                $entry->hasMonitoredTag();
         });
     }
 
@@ -39,7 +39,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      *
      * @return void
      */
-    protected function hideSensitiveRequestDetails()
+    protected function hideSensitiveRequestDetails(): void
     {
         if ($this->app->isLocal()) {
             return;
@@ -61,9 +61,9 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      *
      * @return void
      */
-    protected function gate()
+    protected function gate(): void
     {
-        Gate::define('viewTelescope', function (User $user) {
+        Gate::define('viewTelescope', static function (User $user) {
             return $user->getRoles()->first() === 'admin';
         });
     }

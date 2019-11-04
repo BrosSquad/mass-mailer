@@ -9,6 +9,7 @@ use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
 use App\User;
 use Illuminate\Contracts\Hashing\Hasher;
+use Throwable;
 use Tymon\JWTAuth\JWTAuth;
 
 class LoginService implements LoginContract
@@ -18,7 +19,7 @@ class LoginService implements LoginContract
      */
     private $auth;
 
-    
+
     private $hasher;
 
     public function __construct(JWTAuth $auth, Hasher $hasher)
@@ -31,6 +32,7 @@ class LoginService implements LoginContract
      * @param Login $login
      * @return array
      * @throws IncorrectPassword
+     * @throws Throwable
      */
     public function login(Login $login): array
     {
@@ -46,6 +48,8 @@ class LoginService implements LoginContract
             throw new IncorrectPassword();
         }
 
+        $user->last_login = now();
+        $user->saveOrFail();
         $ttl = config('jwt.ttl');
         return [
             'user' => $user->getJWTCustomClaims(),
