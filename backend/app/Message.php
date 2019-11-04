@@ -2,24 +2,27 @@
 
 namespace App;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  *
- * @property int id
- * @property string subject
- * @property string from_email
- * @property string from_name
- * @property string reply_to
- * @property string text
- * @property int application_id
- * @property int user_id
- * @property User user
- * @property Application application
- * @property Criteria[] criteria
- * @property Notify[] notified
+ * @property integer $id
+ * @property string $subject
+ * @property string $from_email
+ * @property string $from_name
+ * @property string $reply_to
+ * @property string $text
+ * @property integer $application_id
+ * @property integer $user_id
+ * @property User $user
+ * @property Application $application
+ * @property Criteria[] $criteria
+ * @property Notify[] $notified
+ * @property CarbonInterface $created_at
+ * @property CarbonInterface $updated_at
  */
 class Message extends Model
 {

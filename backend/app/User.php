@@ -2,12 +2,27 @@
 
 namespace App;
 
+use Carbon\CarbonInterface;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+/**
+ * Class User
+ * @package App
+ * @property integer $id
+ * @property string $name
+ * @property string $surname
+ * @property string $email
+ * @property string $password
+ * @property string $remember_token
+ * @property CarbonInterface $email_verified_at
+ * @property CarbonInterface $created_at
+ * @property CarbonInterface $last_login
+ * @property CarbonInterface $updated_at
+ */
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
@@ -46,6 +61,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_login' => 'datetime',
     ];
 
     public function applications(): HasMany {
@@ -76,11 +92,12 @@ class User extends Authenticatable implements JWTSubject
         return [
             'name' => $this->name,
             'surname' => $this->surname,
-            'email' => $this->email
+            'email' => $this->email,
+            'role' => $this->getRoles()->first()
         ];
     }
 
     public function keys(): HasMany {
-        return $this->hasMany(AppKeys::class, 'user_id', 'id');
+        return $this->hasMany(AppKey::class, 'user_id', 'id');
     }
 }
