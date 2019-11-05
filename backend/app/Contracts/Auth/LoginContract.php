@@ -6,7 +6,10 @@ namespace App\Contracts;
 
 use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
+use App\Exceptions\RefreshTokenExpired;
 use \Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 interface LoginContract
 {
@@ -17,4 +20,14 @@ interface LoginContract
      * @throws Exception
      */
     public function login(Login $login): array;
+
+
+    /**
+     * @param string $refreshToken
+     * @return array
+     * @throws RefreshTokenExpired
+     * @throws ModelNotFoundException
+     * @throws Throwable
+     */
+    public function refreshToken(string $refreshToken): array;
 }

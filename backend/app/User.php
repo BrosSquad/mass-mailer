@@ -72,6 +72,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Message::class, 'user_id', 'id');
     }
 
+    public function refreshTokens(): HasMany {
+        return $this->hasMany(RefreshToken::class, 'user_id', 'id');
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

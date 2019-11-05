@@ -6,6 +6,7 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RefreshMiddleware;
 use App\Http\Middleware\RequireAdminPrivileges;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
@@ -61,6 +62,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            RefreshMiddleware::class,
             'throttle:60,1',
             'bindings',
             HandleCors::class,
