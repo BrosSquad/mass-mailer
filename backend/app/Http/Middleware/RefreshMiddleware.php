@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Contracts\LoginContract;
 use App\Exceptions\RefreshTokenExpired;
+use App\Exceptions\RefreshTokenNotFound;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -47,9 +48,9 @@ class RefreshMiddleware
             $this->auth->parseToken();
         } catch (TokenExpiredException $e) {
             // TODO: Refresh token with database value
-            $data = $this->loginService->refreshToken($request->header('X-Refresh-Token'));
+            $data = $this->loginService->refreshToken($request->header('X-Refresh-Token', null));
         }
-        catch (ModelNotFoundException | RefreshTokenExpired $e) {
+        catch (ModelNotFoundException | RefreshTokenExpired | RefreshTokenNotFound $e) {
             return forbidden(['message' => $e->getMessage()]);
         }
         catch (JWTException $e) {
