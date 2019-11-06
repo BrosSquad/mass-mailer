@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property integer $id
  * @property string $token
  * @property CarbonInterface $expires
+ * @property integer $user_id
  * @property User $user
  */
 class RefreshToken extends Model

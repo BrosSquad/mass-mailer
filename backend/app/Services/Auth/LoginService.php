@@ -8,6 +8,7 @@ use App\Contracts\LoginContract;
 use App\Contracts\Signer\RsaSignerContract;
 use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
+use App\Exceptions\InvalidRefreshToken;
 use App\Exceptions\RefreshTokenExpired;
 use App\Exceptions\RefreshTokenNotFound;
 use App\RefreshToken;
@@ -67,7 +68,7 @@ class LoginService implements LoginContract
 
         // TODO: Add check for email verification
 
-        if(!$this->hasher->check($login->password, $user->password)) {
+        if (!$this->hasher->check($login->password, $user->password)) {
             throw new IncorrectPassword();
         }
 
@@ -75,7 +76,7 @@ class LoginService implements LoginContract
 
             $rf = new RefreshToken();
 
-            $refreshToken = $this->generateNewRefreshToken($rf);
+            $refreshToken = $this->generateNewRefreshToken($rf, $user->id);
 
             $user->refreshTokens()->save($rf);
             return [
@@ -87,9 +88,6 @@ class LoginService implements LoginContract
                 ]
             ];
         });
-
-
-
     }
 
 
@@ -103,19 +101,25 @@ class LoginService implements LoginContract
      */
     public function refreshToken(?string $refreshToken): array
     {
-        if($refreshToken === null) {
+        if ($refreshToken === null) {
             throw new RefreshTokenNotFound();
+        }
+
+        if(($data = $this->rsaSigner->verify($refreshToken)) === null)
+        {
+            throw new InvalidRefreshToken();
         }
 
         /** @var RefreshToken $rf */
         $rf = RefreshToken::query()
             ->with(['user'])
-            ->where('token', '=', $refreshToken)
+            ->where('token', '=', $data['data'])
             ->firstOrFail();
 
-        if(now()->isAfter($rf->expires)) {
+        if (now()->isAfter($rf->expires)) {
             throw new RefreshTokenExpired();
         }
+
 
         return [
             'token' => $this->auth->fromUser($rf->user),
@@ -127,14 +131,22 @@ class LoginService implements LoginContract
     /**
      * @param RefreshToken $refreshToken
      * @param int $length
+     * @param integer|null $userId
      * @return string
      * @throws Throwable
      */
-    private function generateNewRefreshToken(RefreshToken $refreshToken, int $length = 25): string {
+    private function generateNewRefreshToken(RefreshToken $refreshToken, $userId = null, int $length = 100): string
+    {
 
-        $refreshToken->token = $this->rsaSigner->sign(Str::random($length));
+        $data = Str::random($length);
+        $refreshToken->token = $data;
         $refreshToken->expires = now()->addMinutes($this->config->get('jwt.refresh_ttl'));
+
+        if (!$refreshToken->exists) {
+            $refreshToken->user_id = $userId;
+        }
+
         $refreshToken->saveOrFail();
-        return $refreshToken->token;
+        return $this->rsaSigner->sign($data);
     }
 }

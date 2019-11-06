@@ -7,6 +7,10 @@ namespace App\Contracts;
 use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
 use App\Exceptions\RefreshTokenExpired;
+use App\Exceptions\RefreshTokenNotFound;
+use App\Exceptions\SignatureCorrupted;
+use App\Exceptions\TokenBadlyFormatted;
+use App\Exceptions\TokenSignatureInvalid;
 use \Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
@@ -26,6 +30,10 @@ interface LoginContract
      * @param string $refreshToken
      * @return array
      * @throws RefreshTokenExpired
+     * @throws SignatureCorrupted
+     * @throws TokenSignatureInvalid
+     * @throws RefreshTokenNotFound
+     * @throws TokenBadlyFormatted
      * @throws ModelNotFoundException
      * @throws Throwable
      */

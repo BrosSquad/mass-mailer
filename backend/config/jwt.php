@@ -9,6 +9,9 @@
  * file that was distributed with this source code.
  */
 
+use App\JWT\HashidsJwtAuth;
+use Tymon\JWTAuth\Providers\JWT\Namshi;
+
 return [
 
     /*
@@ -81,7 +84,7 @@ return [
         |
         */
 
-        'passphrase' => env('JWT_PASSPHRASE'),
+        'passphrase' => env('JWT_PASSPHRASE', null),
 
     ],
 
@@ -101,7 +104,7 @@ return [
     |
     */
 
-    'ttl' => env('JWT_TTL', 120),
+    'ttl' => env('JWT_TTL', 1),
 
     /*
     |--------------------------------------------------------------------------
@@ -134,7 +137,7 @@ return [
     |
     */
 
-    'algo' => env('JWT_ALGO', 'HS512'),
+    'algo' => env('JWT_ALGO', 'RS512'),
 
     /*
     |--------------------------------------------------------------------------
@@ -275,7 +278,7 @@ return [
         |
         */
 
-        'jwt' => Tymon\JWTAuth\Providers\JWT\Namshi::class,
+        'jwt' => Namshi::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -286,8 +289,7 @@ return [
         |
         */
 
-        // TODO: Make custom provider for hashids
-        'auth' => Tymon\JWTAuth\Providers\Auth\Illuminate::class,
+        'auth' => HashidsJwtAuth::class,
 
         /*
         |--------------------------------------------------------------------------
