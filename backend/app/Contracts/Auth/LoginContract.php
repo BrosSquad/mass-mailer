@@ -6,6 +6,7 @@ namespace App\Contracts;
 
 use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
+use App\Exceptions\InvalidRefreshToken;
 use App\Exceptions\RefreshTokenExpired;
 use App\Exceptions\RefreshTokenNotFound;
 use App\Exceptions\SignatureCorrupted;
@@ -34,6 +35,7 @@ interface LoginContract
      * @throws TokenSignatureInvalid
      * @throws RefreshTokenNotFound
      * @throws TokenBadlyFormatted
+     * @throws InvalidRefreshToken
      * @throws ModelNotFoundException
      * @throws Throwable
      */

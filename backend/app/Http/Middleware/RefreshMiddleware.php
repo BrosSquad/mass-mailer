@@ -52,19 +52,26 @@ class RefreshMiddleware
             $this->auth->parseToken()->authenticate();
         } catch (TokenExpiredException $e) {
             // TODO: Refresh token with database value
-            $data['auth'] = $this->loginService->refreshToken($request->header('X-Refresh-Token', null));
 
-            $this->auth->setToken($data['auth']['token'])->authenticate();
-        } catch (
-        ModelNotFoundException |
-        RefreshTokenExpired |
-        RefreshTokenNotFound |
-        InvalidRefreshToken |
-        SignatureCorrupted |
-        TokenBadlyFormatted |
-        TokenSignatureInvalid $e
-        ) {
-            return forbidden(['message' => $e->getMessage()]);
+            try {
+                $data['auth'] = $this->loginService->refreshToken($request->header('X-Refresh-Token', null));
+                $this->auth->setToken($data['auth']['token'])->authenticate();
+
+            }
+            catch (ModelNotFoundException $e) {
+                return notFound(['message' => 'Refresh token is not found']);
+            }
+            catch (
+            RefreshTokenExpired |
+            RefreshTokenNotFound |
+            InvalidRefreshToken |
+            SignatureCorrupted |
+            TokenBadlyFormatted |
+            TokenSignatureInvalid $e
+            ) {
+                return forbidden(['message' => $e->getMessage()]);
+            }
+
         } catch (JWTException $e) {
             // Just continue
             // If token is not found here, maybe the route is unprotected
