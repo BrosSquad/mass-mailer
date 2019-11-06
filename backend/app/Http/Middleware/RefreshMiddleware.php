@@ -3,8 +3,12 @@
 namespace App\Http\Middleware;
 
 use App\Contracts\LoginContract;
+use App\Exceptions\InvalidRefreshToken;
 use App\Exceptions\RefreshTokenExpired;
 use App\Exceptions\RefreshTokenNotFound;
+use App\Exceptions\SignatureCorrupted;
+use App\Exceptions\TokenBadlyFormatted;
+use App\Exceptions\TokenSignatureInvalid;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -45,18 +49,34 @@ class RefreshMiddleware
         $data = [];
 
         try {
-            $this->auth->parseToken();
+            $this->auth->parseToken()->authenticate();
         } catch (TokenExpiredException $e) {
             // TODO: Refresh token with database value
-            $data = $this->loginService->refreshToken($request->header('X-Refresh-Token', null));
-        }
-        catch (ModelNotFoundException | RefreshTokenExpired | RefreshTokenNotFound $e) {
-            return forbidden(['message' => $e->getMessage()]);
-        }
-        catch (JWTException $e) {
-            return unauthorized(['message' => 'Unauthorized']);
-        }
-        catch (\Throwable $e) {
+
+            try {
+                $data['auth'] = $this->loginService->refreshToken($request->header('X-Refresh-Token', null));
+                $this->auth->setToken($data['auth']['token'])->authenticate();
+
+            }
+            catch (ModelNotFoundException $e) {
+                return notFound(['message' => 'Refresh token is not found']);
+            }
+            catch (
+            RefreshTokenExpired |
+            RefreshTokenNotFound |
+            InvalidRefreshToken |
+            SignatureCorrupted |
+            TokenBadlyFormatted |
+            TokenSignatureInvalid $e
+            ) {
+                return forbidden(['message' => $e->getMessage()]);
+            }
+
+        } catch (JWTException $e) {
+            // Just continue
+            // If token is not found here, maybe the route is unprotected
+            // if route is protected then the authentication will fail
+        } catch (\Throwable $e) {
             return internalServerError(['message' => 'Error']);
         }
 

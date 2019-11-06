@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::middleware(['auth:api'])->get('/me', static function (Request $request) {
+    return ok($request->user());
+});
+
 Route::post('/request-password-change', 'Auth\PasswordChangeController@requestNewPassword');
 Route::middleware(['auth:api'])
     ->post('/change-password', 'Auth\PasswordChangeController@changePassword');

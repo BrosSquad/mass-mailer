@@ -7,6 +7,7 @@ use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoginController extends Controller
 {
@@ -25,8 +26,11 @@ class LoginController extends Controller
             return response()->json($this->loginService->login($login));
         } catch (IncorrectPassword $e) {
             return response()->json(['message' => $e->getMessage()], 401);
-        } catch (\Exception $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User is not found'], 401);
+        }
+        catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }

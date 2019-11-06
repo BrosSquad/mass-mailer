@@ -15,10 +15,9 @@ class CreateRefreshTokensTable extends Migration
     {
         Schema::create('refresh_tokens', static function (Blueprint $table) {
             $table->increments('id');
-            $table->string('token', 255)->unique();
+            $table->string('token', 200)->unique();
             $table->dateTime('expires');
             $table->unsignedInteger('user_id');
-
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')

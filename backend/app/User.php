@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\CarbonInterface;
+use Hashids\HashidsInterface;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -27,6 +28,11 @@ class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     use HasRolesAndAbilities;
+
+    /**
+     * @var HashidsInterface
+     */
+    protected static $hashids;
 
     /**
      * The attributes that are mass assignable.
@@ -83,7 +89,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTIdentifier()
     {
-        return $this->id;
+        return static::$hashids->encodeHex($this->id);
     }
 
     /**
@@ -103,5 +109,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function keys(): HasMany {
         return $this->hasMany(AppKey::class, 'user_id', 'id');
+    }
+
+    public static function setHashids(HashidsInterface $hashids) {
+        static::$hashids = $hashids;
     }
 }

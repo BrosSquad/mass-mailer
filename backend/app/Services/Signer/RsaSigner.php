@@ -5,6 +5,10 @@ namespace App\Services\Signer;
 
 
 use App\Contracts\Signer\RsaSignerContract;
+use App\Exceptions\SignatureCorrupted;
+use App\Exceptions\TokenBadlyFormatted;
+use App\Exceptions\TokenSignatureInvalid;
+use Exception;
 use Illuminate\Config\Repository as Config;
 use RuntimeException;
 
@@ -30,27 +34,56 @@ class RsaSigner implements RsaSignerContract
 
     }
 
+    /**
+     * @param string $data
+     * @param int $algorithm
+     * @return string
+     * @throws SignatureCorrupted
+     */
     public function sign(string $data, $algorithm = OPENSSL_ALGO_SHA512): string {
         $isSigned = openssl_sign($data, $signature, $this->privateKey, $algorithm);
 
         if(!$isSigned || !isset($signature)) {
-            throw new RuntimeException('Error while signing the data');
+            throw new SignatureCorrupted();
         }
 
 
-        return $signature;
+        return $data . '$' . bin2hex($signature);
     }
 
-    public function verify(string $data, string $signature, $algorithm = OPENSSL_ALGO_SHA512): bool
+    /**
+     * @param string $token
+     * @param int $algorithm
+     * @return array
+     * @throws TokenSignatureInvalid
+     * @throws TokenBadlyFormatted
+     */
+    public function verify(string $token, $algorithm = OPENSSL_ALGO_SHA512): array
     {
-        $isValid = openssl_verify($data, $signature, $this->publicKey, $algorithm);
+        $split = explode('$', $token);
+
+        if(count($split) !== 2) {
+            throw new TokenBadlyFormatted();
+        }
+
+        [$data, $signature] = $split;
+
+        $isValid = openssl_verify($data, hex2bin($signature), $this->publicKey, $algorithm);
 
         if($isValid === -1)
         {
-            throw new RuntimeException(openssl_error_string());
+            throw new TokenSignatureInvalid();
         }
 
-        return $isValid === 1;
+        if($isValid === 0)
+        {
+            return null;
+        }
+
+        return [
+            'data' => $data,
+            'signature' => $signature
+        ];
     }
 
     public function __destruct()
