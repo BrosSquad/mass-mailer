@@ -12,17 +12,10 @@ export class ResponseInterceptorService implements HttpInterceptor {
     return next.handle(req)
       .pipe(
         map(event => {
-          if (event instanceof HttpResponse) {
-            if (event.body['auth']) {
+          if (event instanceof HttpResponse && event.body['auth']) {
               localStorage.setItem('token', JSON.stringify(event.body.auth))
-            }
           }
           return event;
-        }),
-        catchError(error => {
-          if (error instanceof HttpErrorResponse) {
-            return throwError(event);
-          }
         })
       );
   }

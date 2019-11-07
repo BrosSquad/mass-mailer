@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 export class AuthInterceptorService implements HttpInterceptor {
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const jsonTokenString: string | null = localStorage.getItem('token');
-    
+
     if(jsonTokenString) {
       const deserialize = JSON.parse(jsonTokenString);
       req.headers.append('X-Refresh-Token', deserialize.refreshToken);

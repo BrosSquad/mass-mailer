@@ -8,8 +8,10 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
+import { reducers, metaReducers, initialState } from './store/reducers';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
+import { SharedModule } from './shared/shared.module';
+import { LoginEffect } from './store/effects/auth/login.effect';
 
 @NgModule({
   declarations: [
@@ -18,15 +20,17 @@ import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    SharedModule,
     BrowserAnimationsModule,
-    !environment.production ? StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }) : [],
-    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    EffectsModule.forRoot([LoginEffect]),
     StoreModule.forRoot(reducers, {
       metaReducers,
       runtimeChecks: {
         strictStateImmutability: true,
-        strictActionImmutability: true
-      }
+        strictActionImmutability: true,
+      },
+      initialState
     }),
     NgBootstrapFormValidationModule.forRoot(),
   ],

@@ -13,10 +13,6 @@ import { NavComponent } from './components/nav/nav.component';
 import { SocialAuthComponent } from './components/social-auth/social-auth.component';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from './store/reducers';
-import { EffectsModule } from '@ngrx/effects';
-import { LoginEffect } from './store/effects/login.effect';
 const routes: Routes = [
   {
     path: '',
@@ -47,8 +43,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgBootstrapFormValidationModule,
     RouterModule.forChild(routes),
-    StoreModule.forFeature('login', reducers),
-    EffectsModule.forFeature([LoginEffect])
   ]
 })
 export class AuthModule {}

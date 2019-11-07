@@ -5,9 +5,9 @@ import {
   LoginErrorAction,
   UnauthorizedAction,
   ForbiddenAction
-} from '../actions';
+} from '../../actions/auth';
 import { Error } from 'src/app/shared/error.model';
-import { SaveUserAction } from '../actions/login.action';
+import { SaveUserAction } from '../../actions/auth/login.action';
 
 
 export interface User {
@@ -27,25 +27,19 @@ export interface AuthState {
   user: User;
   error: AuthErrors;
 }
-
-const initalState: AuthState = {
-  user: null,
-  error: {
-    forbidden: null,
-    login: null,
-    unauthorized: null
-  }
-};
-
-export function reducers(
-  state: AuthState = initalState,
+export function authReducer(
+  state: AuthState,
   action: Action
 ): AuthState {
   switch (action.type) {
     case AuthActions.SAVE_USER:
       return {
         ...state,
-        error: null,
+        error: {
+          forbidden: null,
+          unauthorized: null,
+          login: null
+        },
         user: (action as SaveUserAction).payload
       };
     case AuthActions.LOGIN_ERROR:

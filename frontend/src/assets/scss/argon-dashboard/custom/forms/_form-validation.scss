@@ -26,11 +26,11 @@
 }
 
 .has-success {
-    &:after {
-        content: "\ea26";
-        color: daken($form-feedback-valid-color, 18%);
-        background-color: $form-feedback-valid-bg;
-    }
+    // &:after {
+    //     content: "\ea26";
+    //     color: daken($form-feedback-valid-color, 18%);
+    //     background-color: $form-feedback-valid-bg;
+    // }
     
     .form-control {
         background-color: $input-focus-bg;
@@ -49,11 +49,11 @@
 }
 
 .has-danger {
-    &:after {
-        content: "\ea53";
-        color: daken($form-feedback-invalid-color, 18%);
-        background-color: $form-feedback-invalid-bg;
-    }
+    // &:after {
+    //     content: "\ea53";
+    //     color: daken($form-feedback-invalid-color, 18%);
+    //     background-color: $form-feedback-invalid-bg;
+    // }
 
     .form-control {
         background-color: $input-focus-bg;
