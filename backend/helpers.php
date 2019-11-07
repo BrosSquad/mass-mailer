@@ -101,21 +101,20 @@ if (!function_exists('internalServerError')) {
 }
 
 
-if(!function_exists('base64url_encode'))
-{
+if (!function_exists('base64url_encode')) {
     /**
- * Encode data to Base64URL
- * @param string $data
- * @return boolean|string
- */
-    function base64url_encode(string $data)
+     * Encode data to Base64URL
+     * @param string $data
+     * @return null|string
+     */
+    function base64url_encode(string $data): ?string
     {
         // First of all you should encode $data to Base64 string
         $b64 = base64_encode($data);
 
         // Make sure you get a valid result, otherwise, return FALSE, as the base64_encode() function do
         if ($b64 === false) {
-            return false;
+            return null;
         }
 
         // Convert Base64 to Base64URL by replacing “+” with “-” and “/” with “_”
@@ -123,21 +122,25 @@ if(!function_exists('base64url_encode'))
     }
 }
 
-if(!function_exists('base64url_decode'))
-{
+if (!function_exists('base64url_decode')) {
     /**
      * Decode data from Base64URL
      * @param string $data
      * @param boolean $strict
-     * @return boolean|string
+     * @return string|null
      */
-    function base64url_decode(string $data, bool $strict = false)
+    function base64url_decode(string $data, bool $strict = false): ?string
     {
         // Convert Base64URL to Base64 by replacing “-” with “+” and “_” with “/”
         $b64 = strtr($data, '-_', '+/');
 
         // Decode Base64 string and return the original data
-        return base64_decode($b64, $strict);
+        $decoded = base64_decode($b64, $strict);
+
+        if ($decoded === false)
+            return null;
+
+        return $decoded;
     }
 }
 

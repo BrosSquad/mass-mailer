@@ -63,7 +63,6 @@ class RsaSigner implements RsaSignerContract
             throw new SignatureCorrupted();
         }
 
-
         return $data . '$' . bin2hex($signature);
     }
 

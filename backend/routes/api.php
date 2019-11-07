@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth:api'])->get('/me', static function (Request $request) {
-    return ok($request->user());
+    return ok(new User($request->user()));
 });
 
 Route::post('/request-password-change', 'Auth\PasswordChangeController@requestNewPassword');
@@ -28,13 +29,6 @@ Route::prefix('auth')->group(static function () {
 });
 
 Route::middleware(['auth:api'])->prefix('application')->group(static function () {
-    Route::get('/{page}/{perPage}', 'ApplicationController@getApplication');
-    Route::get('/{id}', 'ApplicationController@getApplications');
-    Route::post('/', 'ApplicationController@create');
-    Route::patch('/{id}', 'ApplicationController@update');
-    Route::patch('/update-key/{id}', 'ApplicationController@updateAppKey');
-    Route::patch('/update-sendgrid/{id}', 'ApplicationController@updateSendGridKey');
-    Route::delete('/{id}', 'ApplicationController@delete');
 });
 
 Route::middleware('auth:api')->prefix('users')->group(static function() {
@@ -44,8 +38,4 @@ Route::middleware('auth:api')->prefix('users')->group(static function() {
 });
 
 Route::middleware(['auth:api'])->prefix('messages')->group(static function () {
-    Route::get('/{page}/{perPage}', 'MessageController@getMessages');
-    Route::post('/', 'MessageController@create');
-    Route::get('/{id}', 'MessageController@getMessage');
-    Route::delete('/{id}', 'MessageController@delete');
 });
