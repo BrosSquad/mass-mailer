@@ -7,31 +7,53 @@ import {
   UrlTree,
   Router
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { UserService } from './shared/services/user.service';
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuardGuard implements CanActivate, CanActivateChild {
   private jwtHelper: JwtHelperService = new JwtHelperService();
-  public constructor(protected readonly router: Router) {}
+  public constructor(
+    protected readonly router: Router,
+    private readonly userService: UserService
+  ) {}
 
-  protected activate(): boolean | Promise<boolean> {
+  protected activate(): Observable<boolean> {
     const tokenJson = localStorage.getItem('token');
 
     if (!tokenJson) {
-      return this.router.navigateByUrl('/');
+      return from(this.router.navigateByUrl('/'));
     }
 
     const jwt = JSON.parse(tokenJson);
 
     const payload = this.jwtHelper.decodeToken(jwt.token);
-
     if (payload === null) {
-      return false;
+      return of(false);
     }
-    return !this.jwtHelper.isTokenExpired(jwt.token);
+    const expires: Date | null = this.jwtHelper.getTokenExpirationDate(
+      jwt.token
+    );
+
+    if (expires === null) {
+      return of(false);
+    }
+
+    // TODO: If token has expires try to refresh it
+    const hasExpired: boolean = new Date() > expires;
+
+    if (hasExpired) {
+      return this.userService.me().pipe(
+        catchError((_) => from(this.router.navigateByUrl('/'))),
+        switchMap((_) => of(true))
+      );
+    }
+
+    return of(true);
   }
 
   public canActivate(
@@ -42,15 +64,7 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    try {
-      if (!this.activate()) {
-        return this.router.navigateByUrl('');
-      }
-    } catch (err) {
-      return this.router.navigateByUrl('');
-    }
-
-    return true;
+    return this.activate();
   }
 
   public canActivateChild(
@@ -61,14 +75,6 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    try {
-      if (!this.activate()) {
-        return this.router.navigateByUrl('');
-      }
-    } catch (err) {
-      return this.router.navigateByUrl('');
-    }
-
-    return true;
+    return this.activate();
   }
 }

@@ -9,5 +9,27 @@ import { Store } from '@ngrx/store';
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit, OnDestroy {
+  private subscription: Subscription;
+
+  public constructor(
+    private readonly store: Store<State>,
+    private readonly router: Router
+  ) {}
+
+  public ngOnInit(): void {
+    this.subscription = this.store
+      .select((state) => state.auth.user)
+      .subscribe((user) => {
+        if (user !== null) {
+          this.router.navigateByUrl('/dashboard');
+        }
+      });
+  }
+
+  public ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
 }
