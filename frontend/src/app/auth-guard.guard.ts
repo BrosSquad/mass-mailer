@@ -11,6 +11,9 @@ import { Observable, of, from } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserService } from './shared/services/user.service';
 import { catchError, switchMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { State } from './store/reducers';
+import { LogoutAction } from './store/actions/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +22,8 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
   private jwtHelper: JwtHelperService = new JwtHelperService();
   public constructor(
     protected readonly router: Router,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly store: Store<State>
   ) {}
 
   protected activate(): Observable<boolean> {
@@ -43,12 +47,14 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
       return of(false);
     }
 
-    // TODO: If token has expires try to refresh it
     const hasExpired: boolean = new Date() > expires;
 
     if (hasExpired) {
       return this.userService.me().pipe(
-        catchError((_) => from(this.router.navigateByUrl('/'))),
+        catchError((_) => {
+          this.store.dispatch(new LogoutAction());
+          return from(this.router.navigateByUrl('/'))
+        }),
         switchMap((_) => of(true))
       );
     }
