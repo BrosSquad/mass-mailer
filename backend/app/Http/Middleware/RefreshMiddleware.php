@@ -3,12 +3,12 @@
 namespace App\Http\Middleware;
 
 use App\Contracts\LoginContract;
-use App\Exceptions\InvalidRefreshToken;
-use App\Exceptions\RefreshTokenExpired;
-use App\Exceptions\RefreshTokenNotFound;
-use App\Exceptions\SignatureCorrupted;
-use App\Exceptions\TokenBadlyFormatted;
-use App\Exceptions\TokenSignatureInvalid;
+use App\Exceptions\RefreshTokens\InvalidRefreshToken;
+use App\Exceptions\RefreshTokens\RefreshTokenExpired;
+use App\Exceptions\RefreshTokens\RefreshTokenNotFound;
+use App\Exceptions\RsaSigning\SignatureCorrupted;
+use App\Exceptions\RsaSigning\TokenBadlyFormatted;
+use App\Exceptions\RsaSigning\TokenSignatureInvalid;
 use Closure;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -57,11 +57,9 @@ class RefreshMiddleware
                 $data['auth'] = $this->loginService->refreshToken($request->header('X-Refresh-Token', null));
                 $this->auth->setToken($data['auth']['token'])->authenticate();
 
-            }
-            catch (ModelNotFoundException $e) {
+            } catch (ModelNotFoundException $e) {
                 return notFound(['message' => 'Refresh token is not found']);
-            }
-            catch (
+            } catch (
             RefreshTokenExpired |
             RefreshTokenNotFound |
             InvalidRefreshToken |

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Exceptions;
+namespace App\Exceptions\RefreshTokens;
 
 
 use Exception;
