@@ -5,31 +5,47 @@ namespace App\Services\Signer;
 
 
 use App\Contracts\Signer\RsaSignerContract;
-use App\Exceptions\SignatureCorrupted;
-use App\Exceptions\TokenBadlyFormatted;
-use App\Exceptions\TokenSignatureInvalid;
-use Exception;
+use App\Exceptions\RsaSigning\PrivateKeyError;
+use App\Exceptions\RsaSigning\PublicKeyError;
+use App\Exceptions\RsaSigning\SignatureCorrupted;
+use App\Exceptions\RsaSigning\TokenBadlyFormatted;
+use App\Exceptions\RsaSigning\TokenSignatureInvalid;
 use Illuminate\Config\Repository as Config;
-use RuntimeException;
 
 class RsaSigner implements RsaSignerContract
 {
+    /**
+     * @var false|resource
+     */
     private $publicKey;
+
+    /**
+     * @var false|resource
+     */
     private $privateKey;
 
+    /**
+     * RsaSigner constructor.
+     * @param Config $config
+     * @throws PublicKeyError
+     * @throws PrivateKeyError
+     */
     public function __construct(Config $config)
     {
-        if(!($this->publicKey = openssl_pkey_get_public($config->get('jwt.keys.public'))))
+        $publicKey = $config->get('rsa.public');
+        $privateKey = $config->get('rsa.private');
+        $passphrase = $config->get('rsa.passphrase');
+
+
+        if(!($this->publicKey = openssl_pkey_get_public($publicKey)))
         {
-            throw new RuntimeException('Error while opening public key');
+            throw new PublicKeyError(openssl_error_string());
         }
 
-        $privateKey = $config->get('jwt.keys.private');
-        $passphrase = $config->get('jwt.keys.passphrase');
 
         if(!($this->privateKey = openssl_pkey_get_private($privateKey, $passphrase)))
         {
-            throw new RuntimeException(openssl_error_string());
+            throw new PrivateKeyError(openssl_error_string());
         }
 
     }
@@ -46,7 +62,6 @@ class RsaSigner implements RsaSignerContract
         if(!$isSigned || !isset($signature)) {
             throw new SignatureCorrupted();
         }
-
 
         return $data . '$' . bin2hex($signature);
     }

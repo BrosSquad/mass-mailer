@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/hashids.php', 'hashids');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/rsa.php', 'rsa');
 
         $this->app->singleton(MassMailerKeyContract::class, MassMailerKey::class);
         $this->app->singleton(RsaSignerContract::class, RsaSigner::class);

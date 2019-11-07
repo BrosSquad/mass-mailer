@@ -8,9 +8,9 @@ use App\Contracts\LoginContract;
 use App\Contracts\Signer\RsaSignerContract;
 use App\Dto\Login;
 use App\Exceptions\IncorrectPassword;
-use App\Exceptions\InvalidRefreshToken;
-use App\Exceptions\RefreshTokenExpired;
-use App\Exceptions\RefreshTokenNotFound;
+use App\Exceptions\RefreshTokens\InvalidRefreshToken;
+use App\Exceptions\RefreshTokens\RefreshTokenExpired;
+use App\Exceptions\RefreshTokens\RefreshTokenNotFound;
 use App\RefreshToken;
 use App\User;
 use Illuminate\Contracts\Config\Repository as Config;
@@ -97,6 +97,7 @@ class LoginService implements LoginContract
      * @throws RefreshTokenExpired
      * @throws ModelNotFoundException
      * @throws RefreshTokenNotFound
+     * @throws InvalidRefreshToken
      * @throws Throwable
      */
     public function refreshToken(?string $refreshToken): array
