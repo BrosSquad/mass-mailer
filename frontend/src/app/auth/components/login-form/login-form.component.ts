@@ -3,7 +3,7 @@ import {
   FormBuilder,
   FormGroup,
   FormControl,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { Login, LoginAction } from '../../../store/actions/auth';
 import { Store } from '@ngrx/store';
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+  styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent implements OnInit, OnDestroy {
   public loginForm: FormGroup;
@@ -25,15 +25,15 @@ export class LoginFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly store: Store<State>,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
     this.loginForm = this.formBuilder.group({
       email: this.formBuilder.control('', [
         Validators.required,
         Validators.email,
-        Validators.maxLength(255)
+        Validators.maxLength(255),
       ]),
-      password: this.formBuilder.control('', [Validators.required])
+      password: this.formBuilder.control('', [Validators.required]),
     });
   }
 
@@ -45,7 +45,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
           if (state !== null) {
             this.error = state.message;
           }
-        })
+        }),
     );
 
     this.subscriptions.push(
@@ -53,16 +53,16 @@ export class LoginFormComponent implements OnInit, OnDestroy {
         .select((state) => state.auth.user)
         .subscribe((user) => {
           if (user !== null) {
-            this.router.navigateByUrl('/dashboard');
+            this.router.navigateByUrl('/');
           }
-        })
+        }),
     );
   }
 
   public login() {
     const login: Login = {
       email: this.email.value,
-      password: this.password.value
+      password: this.password.value,
     };
 
     this.store.dispatch(new LoginAction(login));

@@ -5,7 +5,7 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   UrlTree,
-  Router
+  Router,
 } from '@angular/router';
 import { Observable, of, from } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -16,21 +16,21 @@ import { State } from './store/reducers';
 import { LogoutAction } from './store/actions/auth';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuardGuard implements CanActivate, CanActivateChild {
   private jwtHelper: JwtHelperService = new JwtHelperService();
   public constructor(
     protected readonly router: Router,
     private readonly userService: UserService,
-    private readonly store: Store<State>
+    private readonly store: Store<State>,
   ) {}
 
   protected activate(): Observable<boolean> {
     const tokenJson = localStorage.getItem('token');
 
     if (!tokenJson) {
-      return from(this.router.navigateByUrl('/'));
+      return from(this.router.navigateByUrl('/auth/login'));
     }
 
     const jwt = JSON.parse(tokenJson);
@@ -40,7 +40,7 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
       return of(false);
     }
     const expires: Date | null = this.jwtHelper.getTokenExpirationDate(
-      jwt.token
+      jwt.token,
     );
 
     if (expires === null) {
@@ -53,9 +53,9 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
       return this.userService.me().pipe(
         catchError((_) => {
           this.store.dispatch(new LogoutAction());
-          return from(this.router.navigateByUrl('/'))
+          return from(this.router.navigateByUrl('/auth/login'));
         }),
-        switchMap((_) => of(true))
+        switchMap((_) => of(true)),
       );
     }
 
@@ -64,7 +64,7 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
 
   public canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ):
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>
@@ -75,7 +75,7 @@ export class AuthGuardGuard implements CanActivate, CanActivateChild {
 
   public canActivateChild(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
+    state: RouterStateSnapshot,
   ):
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree>

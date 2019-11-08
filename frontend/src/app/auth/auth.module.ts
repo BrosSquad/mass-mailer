@@ -18,11 +18,11 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: '', component: LoginComponent },
+      { path: 'login', component: LoginComponent },
       { path: 'request-password', component: RequestPasswordComponent },
-      { path: 'change-password', component: ChangePasswordComponent }
-    ]
-  }
+      { path: 'change-password', component: ChangePasswordComponent },
+    ],
+  },
 ];
 
 @NgModule({
@@ -35,7 +35,7 @@ const routes: Routes = [
     FooterComponent,
     NavComponent,
     SocialAuthComponent,
-    LoginFormComponent
+    LoginFormComponent,
   ],
   imports: [
     CommonModule,
@@ -43,6 +43,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgBootstrapFormValidationModule,
     RouterModule.forChild(routes),
-  ]
+  ],
 })
 export class AuthModule {}

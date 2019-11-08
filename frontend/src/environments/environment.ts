@@ -4,5 +4,5 @@ export interface Environment {
 }
 export const environment: Environment = {
   production: false,
-  api: 'http://notifications.com/api'
+  api: 'http://localhost:8000/api', // Laravel development server
 };
