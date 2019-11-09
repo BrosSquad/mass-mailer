@@ -12,6 +12,8 @@ import { reducers, metaReducers, initialState } from './store/reducers';
 import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation';
 import { SharedModule } from './shared/shared.module';
 import { LoginEffect } from './store/effects/auth/login.effect';
+import { BootstrapModule } from './bootstrap.module';
+import { MaterialModule } from './material.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,7 @@ import { LoginEffect } from './store/effects/auth/login.effect';
     SharedModule,
     BrowserAnimationsModule,
     NgxPermissionsModule.forRoot(),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !environment.production }),
     EffectsModule.forRoot([LoginEffect]),
     StoreModule.forRoot(reducers, {
       metaReducers,
@@ -33,6 +35,8 @@ import { LoginEffect } from './store/effects/auth/login.effect';
       },
       initialState
     }),
+    BootstrapModule,
+    MaterialModule,
     NgBootstrapFormValidationModule.forRoot(),
   ],
   providers: [],

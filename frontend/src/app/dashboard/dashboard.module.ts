@@ -8,6 +8,10 @@ import { SidebarUserComponent } from './components/sidebar/sidebar-user/sidebar-
 import { NavComponent } from './components/main/nav/nav.component';
 import { DashboardComponent } from './components/main/dashboard/dashboard.component';
 import { NavTitleService } from './services/nav-title.service';
+import { ApplicationsComponent } from './components/main/applications/applications.component';
+import { NavigationComponent } from './components/sidebar/navigation/navigation.component';
+import { HeaderComponent } from './components/main/header/header.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 const routes: Routes = [
   {
@@ -18,6 +22,10 @@ const routes: Routes = [
         path: '',
         component: DashboardComponent,
         pathMatch: 'full'
+      },      
+      {
+        path: 'applications',
+        component: ApplicationsComponent,
       },
       {
         path: 'user-profile',
@@ -30,15 +38,19 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     DashLayoutComponent,
+    ApplicationsComponent,
     UserProfileComponent,
     SidebarNavComponent,
     SidebarUserComponent,
     NavComponent,
-    DashboardComponent
+    DashboardComponent,
+    NavigationComponent,
+    HeaderComponent
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    BsDropdownModule
   ],
   exports: [RouterModule],
   providers: [NavTitleService]
