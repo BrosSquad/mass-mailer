@@ -1,36 +1,19 @@
-import { ActionReducerMap, Action, ActionReducerFactory } from '@ngrx/store';
+import { Action } from '@ngrx/store';
 import {
   AuthActions,
-  LoginAction,
   LoginErrorAction,
   UnauthorizedAction,
   ForbiddenAction
 } from '../../actions/auth';
-import { Error } from 'src/app/shared/error.model';
 import { SaveUserAction } from '../../actions/auth/login.action';
-
-
-export interface User {
-  name: string;
-  surname: string;
-  email: string;
-  role: string;
-}
-
-export interface AuthErrors {
-  login: Error;
-  unauthorized: Error;
-  forbidden: Error;
-}
+import { User } from 'src/app/shared/models/user.model';
+import { AuthErrors } from 'src/app/shared/models/auth-errors.model';
 
 export interface AuthState {
   user: User;
   error: AuthErrors;
 }
-export function authReducer(
-  state: AuthState,
-  action: Action
-): AuthState {
+export function authReducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
     case AuthActions.SAVE_USER:
       return {
@@ -55,8 +38,14 @@ export function authReducer(
     case AuthActions.LOGOUT:
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      return { user: null, error: null };
-
+      
+      const error = { 
+        forbidden: null, 
+        login: null, 
+        unauthorized: null 
+      };
+      
+      return { user: null, error };
     case AuthActions.UNAUTHORIZED:
       return {
         ...state,

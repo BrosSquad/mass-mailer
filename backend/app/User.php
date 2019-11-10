@@ -19,6 +19,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  * @property string $email
  * @property string $password
  * @property string $remember_token
+ * @property string $background_image
+ * @property string $avatar
  * @property CarbonInterface $email_verified_at
  * @property CarbonInterface $created_at
  * @property CarbonInterface $last_login
@@ -44,6 +46,8 @@ class User extends Authenticatable implements JWTSubject
         'surname',
         'email',
         'password',
+        'avatar',
+        'background_image'
     ];
 
     /**
@@ -103,7 +107,7 @@ class User extends Authenticatable implements JWTSubject
             'name' => $this->name,
             'surname' => $this->surname,
             'email' => $this->email,
-            'role' => $this->getRoles()->first()
+            'role' => $this->getRoles()->first(),
         ];
     }
 

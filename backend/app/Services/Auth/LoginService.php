@@ -13,6 +13,7 @@ use App\Exceptions\RefreshTokens\RefreshTokenExpired;
 use App\Exceptions\RefreshTokens\RefreshTokenNotFound;
 use App\RefreshToken;
 use App\User;
+use App\Http\Resources\User as UserResource;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -66,21 +67,19 @@ class LoginService implements LoginContract
             ->where('email', '=', $login->email)
             ->firstOrFail();
 
-        // TODO: Add check for email verification
-
+            
         if (!$this->hasher->check($login->password, $user->password)) {
             throw new IncorrectPassword();
         }
+            
+        // TODO: Add check for email verification
 
         return DB::transaction(function () use ($user) {
-
-            $rf = new RefreshToken();
-
             $refreshToken = $this->generateNewRefreshToken($rf, $user->id);
 
             $user->refreshTokens()->save($rf);
             return [
-                'user' => $user->getJWTCustomClaims(),
+                'user' => new UserResource($user),
                 'token' => [
                     'token' => $this->auth->fromSubject($user),
                     'refreshToken' => $refreshToken,
@@ -136,9 +135,11 @@ class LoginService implements LoginContract
      * @return string
      * @throws Throwable
      */
-    private function generateNewRefreshToken(RefreshToken $refreshToken, $userId = null, int $length = 100): string
+    private function generateNewRefreshToken(RefreshToken& $refreshToken, $userId = null, int $length = 100): string
     {
-
+        if(!isset($refreshToken)) {
+            $refreshToken = new RefreshToken();
+        }
         $data = Str::random($length);
         $refreshToken->token = $data;
         $refreshToken->expires = now()->addMinutes($this->config->get('jwt.refresh_ttl'));

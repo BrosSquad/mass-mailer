@@ -4,8 +4,8 @@ import { State } from 'src/app/store/reducers';
 import { LogoutAction } from 'src/app/store/actions/auth';
 import { Router } from '@angular/router';
 import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
-import { User } from 'src/app/store/reducers/auth';
 import { Subscription } from 'rxjs';
+import { User } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'app-sidebar-user',

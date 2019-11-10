@@ -1,21 +1,16 @@
 import { Action } from '@ngrx/store';
 import { AuthActions } from './auth.actions';
+import { User } from 'src/app/shared/models';
 
 export interface Login {
   email: string;
   password: string;
 }
 
-export interface SaveUser {
-  name: string;
-  surname: string;
-  email: string;
-  role: string;
-}
 
 export class SaveUserAction implements Action {
   public readonly type: string = AuthActions.SAVE_USER;
-  public constructor(public readonly payload: SaveUser) {}
+  public constructor(public readonly payload: User) {}
 }
 
 

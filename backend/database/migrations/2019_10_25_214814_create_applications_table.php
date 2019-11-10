@@ -34,6 +34,11 @@ class CreateApplicationsTable extends Migration
      */
     public function down()
     {
+        Schema::table('applications', function (Blueprint $table) {
+            $table->dropForeign('applications_user_id_foreign');
+        });
+
+        
         Schema::dropIfExists('applications');
     }
 }

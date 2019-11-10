@@ -6,12 +6,16 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { SidebarNavComponent } from './components/sidebar/sidebar-nav/sidebar-nav.component';
 import { SidebarUserComponent } from './components/sidebar/sidebar-user/sidebar-user.component';
 import { NavComponent } from './components/main/nav/nav.component';
-import { DashboardComponent } from './components/main/dashboard/dashboard.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NavTitleService } from './services/nav-title.service';
 import { ApplicationsComponent } from './components/main/applications/applications.component';
 import { NavigationComponent } from './components/sidebar/navigation/navigation.component';
 import { HeaderComponent } from './components/main/header/header.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { UpdateProfileFormComponent } from './components/user/update-profile-form/update-profile-form.component';
+import { ProfileCardComponent } from './components/user/profile-card/profile-card.component';
+import { FooterComponent } from './components/main/footer/footer.component';
+import { CoreModule } from '../core/core.module';
 
 const routes: Routes = [
   {
@@ -45,12 +49,17 @@ const routes: Routes = [
     NavComponent,
     DashboardComponent,
     NavigationComponent,
-    HeaderComponent
+    HeaderComponent,
+    UpdateProfileFormComponent,
+    ProfileCardComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,
+    CoreModule,
     RouterModule.forChild(routes),
-    BsDropdownModule
+    BsDropdownModule,
+
   ],
   exports: [RouterModule],
   providers: [NavTitleService]
