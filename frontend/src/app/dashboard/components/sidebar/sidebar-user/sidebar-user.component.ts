@@ -40,7 +40,7 @@ export class SidebarUserComponent implements OnInit, OnDestroy {
   public logout(event: Event) {
     event.preventDefault();
     this.store.dispatch(new LogoutAction());
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/auth/login');
   }
 
   public ngOnDestroy(): void {
