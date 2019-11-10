@@ -35,6 +35,7 @@ Route::middleware('auth:api')->prefix('users')->group(static function() {
     Route::middleware(['admin'])
         ->post('/', 'Auth\UserController@create');
     Route::delete('/{id}', 'Auth\UserController@delete');
+    Route::post('/change-image', 'Auth\UserController@changeImage');
 });
 
 Route::middleware(['auth:api'])->prefix('messages')->group(static function () {

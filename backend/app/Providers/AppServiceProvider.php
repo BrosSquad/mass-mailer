@@ -3,14 +3,18 @@
 namespace App\Providers;
 
 use App\Contracts\Auth\PasswordChangeContract;
+use App\Contracts\Image\SaveFileContract;
 use App\Contracts\LoginContract;
 use App\Contracts\MassMailerKeyContract;
 use App\Contracts\Signer\RsaSignerContract;
+use App\Contracts\User\ChangeImageContract;
 use App\Contracts\UserContract;
 use App\Services\Auth\MassMailerKey;
 use App\Services\Auth\PasswordChangeService;
+use App\Services\Image\SaveFile;
 use App\Services\LoginService;
 use App\Services\Signer\RsaSigner;
+use App\Services\User\ChangeImage;
 use App\Services\UserService;
 use App\User;
 use Hashids\Hashids;
@@ -30,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../../config/rsa.php', 'rsa');
 
         $this->app->singleton(MassMailerKeyContract::class, MassMailerKey::class);
+        $this->app->singleton(SaveFileContract::class, SaveFile::class);
+        $this->app->singleton(ChangeImageContract::class, ChangeImage::class);
         $this->app->singleton(RsaSignerContract::class, RsaSigner::class);
         $this->app->singleton(LoginContract::class, LoginService::class);
         $this->app->singleton(UserContract::class, UserService::class);

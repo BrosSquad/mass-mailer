@@ -75,6 +75,7 @@ class LoginService implements LoginContract
         // TODO: Add check for email verification
 
         return DB::transaction(function () use ($user) {
+            $rf = new RefreshToken();
             $refreshToken = $this->generateNewRefreshToken($rf, $user->id);
 
             $user->refreshTokens()->save($rf);
