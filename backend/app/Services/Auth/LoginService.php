@@ -11,9 +11,9 @@ use App\Exceptions\IncorrectPassword;
 use App\Exceptions\RefreshTokens\InvalidRefreshToken;
 use App\Exceptions\RefreshTokens\RefreshTokenExpired;
 use App\Exceptions\RefreshTokens\RefreshTokenNotFound;
+use App\Http\Resources\User as UserResource;
 use App\RefreshToken;
 use App\User;
-use App\Http\Resources\User as UserResource;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -67,11 +67,11 @@ class LoginService implements LoginContract
             ->where('email', '=', $login->email)
             ->firstOrFail();
 
-            
+
         if (!$this->hasher->check($login->password, $user->password)) {
             throw new IncorrectPassword();
         }
-            
+
         // TODO: Add check for email verification
 
         return DB::transaction(function () use ($user) {
@@ -90,6 +90,29 @@ class LoginService implements LoginContract
         });
     }
 
+    /**
+     * @param RefreshToken $refreshToken
+     * @param int $length
+     * @param integer|null $userId
+     * @return string
+     * @throws Throwable
+     */
+    private function generateNewRefreshToken(RefreshToken & $refreshToken, $userId = null, int $length = 100): string
+    {
+        if (!isset($refreshToken)) {
+            $refreshToken = new RefreshToken();
+        }
+        $data = Str::random($length);
+        $refreshToken->token = $data;
+        $refreshToken->expires = now()->addMinutes($this->config->get('jwt.refresh_ttl'));
+
+        if (!$refreshToken->exists) {
+            $refreshToken->user_id = $userId;
+        }
+
+        $refreshToken->saveOrFail();
+        return $this->rsaSigner->sign($data);
+    }
 
     /**
      * @param string| null $refreshToken
@@ -106,8 +129,7 @@ class LoginService implements LoginContract
             throw new RefreshTokenNotFound();
         }
 
-        if(($data = $this->rsaSigner->verify($refreshToken)) === null)
-        {
+        if (($data = $this->rsaSigner->verify($refreshToken)) === null) {
             throw new InvalidRefreshToken();
         }
 
@@ -127,29 +149,5 @@ class LoginService implements LoginContract
             'refreshToken' => $this->generateNewRefreshToken($rf),
             'authType' => 'Bearer'
         ];
-    }
-
-    /**
-     * @param RefreshToken $refreshToken
-     * @param int $length
-     * @param integer|null $userId
-     * @return string
-     * @throws Throwable
-     */
-    private function generateNewRefreshToken(RefreshToken& $refreshToken, $userId = null, int $length = 100): string
-    {
-        if(!isset($refreshToken)) {
-            $refreshToken = new RefreshToken();
-        }
-        $data = Str::random($length);
-        $refreshToken->token = $data;
-        $refreshToken->expires = now()->addMinutes($this->config->get('jwt.refresh_ttl'));
-
-        if (!$refreshToken->exists) {
-            $refreshToken->user_id = $userId;
-        }
-
-        $refreshToken->saveOrFail();
-        return $this->rsaSigner->sign($data);
     }
 }

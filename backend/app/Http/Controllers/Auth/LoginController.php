@@ -28,8 +28,7 @@ class LoginController extends Controller
             return response()->json(['message' => $e->getMessage()], 401);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User is not found'], 401);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }

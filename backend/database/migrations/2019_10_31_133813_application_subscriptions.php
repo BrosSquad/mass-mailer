@@ -13,7 +13,7 @@ class ApplicationSubscriptions extends Migration
      */
     public function up()
     {
-        Schema::create('application_subscriptions', static function(Blueprint $table) {
+        Schema::create('application_subscriptions', static function (Blueprint $table) {
             $table->unsignedInteger('application_id');
             $table->unsignedInteger('subscription_id');
             $table->primary(['application_id', 'subscription_id']);

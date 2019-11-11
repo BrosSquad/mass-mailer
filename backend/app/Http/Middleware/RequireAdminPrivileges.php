@@ -23,11 +23,11 @@ class RequireAdminPrivileges
         /** @var User $user */
         $user = $request->user();
 
-        if($user === null) {
+        if ($user === null) {
             throw new AuthenticationException('You are not logged in');
         }
 
-        if($user->getRoles()->first()->name !== 'admin') {
+        if ($user->getRoles()->first()->name !== 'admin') {
             throw new AccessDeniedHttpException();
         }
 

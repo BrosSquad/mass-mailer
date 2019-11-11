@@ -11,5 +11,6 @@ interface MassMailerKeyContract
      * @return array ['key' => string, 'public' => string, 'signedKey' => string]
      */
     public function generateKey(string $appName): array;
+
     public function verifyKey(string $key);
 }
