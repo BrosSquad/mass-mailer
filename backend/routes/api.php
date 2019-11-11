@@ -31,7 +31,7 @@ Route::prefix('auth')->group(static function () {
 Route::middleware(['auth:api'])->prefix('application')->group(static function () {
 });
 
-Route::middleware('auth:api')->prefix('users')->group(static function() {
+Route::middleware('auth:api')->prefix('users')->group(static function () {
     Route::middleware(['admin'])
         ->post('/', 'Auth\UserController@create');
     Route::delete('/{id}', 'Auth\UserController@delete');

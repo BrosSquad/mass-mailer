@@ -4,10 +4,10 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Hashids\HashidsInterface;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -74,15 +74,23 @@ class User extends Authenticatable implements JWTSubject
         'last_login' => 'datetime',
     ];
 
-    public function applications(): HasMany {
+    public static function setHashids(HashidsInterface $hashids)
+    {
+        static::$hashids = $hashids;
+    }
+
+    public function applications(): HasMany
+    {
         return $this->hasMany(Application::class, 'user_id', 'id');
     }
 
-    public function messages(): HasMany {
+    public function messages(): HasMany
+    {
         return $this->hasMany(Message::class, 'user_id', 'id');
     }
 
-    public function refreshTokens(): HasMany {
+    public function refreshTokens(): HasMany
+    {
         return $this->hasMany(RefreshToken::class, 'user_id', 'id');
     }
 
@@ -111,11 +119,8 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    public function keys(): HasMany {
+    public function keys(): HasMany
+    {
         return $this->hasMany(AppKey::class, 'user_id', 'id');
-    }
-
-    public static function setHashids(HashidsInterface $hashids) {
-        static::$hashids = $hashids;
     }
 }

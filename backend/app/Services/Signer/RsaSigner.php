@@ -37,14 +37,12 @@ class RsaSigner implements RsaSignerContract
         $passphrase = $config->get('rsa.passphrase');
 
 
-        if(!($this->publicKey = openssl_pkey_get_public($publicKey)))
-        {
+        if (!($this->publicKey = openssl_pkey_get_public($publicKey))) {
             throw new PublicKeyError(openssl_error_string());
         }
 
 
-        if(!($this->privateKey = openssl_pkey_get_private($privateKey, $passphrase)))
-        {
+        if (!($this->privateKey = openssl_pkey_get_private($privateKey, $passphrase))) {
             throw new PrivateKeyError(openssl_error_string());
         }
 
@@ -56,10 +54,11 @@ class RsaSigner implements RsaSignerContract
      * @return string
      * @throws SignatureCorrupted
      */
-    public function sign(string $data, $algorithm = OPENSSL_ALGO_SHA512): string {
+    public function sign(string $data, $algorithm = OPENSSL_ALGO_SHA512): string
+    {
         $isSigned = openssl_sign($data, $signature, $this->privateKey, $algorithm);
 
-        if(!$isSigned || !isset($signature)) {
+        if (!$isSigned || !isset($signature)) {
             throw new SignatureCorrupted();
         }
 
@@ -77,7 +76,7 @@ class RsaSigner implements RsaSignerContract
     {
         $split = explode('$', $token);
 
-        if(count($split) !== 2) {
+        if (count($split) !== 2) {
             throw new TokenBadlyFormatted();
         }
 
@@ -85,13 +84,11 @@ class RsaSigner implements RsaSignerContract
 
         $isValid = openssl_verify($data, hex2bin($signature), $this->publicKey, $algorithm);
 
-        if($isValid === -1)
-        {
+        if ($isValid === -1) {
             throw new TokenSignatureInvalid();
         }
 
-        if($isValid === 0)
-        {
+        if ($isValid === 0) {
             return null;
         }
 

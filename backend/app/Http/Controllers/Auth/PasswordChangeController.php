@@ -6,7 +6,6 @@ use App\Contracts\Auth\PasswordChangeContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\RequestNewPasswordRequest;
-use Illuminate\Http\Request;
 
 class PasswordChangeController extends Controller
 {

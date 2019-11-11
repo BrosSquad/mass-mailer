@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use Silber\Bouncer\Bouncer;
-use Silber\Bouncer\Database\Role;
 
 class RolesSeeder extends Seeder
 {
@@ -26,13 +25,13 @@ class RolesSeeder extends Seeder
     {
 
         $this->bouncer->role()->firstOrCreate([
-           'name' => 'user',
-           'title' => 'User'
+            'name' => 'user',
+            'title' => 'User'
         ]);
 
         $this->bouncer->role()->firstOrCreate([
-           'name' => 'admin',
-           'title' => 'administrator'
+            'name' => 'admin',
+            'title' => 'administrator'
         ]);
     }
 }

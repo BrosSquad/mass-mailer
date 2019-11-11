@@ -35,19 +35,23 @@ class Message extends Model
         'application_id'
     ];
 
-    public function criteria(): HasMany {
+    public function criteria(): HasMany
+    {
         return $this->hasMany(Criteria::class, 'message_id', 'id');
     }
 
-    public function notified(): HasMany {
+    public function notified(): HasMany
+    {
         return $this->hasMany(Notify::class, 'message_id', 'id');
     }
 
-    public function application(): BelongsTo {
+    public function application(): BelongsTo
+    {
         return $this->belongsTo(Application::class, 'application_id', 'id');
     }
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

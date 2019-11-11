@@ -10,18 +10,25 @@ class User extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      */
     public function toArray($request): array
     {
+        $backgroundImage = $this->resource->background_image ?
+            asset('storage/images/backgrounds/' . $this->resource->background_image) :
+            null;
+        $avatar = $this->resource->avatar ?
+            asset('storage/images/avatars/' . $this->resource->avatar) :
+            null;
+
         return [
             'name' => $this->resource->name,
             'surname' => $this->resource->surname,
             'email' => $this->resource->email,
             'role' => $this->resource->getRoles()->first(),
-            'avatar' => $this->resource->avatar,
-            'backgroundImage' => $this->resource->background_image,
+            'avatar' => $avatar,
+            'backgroundImage' => $backgroundImage,
             'bio' => $this->resource->bio
         ];
     }

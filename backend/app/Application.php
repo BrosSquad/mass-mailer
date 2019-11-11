@@ -5,9 +5,9 @@ namespace App;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Application
@@ -54,11 +54,13 @@ class Application extends Model
         return $this->hasMany(Notify::class, 'application_id', 'id');
     }
 
-    public function appKey(): HasMany {
+    public function appKey(): HasMany
+    {
         return $this->hasMany(AppKey::class, 'application_id', 'id');
     }
 
-    public function subscriptions(): BelongsToMany {
+    public function subscriptions(): BelongsToMany
+    {
         return $this->belongsToMany(Subscription::class, 'application_subscriptions');
     }
 }
