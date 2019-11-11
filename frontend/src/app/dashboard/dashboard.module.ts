@@ -16,6 +16,8 @@ import { UpdateProfileFormComponent } from './components/user/update-profile-for
 import { ProfileCardComponent } from './components/user/profile-card/profile-card.component';
 import { FooterComponent } from './components/main/footer/footer.component';
 import { CoreModule } from '../core/core.module';
+import { UserCardAvatarComponent } from './components/user/user-card-avatar/user-card-avatar.component';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -52,14 +54,15 @@ const routes: Routes = [
     HeaderComponent,
     UpdateProfileFormComponent,
     ProfileCardComponent,
-    FooterComponent
+    FooterComponent,
+    UserCardAvatarComponent,
   ],
   imports: [
     CommonModule,
     CoreModule,
     RouterModule.forChild(routes),
     BsDropdownModule,
-
+    SharedModule, 
   ],
   exports: [RouterModule],
   providers: [NavTitleService]

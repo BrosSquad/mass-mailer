@@ -1,0 +1,19 @@
+<div class="row justify-content-center">
+  <div class="col-lg-3 order-lg-2">
+    <div class="card-profile-image">
+      <input
+        type="file"
+        class="avatar-file-upload"
+        #avatarFileUplaod
+        (change)="changeAvatar($event)"
+      />
+      <a href="#" (click)="openFileDialog($event)">
+        <img
+          [src]="user.avatar ? user.avatar : 'assets/img/theme/user.jpg'"
+          class="rounded-circle"
+          [alt]="user.name + ' ' + user.surname"
+        />
+      </a>
+    </div>
+  </div>
+</div>

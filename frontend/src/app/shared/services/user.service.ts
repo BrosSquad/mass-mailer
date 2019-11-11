@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ChangeImageModel } from '../models/change-image.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,15 @@ export class UserService {
     return this.httpClient.get('/me');
   }
 
-  public changeAvatar() {
+  public changeImage(model: ChangeImageModel): Observable<{image: string}> {
+    const formData = new FormData();
+    console.log(model);
+    formData.append('type', model.type);
+    formData.append('avatar', model.file);
+
+
+    formData.forEach(item => console.log(item));
+    return this.httpClient.post<{image: string}>('/users/change-image', formData);
 
   }
 

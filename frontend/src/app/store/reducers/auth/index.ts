@@ -1,69 +1,33 @@
 import { Action } from '@ngrx/store';
+
+import { AuthActions } from '../../actions/auth/auth.actions';
 import {
-  AuthActions,
   LoginErrorAction,
   UnauthorizedAction,
-  ForbiddenAction
+  ForbiddenAction,
+  SaveImageAction
 } from '../../actions/auth';
 import { SaveUserAction } from '../../actions/auth/login.action';
-import { User } from 'src/app/shared/models/user.model';
-import { AuthErrors } from 'src/app/shared/models/auth-errors.model';
 
-export interface AuthState {
-  user: User;
-  error: AuthErrors;
-}
+import { logout, saveUser } from './login.reducer';
+import { AuthState } from './auth.state';
+import { forbidden, unauthorized, loginError } from './errors.reducer';
+import { changeImage } from './change-image.reducer';
+
 export function authReducer(state: AuthState, action: Action): AuthState {
   switch (action.type) {
+    case AuthActions.SAVE_IMAGE:
+      return changeImage(state, action as SaveImageAction);
     case AuthActions.SAVE_USER:
-      return {
-        ...state,
-        error: {
-          forbidden: null,
-          unauthorized: null,
-          login: null
-        },
-        user: (action as SaveUserAction).payload
-      };
+      return saveUser(state, action as SaveUserAction);
     case AuthActions.LOGIN_ERROR:
-      return {
-        user: null,
-        error: {
-          forbidden: null,
-          unauthorized: null,
-          login: (action as LoginErrorAction).payload
-        }
-      };
-
+      return loginError(action as LoginErrorAction);
     case AuthActions.LOGOUT:
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      const error = { 
-        forbidden: null, 
-        login: null, 
-        unauthorized: null 
-      };
-      
-      return { user: null, error };
+      return logout();
     case AuthActions.UNAUTHORIZED:
-      return {
-        ...state,
-        error: {
-          unauthorized: (action as UnauthorizedAction).payload,
-          login: null,
-          forbidden: null
-        }
-      };
+      return unauthorized(state, action as UnauthorizedAction);
     case AuthActions.FORBIDDEN:
-      return {
-        ...state,
-        error: {
-          forbidden: (action as ForbiddenAction).payload,
-          login: null,
-          unauthorized: null
-        }
-      };
+      return forbidden(state, action as ForbiddenAction);
     default:
       return state;
   }

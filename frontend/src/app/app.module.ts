@@ -14,6 +14,7 @@ import { SharedModule } from './shared/shared.module';
 import { LoginEffect } from './store/effects/auth/login.effect';
 import { BootstrapModule } from './bootstrap.module';
 import { MaterialModule } from './material.module';
+import { ChangeImageEffect } from './store/effects/auth/change-image.effect';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,6 @@ import { MaterialModule } from './material.module';
     BrowserAnimationsModule,
     NgxPermissionsModule.forRoot(),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !environment.production }),
-    EffectsModule.forRoot([LoginEffect]),
     StoreModule.forRoot(reducers, {
       metaReducers,
       runtimeChecks: {
@@ -35,6 +35,7 @@ import { MaterialModule } from './material.module';
       },
       initialState
     }),
+    EffectsModule.forRoot([LoginEffect, ChangeImageEffect]),
     BootstrapModule,
     MaterialModule,
     NgBootstrapFormValidationModule.forRoot(),
