@@ -47,6 +47,10 @@ class CreateMessagesTable extends Migration
      */
     public function down(): void
     {
+        Schema::table('messages', function (Blueprint $table) {
+            $table->dropForeign('messages_application_id_foreign');
+            $table->dropForeign('messages_user_id_foreign');
+        });
         Schema::dropIfExists('messages');
     }
 }

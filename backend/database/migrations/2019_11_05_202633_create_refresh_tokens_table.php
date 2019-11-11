@@ -35,6 +35,9 @@ class CreateRefreshTokensTable extends Migration
      */
     public function down(): void
     {
+        Schema::table('refresh_tokens', function (Blueprint $table) {
+            $table->dropForeign('refresh_tokens_user_id_foreign');
+        });
         Schema::dropIfExists('refresh_tokens');
     }
 }

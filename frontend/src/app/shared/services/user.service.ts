@@ -6,9 +6,21 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserService {
 
-  constructor(private readonly httpClient: HttpClient) { }
+  public constructor(private readonly httpClient: HttpClient) { }
 
   public me() {
     return this.httpClient.get('/me');
+  }
+
+  public changeAvatar() {
+
+  }
+
+  public updateProfile() {
+    
+  }
+
+  public changeBackgrounImage() {
+
   }
 }

@@ -3,7 +3,7 @@ import { Login } from 'src/app/store/actions/auth';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Error } from '../../error.model';
+import { Error } from '../../models/error.model';
 
 export interface LoginSuccess {
   user: { name: string; surname: string; email: string; role: string };

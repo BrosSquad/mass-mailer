@@ -19,7 +19,10 @@ class User extends JsonResource
             'name' => $this->resource->name,
             'surname' => $this->resource->surname,
             'email' => $this->resource->email,
-            'role' => $this->resource->role,
+            'role' => $this->resource->getRoles()->first(),
+            'avatar' => $this->resource->avatar,
+            'backgroundImage' => $this->resource->background_image,
+            'bio' => $this->resource->bio
         ];
     }
 }

@@ -2,5 +2,10 @@
   <app-sidebar-nav class="w-100"></app-sidebar-nav>
 </div>
 <div class="main-content">
-  <router-outlet></router-outlet>
+  <app-nav></app-nav>
+  <app-header [isUserProfile]="isUserProfile"></app-header>
+  <div class="container-fluid">
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
+    <app-footer></app-footer>
+  </div>
 </div>

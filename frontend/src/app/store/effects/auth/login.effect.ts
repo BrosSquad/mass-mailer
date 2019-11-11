@@ -12,7 +12,7 @@ import {
 } from '../../actions/auth';
 import { switchMap, exhaustMap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
-import { Error } from 'src/app/shared/error.model';
+import { Error } from 'src/app/shared/models/error.model';
 import { Action } from '@ngrx/store';
 
 @Injectable()
