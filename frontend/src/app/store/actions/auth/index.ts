@@ -4,6 +4,7 @@ import { LoginErrorAction } from './login-error.action';
 import { Login, SaveUserAction, LoginAction } from './login.action';
 import { LogoutAction } from './logout.action';
 import { UnauthorizedAction } from './unauthorized.action';
+import { SaveImageAction, ChangeImageAction } from './change-image.actions';
 
 export {
   AuthActions,
@@ -13,5 +14,7 @@ export {
   LogoutAction,
   Login,
   SaveUserAction,
-  LoginAction
+  LoginAction,
+  SaveImageAction,
+  ChangeImageAction
 };

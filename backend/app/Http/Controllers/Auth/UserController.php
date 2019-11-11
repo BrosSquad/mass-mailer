@@ -20,7 +20,8 @@ class UserController extends Controller
     }
 
     public function create()
-    { }
+    {
+    }
 
     public function changeImage(ChangeImageRequest $request)
     {
@@ -40,10 +41,11 @@ class UserController extends Controller
             $image = $this->changeImageContract->changeImage($type, $request->user(), $file);
             return ok(['image' => $image]);
         } catch (Exception $e) {
-            return internalServerError(['messsage' => $e->getMessage()]);
+            return internalServerError(['message' => $e->getMessage()]);
         }
     }
 
     public function delete(int $id)
-    { }
+    {
+    }
 }

@@ -24,7 +24,8 @@ class Subscription extends Model
         'email',
     ];
 
-    public function applications(): BelongsToMany {
+    public function applications(): BelongsToMany
+    {
         return $this->belongsToMany(Application::class, 'application_subscriptions');
     }
 }

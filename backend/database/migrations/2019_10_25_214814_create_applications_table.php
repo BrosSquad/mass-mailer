@@ -38,7 +38,7 @@ class CreateApplicationsTable extends Migration
             $table->dropForeign('applications_user_id_foreign');
         });
 
-        
+
         Schema::dropIfExists('applications');
     }
 }

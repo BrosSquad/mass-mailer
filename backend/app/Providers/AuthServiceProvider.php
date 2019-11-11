@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+use App\Contracts\Auth\PasswordChangeContract;
+use App\Contracts\LoginContract;
+use App\Contracts\UserContract;
+use App\Services\Auth\PasswordChangeService;
+use App\Services\LoginService;
+use App\Services\UserService;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,8 +18,15 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
     ];
+
+    public function register()
+    {
+        parent::register();
+        $this->app->singleton(LoginContract::class, LoginService::class);
+        $this->app->singleton(UserContract::class, UserService::class);
+        $this->app->singleton(PasswordChangeContract::class, PasswordChangeService::class);
+    }
 
     /**
      * Register any authentication / authorization services.

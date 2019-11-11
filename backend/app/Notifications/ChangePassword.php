@@ -17,7 +17,6 @@ class ChangePassword extends Notification implements ShouldQueue
     private $changePassword;
 
 
-
     /**
      * Create a new notification instance.
      *
@@ -33,7 +32,7 @@ class ChangePassword extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -44,7 +43,7 @@ class ChangePassword extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return MailMessage
      */
     public function toMail($notifiable): MailMessage
@@ -58,15 +57,15 @@ class ChangePassword extends Notification implements ShouldQueue
         $this->manager->encode($payload)->get();
 //        $this->auth->fromUser()
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return array
      */
     public function toArray($notifiable)

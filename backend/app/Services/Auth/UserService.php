@@ -4,17 +4,16 @@
 namespace App\Services;
 
 
-use App\Notifications\RequestNewPassword;
-use App\User;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Str;
 use App\Contracts\UserContract;
-use Illuminate\Support\Facades\DB;
 use App\Dto\ChangePassword as ChangePasswordDto;
 use App\Dto\CreateUser;
 use App\Notifications\ChangePassword;
 use App\Notifications\UserRegistered;
+use App\User;
 use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 use Tymon\JWTAuth\Manager;
 
@@ -59,7 +58,7 @@ class UserService implements UserContract
     public function deleteUser(int $id): bool
     {
         return DB::transaction(static function () use ($id) {
-           return User::destroy($id) > 0;
+            return User::destroy($id) > 0;
         });
     }
 

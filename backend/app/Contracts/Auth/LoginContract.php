@@ -12,7 +12,7 @@ use App\Exceptions\RefreshTokens\RefreshTokenNotFound;
 use App\Exceptions\RsaSigning\SignatureCorrupted;
 use App\Exceptions\RsaSigning\TokenBadlyFormatted;
 use App\Exceptions\RsaSigning\TokenSignatureInvalid;
-use \Exception;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Throwable;
 

@@ -16,6 +16,8 @@ interface UserContract
      * @throws Throwable
      */
     public function createUser(CreateUser $createUser): User;
+
     public function deleteUser(int $id): bool;
+
     public function updateUserAccount(User $user);
 }

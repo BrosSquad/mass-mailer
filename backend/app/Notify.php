@@ -29,15 +29,18 @@ class Notify extends Model
         'success'
     ];
 
-    public function message(): BelongsTo {
+    public function message(): BelongsTo
+    {
         return $this->belongsTo(Message::class, 'message_id', 'id');
     }
 
-    public function application(): BelongsTo {
+    public function application(): BelongsTo
+    {
         return $this->belongsTo(Application::class, 'application_id', 'id');
     }
 
-    public function sendGridKey(): BelongsTo {
+    public function sendGridKey(): BelongsTo
+    {
         return $this->belongsTo(SendGridKey::class, 'sendgrid_id', 'id');
     }
 }

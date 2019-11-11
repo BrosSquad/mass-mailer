@@ -27,7 +27,8 @@ class Criteria extends Model
         'value'
     ];
 
-    public function message(): BelongsTo {
+    public function message(): BelongsTo
+    {
         return $this->belongsTo(Message::class, 'message_id', 'id');
     }
 }
