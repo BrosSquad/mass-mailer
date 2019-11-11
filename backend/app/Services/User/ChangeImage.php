@@ -66,8 +66,8 @@ class ChangeImage implements ChangeImageContract
                 if (!$saved) {
                     throw new Exception('Error while saving');
                 }
-
-                $storage->delete($toDelete);
+                
+                $storage->delete($path. '/' . $toDelete);
                 return asset('storage/' . $path . '/' . $fileName);
             }
         );
