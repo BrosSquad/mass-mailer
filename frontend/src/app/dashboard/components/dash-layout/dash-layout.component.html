@@ -3,8 +3,9 @@
 </div>
 <div class="main-content">
   <app-nav></app-nav>
-  <app-header></app-header>
+  <app-header [isUserProfile]="isUserProfile"></app-header>
   <div class="container-fluid">
-    <router-outlet></router-outlet>
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
+    <app-footer></app-footer>
   </div>
 </div>

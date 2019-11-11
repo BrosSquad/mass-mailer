@@ -35,6 +35,9 @@ class CreateSendGridKeysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('send_grid_keys');
+        Schema::table('sendgrid_keys', function (Blueprint $table) {
+            $table->dropForeign('sendgrid_keys_application_id_foreign');
+        });
+        Schema::dropIfExists('sendgrid_keys');
     }
 }

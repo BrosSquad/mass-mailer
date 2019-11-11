@@ -39,6 +39,10 @@ class ApplicationSubscriptions extends Migration
      */
     public function down(): void
     {
+        Schema::table('application_subscriptions', function (Blueprint $table) {
+            $table->dropForeign('application_subscriptions_subscription_id_foreign');
+            $table->dropForeign('application_subscriptions_application_id_foreign');
+        });
         Schema::dropIfExists('application_subscriptions');
     }
 }

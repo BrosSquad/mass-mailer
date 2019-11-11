@@ -50,6 +50,12 @@ class CreateNotifiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('notifies');
+        Schema::table('notified', function (Blueprint $table) {
+            $table->dropForeign('notified_application_id_foreign');
+            $table->dropForeign('notified_sendgrid_id_foreign');
+            $table->dropForeign('notified_message_id_foreign');
+        });
+
+        Schema::dropIfExists('notified');
     }
 }

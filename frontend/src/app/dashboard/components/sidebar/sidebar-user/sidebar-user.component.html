@@ -1,7 +1,7 @@
 <!-- User -->
 <ul [ngClass]="classes">
-    <!-- Notifications -->
-    <!-- <li class="nav-item dropdown">
+  <!-- Notifications -->
+  <!-- <li class="nav-item dropdown">
         <a class="nav-link nav-link-icon" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
             aria-expanded="false">
             <i class="ni ni-bell-55"></i>
@@ -14,25 +14,31 @@
         </div>
     </li> -->
 
-    <li *ngIf="user" class="nav-item position-relative" dropdown>
-        <a class="nav-link" dropdownToggle role="button">
-            <div class="media align-items-center">
-                <span class="avatar avatar-sm rounded-circle">
-                    <!-- User avatar -->
-                    <img alt="Image placeholder" src="./assets/img/theme/team-1-800x800.jpg">
-                </span>
-                <span class="ml-4 d-none d-sm-inline-block text-white">{{user.name}} {{ user.surname }}</span>
-            </div>
-        </a>
-        <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right" *dropdownMenu role="menu">
-            <a [routerLink]="'/user-profile'" class="dropdown-item">
-                <i class="ni ni-single-02"></i>
-                <span>My profile</span>
-            </a>
-            <a href="#!" (click)="logout($event)" class="dropdown-item">
-                <i class="ni ni-user-run"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </li>
+  <li *ngIf="user" class="nav-item position-relative" dropdown>
+    <a class="nav-link" dropdownToggle role="button">
+      <div class="media align-items-center">
+        <span class="avatar avatar-sm rounded-circle">
+          <!-- User avatar -->
+          <app-user-avatar [avatar]="user.avatar" [alt]="user.name + ' ' + user.surname"></app-user-avatar>
+        </span>
+        <span class="ml-4 d-none d-sm-inline-block text-white"
+          >{{ user.name }} {{ user.surname }}</span
+        >
+      </div>
+    </a>
+    <div
+      class="dropdown-menu dropdown-menu-arrow dropdown-menu-right"
+      *dropdownMenu
+      role="menu"
+    >
+      <a [routerLink]="'/user-profile'" class="dropdown-item">
+        <i class="ni ni-single-02"></i>
+        <span>My profile</span>
+      </a>
+      <a href="#!" (click)="logout($event)" class="dropdown-item">
+        <i class="ni ni-user-run"></i>
+        <span>Logout</span>
+      </a>
+    </div>
+  </li>
 </ul>

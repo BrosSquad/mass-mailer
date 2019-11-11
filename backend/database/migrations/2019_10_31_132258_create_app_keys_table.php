@@ -42,6 +42,10 @@ class CreateAppKeysTable extends Migration
      */
     public function down(): void
     {
+        Schema::table('app_keys', function (Blueprint $table) {
+            $table->dropForeign('app_keys_application_id_foreign');
+            $table->dropForeign('app_keys_user_id_foreign');
+        });
         Schema::dropIfExists('app_keys');
     }
 }
