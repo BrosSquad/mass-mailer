@@ -19,13 +19,13 @@ Route::middleware(['auth:api'])->get('/me', static function (Request $request) {
     return ok(new User($request->user()));
 });
 
-Route::post('/request-password-change', 'Auth\PasswordChangeController@requestNewPassword');
+Route::post('/request-password-change', 'AuthApi\PasswordChangeController@requestNewPassword');
 Route::middleware(['auth:api'])
-    ->post('/change-password', 'Auth\PasswordChangeController@changePassword');
+    ->post('/change-password', 'AuthApi\PasswordChangeController@changePassword');
 
 
 Route::prefix('auth')->group(static function () {
-    Route::post('login', 'Auth\LoginController@login');
+    Route::post('login', 'AuthApi\LoginController@login');
 });
 
 Route::middleware(['auth:api'])->prefix('application')->group(static function () {
@@ -33,9 +33,9 @@ Route::middleware(['auth:api'])->prefix('application')->group(static function ()
 
 Route::middleware('auth:api')->prefix('users')->group(static function () {
     Route::middleware(['admin'])
-        ->post('/', 'Auth\UserController@create');
-    Route::delete('/{id}', 'Auth\UserController@delete');
-    Route::post('/change-image', 'Auth\UserController@changeImage');
+        ->post('/', 'AuthApi\UserController@create');
+    Route::delete('/{id}', 'AuthApi\UserController@delete');
+    Route::post('/change-image', 'AuthApi\UserController@changeImage');
 });
 
 Route::middleware(['auth:api'])->prefix('messages')->group(static function () {

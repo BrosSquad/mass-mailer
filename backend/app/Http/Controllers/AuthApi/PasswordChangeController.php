@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\AuthApi;
 
 use App\Contracts\Auth\PasswordChangeContract;
 use App\Http\Controllers\Controller;
