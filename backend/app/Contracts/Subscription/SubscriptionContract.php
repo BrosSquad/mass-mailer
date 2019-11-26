@@ -25,8 +25,9 @@ interface SubscriptionContract
     public function addSubscriber(CreateSubscriber $createSubscriber, int $appId): Subscription;
 
     /**
+     * @param int $applicationId
      * @param int $id
      * @return bool
      */
-    public function unsubscribe(int $id): bool;
+    public function unsubscribe(int $applicationId, int $id): bool;
 }

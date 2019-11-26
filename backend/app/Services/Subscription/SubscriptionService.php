@@ -8,8 +8,6 @@ use App\Application;
 use App\Contracts\Subscription\SubscriptionContract;
 use App\Dto\CreateSubscriber;
 use App\Subscription;
-use Illuminate\Support\Facades\DB;
-use RuntimeException;
 use Throwable;
 
 class SubscriptionService implements SubscriptionContract
@@ -48,19 +46,14 @@ class SubscriptionService implements SubscriptionContract
     }
 
     /**
+     * @param int $applicationId
      * @param int $id
      * @return bool
      */
-    public function unsubscribe(int $id): bool
+    public function unsubscribe(int $applicationId, int $id): bool
     {
-        DB::beginTransaction();
-        if (Subscription::destroy($id) === 0) {
-            DB::rollBack();
-            throw new RuntimeException('Cannot delete subscriber');
-        }
-
-        DB::commit();
-
-        return true;
+        /** @var Application $application */
+        $application = Application::with(['subscriptions'])->findOrFail($applicationId);
+        return $application->subscriptions()->detach($id) !== 0;
     }
 }

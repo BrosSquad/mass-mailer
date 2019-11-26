@@ -42,8 +42,18 @@ class SendEmailToUser implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
-
+        $html = str_replace([
+            '[unsubscribe]',
+            '[name]',
+            '[surname]',
+            '[email]'
+        ], [
+            '',
+            '',
+            '',
+            '',
+        ], $this->message->parsed);
     }
 }

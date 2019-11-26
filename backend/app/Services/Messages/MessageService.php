@@ -32,7 +32,7 @@ class MessageService implements MessageContract
      */
     public function createNewMessage(CreateMessage $createMessage, int $applicationId, User $user): Message
     {
-        $parsed = null;
+        $parsed = $createMessage->text;
 
 
         if($createMessage->isMjml)
