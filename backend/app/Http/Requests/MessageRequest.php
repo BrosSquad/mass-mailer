@@ -25,12 +25,12 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'applicationId' => 'required',
             'text' => 'required',
             'fromEmail' => 'required|email',
             'fromName' => 'required',
             'replyTo' => 'required|email',
             'subject' => 'required',
+            'isMjml' => 'required|boolean'
         ];
     }
 }
