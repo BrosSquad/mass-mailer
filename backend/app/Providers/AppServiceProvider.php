@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ApplicationContract::class, ApplicationService::class);
         $this->app->singleton(SubscriptionContract::class, SubscriptionService::class);
         $this->app->singleton(MessageContract::class, MessageService::class);
+
     }
 
     /**

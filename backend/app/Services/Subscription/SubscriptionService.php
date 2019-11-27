@@ -26,21 +26,38 @@ class SubscriptionService implements SubscriptionContract
      * @return Subscription
      * @throws Throwable
      */
-    public function addSubscriber(CreateSubscriber $createSubscriber, int $appId): Subscription
+    public function addSubscriber(CreateSubscriber $createSubscriber, $appId): Subscription
     {
+        $application = null;
         /** @var Application $application */
-        $application = Application::query()->findOrFail($appId);
-
+        if(is_int($appId)) {
+            $application = Application::query()
+                ->findOrFail($appId);
+        } else if($appId instanceof Application) {
+            $application = $appId;
+        } else {
+            throw new \RuntimeException('Application is not found');
+        }
         /** @var Subscription $subscription */
-        $subscription = Subscription::query()->where(['email', '=', $createSubscriber->email])->firstOrCreate([
-            'name' => $createSubscriber->name,
-            'surname' => $createSubscriber->surname,
-            'email' => $createSubscriber->email,
-        ]);
 
-        $appSub = $application->subscriptions()->findOrNew($subscription->id);
+        $subscription = Subscription::query()
+            ->where('email' ,'=', $createSubscriber->email)
+            ->first();
 
-        $appSub->saveOrFail();
+        if($subscription === null) {
+            $subscription = new Subscription([
+                'email' => $createSubscriber->email,
+                'name' => $createSubscriber->name,
+                'surname' => $createSubscriber->surname,
+            ]);
+            $subscription->saveOrFail();
+        }
+
+        $appSub = $application->subscriptions()->find($subscription->id);
+
+        if(!$appSub) {
+            $application->subscriptions()->attach($subscription->id);
+        }
 
         return $subscription;
     }

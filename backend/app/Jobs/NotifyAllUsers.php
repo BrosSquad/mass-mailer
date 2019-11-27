@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use RuntimeException;
+use SendGrid;
 
 class NotifyAllUsers implements ShouldQueue
 {
@@ -52,11 +53,12 @@ class NotifyAllUsers implements ShouldQueue
     public function handle(): void
     {
         $sendAt = CarbonImmutable::now()->addSeconds(30);
-
-        $this->application->subscriptions()->chunk(500, function ($subs) use (&$sendAt) {
+        $sendgrid = new SendGrid($this->application->sendGridKey->key);
+        $this->application->subscriptions()->chunk(500, function ($subs) use (&$sendAt, $sendgrid) {
            foreach($subs as $sub) {
-                SendEmailToUser::dispatch($sub, $this->user, $this->application, $this->message)
+                SendEmailToUser::dispatch($sub, $this->user, $this->application, $this->message, $sendgrid)
                     ->onConnection('database')
+                    ->onQueue('emails')
                     ->delay($sendAt);
            }
            $sendAt = $sendAt->addHour();

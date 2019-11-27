@@ -4,6 +4,7 @@
 namespace App\Contracts\Subscription;
 
 
+use App\Application;
 use App\Dto\CreateSubscriber;
 use App\Subscription;
 use Throwable;
@@ -18,11 +19,11 @@ interface SubscriptionContract
 
     /**
      * @param CreateSubscriber $createSubscriber
-     * @param int $appId
+     * @param int|string|Application $appId
      * @return Subscription
      * @throws Throwable
      */
-    public function addSubscriber(CreateSubscriber $createSubscriber, int $appId): Subscription;
+    public function addSubscriber(CreateSubscriber $createSubscriber, $appId): Subscription;
 
     /**
      * @param int $applicationId

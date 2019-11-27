@@ -46,8 +46,10 @@ Route::middleware(['jwt.auth'])->prefix('messages')->group(static function () {
     Route::post('/{applicationId}', 'MessageController@createMessage');
 });
 Route::middleware(['jwt.auth'])->prefix('subscribers')->group(static function () {
-    Route::post('/', 'SubscriberController@subscribe');
-    Route::get('/{id}', 'SubscriberController@unsubscribe');
+    Route::post('/{applicationId}', 'SubscriptionController@subscribe');
 });
+Route::get('/', 'SubscriptionController@unsubscribe')
+    ->name('unsub')
+    ->middleware(['signed']);
 
 
