@@ -56,9 +56,7 @@ class NotifyAllUsers implements ShouldQueue
         $sendgrid = new SendGrid($this->application->sendGridKey->key);
         $this->application->subscriptions()->chunk(500, function ($subs) use (&$sendAt, $sendgrid) {
            foreach($subs as $sub) {
-                SendEmailToUser::dispatch($sub, $this->user, $this->application, $this->message, $sendgrid)
-                    ->onConnection('database')
-                    ->onQueue('emails')
+                SendEmailToUser::dispatch($sub, $this->application, $this->message, $sendgrid)
                     ->delay($sendAt);
            }
            $sendAt = $sendAt->addHour();

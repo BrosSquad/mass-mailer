@@ -27,11 +27,13 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function unsubscribe(int $applicationId, int $id)
+    public function unsubscribe(Request $request)
     {
+        $applicationId = $request->query('application');
+        $id = $request->query('subscriber');
         if ($this->subscriptionService->unsubscribe($applicationId, $id)) {
             return view('subscriptions.success');
         }
-        return view('subscriptions.error');
+        return view('errors.500');
     }
 }

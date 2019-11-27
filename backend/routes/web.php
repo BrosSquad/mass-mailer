@@ -12,6 +12,14 @@
 */
 
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 Auth::routes(['register' => false]);
 
+
 Route::get('/', 'HomeController@index')->name('home');
+
+Route::get('/subscribers/unsubscribe', 'SubscriptionController@unsubscribe')
+    ->name('unsub')
+    ->middleware(['signed']);

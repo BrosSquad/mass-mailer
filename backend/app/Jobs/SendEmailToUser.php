@@ -13,7 +13,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Log;
-use League\OAuth1\Client\Server\User;
 use SendGrid;
 
 class SendEmailToUser implements ShouldQueue
@@ -23,8 +22,6 @@ class SendEmailToUser implements ShouldQueue
     /** @var Subscription  */
     private $subscription;
 
-    /** @var User  */
-    private $user;
 
     /** @var Application  */
     private $application;
@@ -39,15 +36,13 @@ class SendEmailToUser implements ShouldQueue
      * Create a new job instance.
      *
      * @param Subscription $subscription
-     * @param User $user
      * @param Application $application
      * @param Message $message
      * @param SendGrid $sendGrid
      */
-    public function __construct(Subscription $subscription, User $user, Application $application, Message $message, SendGrid $sendGrid)
+    public function __construct(Subscription $subscription, Application $application, Message $message, SendGrid $sendGrid)
     {
         $this->subscription = $subscription;
-        $this->user = $user;
         $this->application = $application;
         $this->message = $message;
         $this->sendGrid = $sendGrid;
@@ -56,6 +51,7 @@ class SendEmailToUser implements ShouldQueue
     /**
      * Execute the job.
      *
+     * @param UrlGenerator $urlGenerator
      * @return void
      * @throws \Throwable
      */
