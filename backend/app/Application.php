@@ -54,7 +54,7 @@ class Application extends Model
         return $this->hasMany(Notify::class, 'application_id', 'id');
     }
 
-    public function appKey(): HasMany
+    public function appKeys(): HasMany
     {
         return $this->hasMany(AppKey::class, 'application_id', 'id');
     }

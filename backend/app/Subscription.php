@@ -18,6 +18,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Subscription extends Model
 {
+    protected $table = 'subscriptions';
+
+
     protected $fillable = [
         'name',
         'surname',

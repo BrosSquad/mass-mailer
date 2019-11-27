@@ -10,8 +10,8 @@ namespace App\Dto;
  * @property string $fromEmail
  * @property string $fromName
  * @property string|null $replyTo
+ * @property bool $isMjml
  * @property string $subject
- * @property array $criteria
  * @package App\Dto
  */
 class CreateMessage extends Base
@@ -21,5 +21,5 @@ class CreateMessage extends Base
     protected $fromName;
     protected $replyTo;
     protected $subject;
-    protected $criteria = [];
+    protected $isMjml;
 }

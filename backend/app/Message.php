@@ -32,7 +32,9 @@ class Message extends Model
         'from_name',
         'reply_to',
         'subject',
-        'application_id'
+        'application_id',
+        'mjml',
+        'parsed'
     ];
 
     public function criteria(): HasMany

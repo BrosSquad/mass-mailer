@@ -26,7 +26,9 @@ class Notify extends Model
         'email',
         'application_id',
         'message_id',
-        'success'
+        'success',
+        'subscription_id',
+        'sendgrid_id'
     ];
 
     public function message(): BelongsTo

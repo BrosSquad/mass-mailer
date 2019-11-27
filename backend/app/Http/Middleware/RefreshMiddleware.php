@@ -81,6 +81,7 @@ class RefreshMiddleware
         /** @var JsonResponse $response */
         $response = $next($request);
 
+
         $newData = array_merge($response->getData(true), $data);
 
         return response()->json($newData, $response->getStatusCode());
