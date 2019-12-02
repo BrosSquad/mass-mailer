@@ -28,7 +28,6 @@ class ApplicationRequest extends FormRequest
         return [
             'appName' => [
                 'required',
-                'regex:/^[a-zA-Z0-9\_\-]{3,150}$/',
                 'unique:applications,app_name'
             ],
             'sendgridKey' => [

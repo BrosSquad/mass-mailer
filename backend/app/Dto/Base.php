@@ -6,7 +6,7 @@ namespace App\Dto;
 
 abstract class Base
 {
-    public function __construct(array $properties)
+    public function __construct(array $properties = [])
     {
         foreach ($properties as $property => $value) {
             $this->__set($property, $value);

@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Application;
 use App\Contracts\Subscription\SubscriptionContract;
-use App\Dto\CreateSubscriber;
-use App\Subscription;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ImportSubscribersCSV extends Command
 {
@@ -47,18 +47,32 @@ class ImportSubscribersCSV extends Command
         $appId = $this->argument('appId');
         $handle = fopen($file, 'rb');
 
-        if(!$handle) {
+        if (!$handle) {
             return 1;
         }
+        $multiple = [];
+        /** @var Application $application */
         $application = Application::query()->findOrFail($appId);
+        for ($i = 0; ($data = fgets($handle)) !== false; $i++) {
+            $csv = str_getcsv($data);
+            echo $i . PHP_EOL;
+            DB::beginTransaction();
 
-        while(($data = fgetcsv($handle)) !== false) {
-            $sub = $subscriptionContract->addSubscriber(new CreateSubscriber([
-                'name' => $data[0],
-                'surname' => $data[1],
-                'email' => $data[2],
-            ]), $application);
-            printf('Id: %d, Name: %s, Surname: %s, Email: %s ' . PHP_EOL, $sub->id, $sub->name, $sub->surname, $sub->email);
+            try {
+                $id = DB::table('subscriptions')->insertGetId([
+                    'name' => $csv[0],
+                    'surname' => $csv[1],
+                    'email' => $csv[2],
+                ]);
+                DB::table('application_subscriptions')->insert([
+                    'application_id' => $application->id,
+                    'subscription_id' => $id
+                ]);
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error($e->getMessage());
+            }
         }
         fclose($handle);
 
