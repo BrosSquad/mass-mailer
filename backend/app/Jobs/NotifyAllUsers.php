@@ -34,10 +34,9 @@ class NotifyAllUsers implements ShouldQueue
         $this->message = $message;
         $this->user = $user;
 
-        if(is_int($applicationId))
-        {
+        if (is_int($applicationId)) {
             $this->application = Application::query()->with(['sendGridKey'])->findOrFail($applicationId);
-        } else if($applicationId instanceof Application){
+        } else if ($applicationId instanceof Application) {
             $this->application = $applicationId;
         } else {
             throw new RuntimeException('Application is not found');
@@ -54,14 +53,15 @@ class NotifyAllUsers implements ShouldQueue
     {
         $sendAt = CarbonImmutable::now()->addSeconds(30);
         $sendgrid = new SendGrid($this->application->sendGridKey->key);
-        $this->application->subscriptions()->chunk(500, function ($subs) use (&$sendAt, $sendgrid) {
-           foreach($subs as $sub) {
-                SendEmailToUser::dispatch($sub, $this->application, $this->message, $sendgrid)
-                    ->delay($sendAt);
-           }
-           $sendAt = $sendAt->addHour();
-           // TODO: Send notification to the
-        });
-
+        $this->application->subscriptions()
+            ->orderByDesc('updated_at')
+            ->chunk(500, function ($subs) use (&$sendAt, $sendgrid) {
+                foreach ($subs as $sub) {
+                    SendEmailToUser::dispatch($sub, $this->application, $this->message, $sendgrid)
+                        ->delay($sendAt);
+                }
+                $sendAt = $sendAt->addHour();
+                // TODO: Send notification to the administrators
+            });
     }
 }
