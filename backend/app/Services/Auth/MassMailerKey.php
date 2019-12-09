@@ -4,27 +4,32 @@
 namespace App\Services\Auth;
 
 
+use Carbon\Carbon as Carbon;
 use App\Application;
 use App\Contracts\MassMailerKeyContract;
-use App\Contracts\Signer\RsaSignerContract;
 use App\Exceptions\InvalidAppKeyException;
-use Carbon\Carbon;
 use RuntimeException;
+use UonSoftware\RsaSigner\Contracts\RsaSigner;
+use UonSoftware\RsaSigner\RsaSignerServiceProvider;
 
 class MassMailerKey implements MassMailerKeyContract
 {
 
-    /**
-     * @var RsaSignerContract
-     */
     private $rsaSigner;
 
 
-    public function __construct(RsaSignerContract $rsaSigner)
+    public function __construct(RsaSigner $rsaSigner)
     {
         $this->rsaSigner = $rsaSigner;
     }
 
+    /**
+     * @throws \UonSoftware\RsaSigner\Exceptions\SignatureCorrupted
+     *
+     * @param string $appName
+     *
+     * @return array
+     */
     public function generateKey(string $appName): array
     {
         $key = 'MM' . '.' . hash('sha3-256', Carbon::now()->getTimestamp() . $appName);
@@ -48,6 +53,8 @@ class MassMailerKey implements MassMailerKeyContract
             throw new InvalidAppKeyException();
         }
 
-        Application::query()->with(['appKey'])->where('appKey.key', '=', $key);
+        Application::query()
+            ->with(['appKey'])
+            ->where('appKey.key', '=', $key);
     }
 }

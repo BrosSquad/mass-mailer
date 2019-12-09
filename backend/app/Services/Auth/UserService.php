@@ -49,7 +49,6 @@ class UserService implements UserContract
         $user->saveOrFail();
 
         $user->notify(new UserRegistered($user));
-        $user->notify(new ChangePassword(ChangePasswordDto::fromUser($user), $this->manager));
 
 
         return $user;

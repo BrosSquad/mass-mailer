@@ -1,7 +1,6 @@
 <?php
 
 use App\Providers\HashidsProvider;
-use App\Providers\RsaProvider;
 
 return [
 
@@ -169,7 +168,6 @@ return [
          * Package Service Providers...
          */
         HashidsProvider::class,
-        RsaProvider::class,
         /*
          * CreateApplication Service Providers...
          */
