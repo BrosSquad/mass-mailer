@@ -2,12 +2,8 @@
 
 namespace App\Providers;
 
-use App\Contracts\Auth\PasswordChangeContract;
-use App\Contracts\LoginContract;
-use App\Contracts\UserContract;
-use App\Services\Auth\PasswordChangeService;
-use App\Services\LoginService;
 use App\Services\UserService;
+use App\Contracts\UserContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -20,12 +16,10 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
     ];
 
-    public function register()
+    public function register(): void
     {
         parent::register();
-        $this->app->singleton(LoginContract::class, LoginService::class);
         $this->app->singleton(UserContract::class, UserService::class);
-        $this->app->singleton(PasswordChangeContract::class, PasswordChangeService::class);
     }
 
     /**
@@ -36,7 +30,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-
         //
     }
 }

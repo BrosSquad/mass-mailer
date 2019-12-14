@@ -5,9 +5,7 @@ namespace App\Services;
 
 
 use App\Contracts\UserContract;
-use App\Dto\ChangePassword as ChangePasswordDto;
 use App\Dto\CreateUser;
-use App\Notifications\ChangePassword;
 use App\Notifications\UserRegistered;
 use App\User;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -19,9 +17,9 @@ use Tymon\JWTAuth\Manager;
 
 class UserService implements UserContract
 {
-    private $hasher;
-    private $manager;
-    private $urlGenerator;
+    private Hasher $hasher;
+    private Manager $manager;
+    private UrlGenerator $urlGenerator;
 
     public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator)
     {
@@ -31,25 +29,28 @@ class UserService implements UserContract
     }
 
     /**
-     * @param CreateUser $createUser
-     * @return User
      * @throws Throwable
+     *
+     * @param CreateUser $createUser
+     *
+     * @return User
      */
     public function createUser(CreateUser $createUser): User
     {
         $randomPassword = Str::random(16);
 
-        $user = new User([
-            'name' => $createUser->name,
-            'surname' => $createUser->surname,
-            'email' => $createUser->email,
-            'password' => $this->hasher->make($randomPassword)
-        ]);
+        $user = new User(
+            [
+                'name'     => $createUser->name,
+                'surname'  => $createUser->surname,
+                'email'    => $createUser->email,
+                'password' => $this->hasher->make($randomPassword),
+            ]
+        );
 
         $user->saveOrFail();
 
         $user->notify(new UserRegistered($user));
-        $user->notify(new ChangePassword(ChangePasswordDto::fromUser($user), $this->manager));
 
 
         return $user;
@@ -57,9 +58,11 @@ class UserService implements UserContract
 
     public function deleteUser(int $id): bool
     {
-        return DB::transaction(static function () use ($id) {
-            return User::destroy($id) > 0;
-        });
+        return DB::transaction(
+            static function () use ($id) {
+                return User::destroy($id) > 0;
+            }
+        );
     }
 
     public function updateUserAccount(User $user)

@@ -12,7 +12,7 @@ class UserRegistered extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $user;
+    private User $user;
 
     /**
      * Create a new notification instance.

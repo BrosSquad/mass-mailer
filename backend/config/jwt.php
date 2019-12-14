@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use App\JWT\HashidsJwtAuth;
 use Tymon\JWTAuth\Providers\JWT\Namshi;
+use UonSoftware\LaraAuth\HashidsJwtAuth;
 
 return [
 

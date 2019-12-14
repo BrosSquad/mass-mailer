@@ -4,42 +4,48 @@
 namespace App\Services\Auth;
 
 
+use Carbon\Carbon;
 use App\Application;
 use App\Contracts\MassMailerKeyContract;
-use App\Contracts\Signer\RsaSignerContract;
 use App\Exceptions\InvalidAppKeyException;
-use Carbon\Carbon;
 use RuntimeException;
+use UonSoftware\RsaSigner\Contracts\RsaSigner;
 
 class MassMailerKey implements MassMailerKeyContract
 {
+    public const HASH_ALGORITHM = 'sha3-256';
 
-    /**
-     * @var RsaSignerContract
-     */
-    private $rsaSigner;
+    private RsaSigner $rsaSigner;
 
 
-    public function __construct(RsaSignerContract $rsaSigner)
+    public function __construct(RsaSigner $rsaSigner)
     {
         $this->rsaSigner = $rsaSigner;
     }
 
+    /**
+     * @throws \UonSoftware\RsaSigner\Exceptions\SignatureCorrupted
+     *
+     * @param string $appName
+     *
+     * @return array
+     */
     public function generateKey(string $appName): array
     {
-        $key = 'MM' . '.' . hash('sha3-256', Carbon::now()->getTimestamp() . $appName);
+        $key = 'MM' . '.' . hash(self::HASH_ALGORITHM, Carbon::now()->getTimestamp() . $appName);
         return [
-            'public' => $key,
-            'signedKey' => $key . '-' . $this->rsaSigner->sign($key)
+            'public'    => $key,
+            'signedKey' => $key . '-' . $this->rsaSigner->sign($key),
         ];
     }
 
     /**
-     * @param string $key
      * @throws InvalidAppKeyException
      * @throws RuntimeException
+     *
+     * @param string $key
      */
-    public function verifyKey(string $key)
+    public function verifyKey(string $key): void
     {
         [$key, $signature] = explode('-', $key);
 
@@ -48,6 +54,8 @@ class MassMailerKey implements MassMailerKeyContract
             throw new InvalidAppKeyException();
         }
 
-        Application::query()->with(['appKey'])->where('appKey.key', '=', $key);
+        Application::query()
+            ->with(['appKey'])
+            ->where('appKey.key', '=', $key);
     }
 }
