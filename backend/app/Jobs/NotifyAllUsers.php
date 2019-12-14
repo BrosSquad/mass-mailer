@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Application;
 use App\Message;
 use App\User;
+use App\Subscription;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,15 +19,15 @@ class NotifyAllUsers implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $message;
-    private $user;
-    private $application;
+    private Message $message;
+    private User $user;
+    private Application $application;
 
     /**
      * Create a new job instance.
      *
-     * @param Message $message
-     * @param User $user
+     * @param Message         $message
+     * @param User            $user
      * @param int|Application $applicationId
      */
     public function __construct(Message $message, User $user, $applicationId)
@@ -36,12 +37,11 @@ class NotifyAllUsers implements ShouldQueue
 
         if (is_int($applicationId)) {
             $this->application = Application::query()->with(['sendGridKey'])->findOrFail($applicationId);
-        } else if ($applicationId instanceof Application) {
+        } elseif ($applicationId instanceof Application) {
             $this->application = $applicationId;
         } else {
             throw new RuntimeException('Application is not found');
         }
-
     }
 
     /**
@@ -53,15 +53,19 @@ class NotifyAllUsers implements ShouldQueue
     {
         $sendAt = CarbonImmutable::now()->addSeconds(30);
         $sendgrid = new SendGrid($this->application->sendGridKey->key);
-        $this->application->subscriptions()
+        $this->application
+            ->subscriptions()
             ->orderByDesc('updated_at')
-            ->chunk(500, function ($subs) use (&$sendAt, $sendgrid) {
-                foreach ($subs as $sub) {
-                    SendEmailToUser::dispatch($sub, $this->application, $this->message, $sendgrid)
+            ->cursor()
+            ->each(
+                function (Subscription $item, int $index) use (&$sendAt, $sendgrid) {
+                    SendEmailToUser::dispatch($item, $this->application, $this->message, $sendgrid)
                         ->delay($sendAt);
+                    if ($index % 500 === 0) {
+                        $sendAt = $sendAt->addHour();
+                        // TODO: Send notification to administrators
+                    }
                 }
-                $sendAt = $sendAt->addHour();
-                // TODO: Send notification to the administrators
-            });
+            );
     }
 }

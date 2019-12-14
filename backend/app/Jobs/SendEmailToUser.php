@@ -19,29 +19,28 @@ class SendEmailToUser implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /** @var Subscription  */
-    private $subscription;
+    private Subscription $subscription;
 
+    private Application $application;
 
-    /** @var Application  */
-    private $application;
+    private Message $message;
 
-    /** @var Message  */
-    private $message;
-
-    /** @var SendGrid  */
-    private $sendGrid;
+    private SendGrid $sendGrid;
 
     /**
      * Create a new job instance.
      *
      * @param Subscription $subscription
-     * @param Application $application
-     * @param Message $message
-     * @param SendGrid $sendGrid
+     * @param Application  $application
+     * @param Message      $message
+     * @param SendGrid     $sendGrid
      */
-    public function __construct(Subscription $subscription, Application $application, Message $message, SendGrid $sendGrid)
-    {
+    public function __construct(
+        Subscription $subscription,
+        Application $application,
+        Message $message,
+        SendGrid $sendGrid
+    ) {
         $this->subscription = $subscription;
         $this->application = $application;
         $this->message = $message;
@@ -51,28 +50,37 @@ class SendEmailToUser implements ShouldQueue
     /**
      * Execute the job.
      *
-     * @param UrlGenerator $urlGenerator
-     * @return void
      * @throws \Throwable
+     *
+     * @param UrlGenerator $urlGenerator
+     *
+     * @return void
      */
     public function handle(UrlGenerator $urlGenerator): void
     {
-        $url = $urlGenerator->signedRoute('unsub', [
-            'application' => $this->application->id,
-            'subscriber' => $this->subscription->id,
-        ]);
+        $url = $urlGenerator->signedRoute(
+            'unsub',
+            [
+                'application' => $this->application->id,
+                'subscriber'  => $this->subscription->id,
+            ]
+        );
 
-        $html = str_replace([
-            '[unsubscribe]',
-            '[name]',
-            '[surname]',
-            '[email]'
-        ], [
-            $url,
-            $this->subscription->name,
-            $this->subscription->surname,
-            $this->subscription->email,
-        ], $this->message->parsed);
+        $html = str_replace(
+            [
+                '[unsubscribe]',
+                '[name]',
+                '[surname]',
+                '[email]',
+            ],
+            [
+                $url,
+                $this->subscription->name,
+                $this->subscription->surname,
+                $this->subscription->email,
+            ],
+            $this->message->parsed
+        );
 
         $mail = new SendGrid\Mail\Mail();
         try {
@@ -89,22 +97,24 @@ class SendEmailToUser implements ShouldQueue
         $success = false;
         try {
             $response = $this->sendGrid->send($mail);
-            $status =$response->statusCode();
-            if( $status > 200 && $status < 300) {
+            $status = $response->statusCode();
+            if ($status > 200 && $status < 300) {
                 $success = true;
             }
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e->getMessage());
         }
 
-        $notification = new Notify([
-            'email' => $this->subscription->email,
-            'success' => $success,
-            'application_id' => $this->application->id,
-            'message_id' => $this->message->id,
-            'subscription_id' => $this->subscription->id,
-            'sendgrid_id' => $this->application->sendGridKey->id,
-        ]);
+        $notification = new Notify(
+            [
+                'email'           => $this->subscription->email,
+                'success'         => $success,
+                'application_id'  => $this->application->id,
+                'message_id'      => $this->message->id,
+                'subscription_id' => $this->subscription->id,
+                'sendgrid_id'     => $this->application->sendGridKey->id,
+            ]
+        );
 
         $notification->saveOrFail();
     }
