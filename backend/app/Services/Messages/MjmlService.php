@@ -14,9 +14,9 @@ class MjmlService implements MjmlContract
 {
 
 
-    private $guzzleClient;
+    private GuzzleHttpClient $guzzleClient;
 
-    private $config;
+    private Config $config;
 
     public function __construct(GuzzleHttpClient $guzzleClient, Config $config)
     {

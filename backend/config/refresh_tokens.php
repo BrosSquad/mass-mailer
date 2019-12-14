@@ -31,7 +31,7 @@ return [
         'model'       => User::class,
         'foreign_key' => 'user_id',
         'id'          => 'id',
-        'key_type'    => 'unsignedBigInteger',
+        'key_type'    => 'unsignedInteger',
     ],
 
     /*

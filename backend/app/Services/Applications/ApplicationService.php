@@ -17,7 +17,7 @@ use RuntimeException;
 
 class ApplicationService implements ApplicationContract
 {
-    protected $keyContract;
+    protected MassMailerKeyContract $keyContract;
 
     public function __construct(MassMailerKeyContract $keyContract)
     {

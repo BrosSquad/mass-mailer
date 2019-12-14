@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2fbb85c27288709b185ffd3f9038cc2d",
+    "content-hash": "587a054bbad78ea925571c231efc485b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2153,16 +2153,16 @@
         },
         {
             "name": "phpoption/phpoption",
-            "version": "1.7.0",
+            "version": "1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-option.git",
-                "reference": "318ad673ba36e53e10ca510aec1c54b4f2a5f2ae"
+                "reference": "100a25207566930efd926cf205542946aa692e01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/318ad673ba36e53e10ca510aec1c54b4f2a5f2ae",
-                "reference": "318ad673ba36e53e10ca510aec1c54b4f2a5f2ae",
+                "url": "https://api.github.com/repos/schmittjoh/php-option/zipball/100a25207566930efd926cf205542946aa692e01",
+                "reference": "100a25207566930efd926cf205542946aa692e01",
                 "shasum": ""
             },
             "require": {
@@ -2204,7 +2204,7 @@
                 "php",
                 "type"
             ],
-            "time": "2019-12-13T00:10:22+00:00"
+            "time": "2019-12-14T13:46:39+00:00"
         },
         {
             "name": "predis/predis",
@@ -4553,16 +4553,16 @@
         },
         {
             "name": "uonsoftware/laravel-auth",
-            "version": "v0.0.8",
+            "version": "v0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/UONSoftware/lara-auth.git",
-                "reference": "6dd07443600b747aaa8bb17a4597e9dad29cc25c"
+                "reference": "3bf35e1027a34aa0b8ba43b0ec21567861daeea4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/UONSoftware/lara-auth/zipball/6dd07443600b747aaa8bb17a4597e9dad29cc25c",
-                "reference": "6dd07443600b747aaa8bb17a4597e9dad29cc25c",
+                "url": "https://api.github.com/repos/UONSoftware/lara-auth/zipball/3bf35e1027a34aa0b8ba43b0ec21567861daeea4",
+                "reference": "3bf35e1027a34aa0b8ba43b0ec21567861daeea4",
                 "shasum": ""
             },
             "require": {
@@ -4602,7 +4602,7 @@
                 }
             ],
             "description": "API JWT authentication system for laravel",
-            "time": "2019-12-09T19:36:54+00:00"
+            "time": "2019-12-14T18:26:10+00:00"
         },
         {
             "name": "uonsoftware/refresh-tokens",

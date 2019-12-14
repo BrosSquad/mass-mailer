@@ -16,7 +16,7 @@ use Throwable;
 
 class MessageService implements MessageContract
 {
-    protected $httpClient;
+    protected Client $httpClient;
     public function __construct(Client $client)
     {
         $this->httpClient = $client;
@@ -68,8 +68,6 @@ class MessageService implements MessageContract
         if (!$user->messages()->save($message)) {
             throw new RuntimeException('Cannot save new message');
         }
-
-
 
         NotifyAllUsers::dispatch($message, $user, $applicationId)
             ->delay(now()->addMinutes(1));
