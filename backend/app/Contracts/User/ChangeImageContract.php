@@ -10,29 +10,34 @@ use Throwable;
 
 /**
  * Interface ChangeImageContract
+ *
  * @package App\Contracts\User
  */
 interface ChangeImageContract
 {
     public const BACKGROUND_IMAGE = 'background';
-    public const AVATAR = 'avatar';
+    public const AVATAR           = 'avatar';
 
     /**
-     * @param UploadedFile $file
-     * @param string $path
-     * @param Closure $callback
-     * @return mixed
      * @throws Exception
      * @throws Throwable
+     *
+     * @param Closure|null $callback
+     * @param         $file
+     * @param string  $path
+     *
+     * @return mixed
      */
-    public function storeImage(UploadedFile $file, string $path, Closure $callback);
+    public function storeImage($file, string $path, ?Closure $callback);
 
     /**
-     * @param string $type
-     * @param User $user
-     * @param UploadedFile $file
-     * @return string
      * @throws Throwable
+     *
+     * @param User   $user
+     * @param        $file
+     * @param string $type
+     *
+     * @return string
      */
-    public function changeImage(string $type, User $user, UploadedFile $file): string;
+    public function changeImage(string $type, User $user, $file): string;
 }

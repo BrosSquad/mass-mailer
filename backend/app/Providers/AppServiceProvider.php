@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Laravolt\Avatar\Avatar;
 use App\Contracts\Applications\ApplicationContract;
 use App\Contracts\MassMailerKeyContract;
 use App\Contracts\Message\MessageContract;
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+
+        $this->app->alias(Avatar::class, 'avatar');
         $this->app->singleton(MjmlContract::class, MjmlService::class);
         $this->app->singleton(MassMailerKeyContract::class, MassMailerKey::class);
         $this->app->singleton(ChangeImageContract::class, ChangeImage::class);

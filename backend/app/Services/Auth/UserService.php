@@ -4,7 +4,9 @@
 namespace App\Services;
 
 
+use App\Events\UserCreated;
 use App\Contracts\UserContract;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use App\Dto\ChangePassword as ChangePasswordDto;
 use App\Dto\CreateUser;
 use App\Notifications\ChangePassword;
@@ -19,15 +21,17 @@ use Tymon\JWTAuth\Manager;
 
 class UserService implements UserContract
 {
-    private $hasher;
-    private $manager;
-    private $urlGenerator;
+    private Hasher $hasher;
+    private Manager $manager;
+    private UrlGenerator $urlGenerator;
+    private EventDispatcher $eventDispatcher;
 
-    public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator)
+    public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator, EventDispatcher $eventDispatcher)
     {
         $this->hasher = $hasher;
         $this->manager = $manager;
         $this->urlGenerator = $urlGenerator;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -47,7 +51,7 @@ class UserService implements UserContract
         ]);
 
         $user->saveOrFail();
-
+        $this->eventDispatcher->dispatch(new UserCreated($user));
         $user->notify(new UserRegistered($user));
         $user->notify(new ChangePassword(ChangePasswordDto::fromUser($user), $this->manager));
 

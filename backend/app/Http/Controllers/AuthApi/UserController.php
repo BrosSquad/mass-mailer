@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\AuthApi;
 
+use App\Dto\CreateUser;
+use App\Http\Resources\User;
+use Illuminate\Http\JsonResponse;
+use App\Http\Requests\CreateUserRequest;
 use App\Contracts\User\ChangeImageContract;
 use App\Contracts\UserContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangeImageRequest;
-use Exception;
 
 class UserController extends Controller
 {
-    private $userService;
-    private $changeImageContract;
+    private UserContract $userService;
+    private ChangeImageContract $changeImageContract;
 
     public function __construct(UserContract $userContract, ChangeImageContract $changeImageContract)
     {
@@ -19,11 +22,18 @@ class UserController extends Controller
         $this->changeImageContract = $changeImageContract;
     }
 
-    public function create()
+    public function create(CreateUserRequest $request): JsonResponse
     {
+        $createUser = new CreateUser($request->validated());
+        try {
+            return (new User($this->userService->createUser($createUser)))
+                ->toResponse($request)->setStatusCode(201);
+        } catch (\Throwable $e) {
+            return internalServerError($e);
+        }
     }
 
-    public function changeImage(ChangeImageRequest $request)
+    public function changeImage(ChangeImageRequest $request): JsonResponse
     {
         try {
             $type = $request->input('type');
@@ -40,12 +50,12 @@ class UserController extends Controller
 
             $image = $this->changeImageContract->changeImage($type, $request->user(), $file);
             return ok(['image' => $image]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return internalServerError(['message' => $e->getMessage()]);
         }
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
     }
 }

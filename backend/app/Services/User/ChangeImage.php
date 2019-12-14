@@ -2,6 +2,9 @@
 
 namespace App\Services\User;
 
+use TypeError;
+use RuntimeException;
+use Intervention\Image\Image;
 use App\Contracts\User\ChangeImageContract;
 use App\User;
 use Carbon\Carbon;
@@ -14,13 +17,13 @@ use Throwable;
 
 class ChangeImage implements ChangeImageContract
 {
-    /**
-     * @var Storage
-     */
-    private $storage;
+    public const HASH_ALGORITHM = 'sha3-256';
+
+    private Storage $storage;
 
     /**
      * ChangeImage constructor.
+     *
      * @param StorageFactory $storageFactory
      */
     public function __construct(StorageFactory $storageFactory)
@@ -29,13 +32,15 @@ class ChangeImage implements ChangeImageContract
     }
 
     /**
-     * @param string $type
-     * @param User $user
-     * @param UploadedFile $file
-     * @return string
      * @throws Throwable
+     *
+     * @param User   $user
+     * @param        $file
+     * @param string $type
+     *
+     * @return string
      */
-    public function changeImage(string $type, User $user, UploadedFile $file): string
+    public function changeImage(string $type, User $user, $file): string
     {
         $path = 'images/';
         switch ($type) {
@@ -46,8 +51,10 @@ class ChangeImage implements ChangeImageContract
                 $path .= 'backgrounds';
                 break;
         }
-        return $this->storeImage($file, $path,
-            function (Storage $storage, $imagePath, $fileName) use ($user, $type, $path) {
+        return $this->storeImage(
+            $file,
+            $path,
+            static function (Storage $storage, $imagePath, $fileName) use ($user, $type, $path) {
                 switch ($type) {
                     case self::AVATAR:
                         $toDelete = $user->avatar;
@@ -60,55 +67,74 @@ class ChangeImage implements ChangeImageContract
                         $saved = $user->save();
                         break;
                     default:
-                        throw new Exception('Error while saving');
+                        throw new RuntimeException('Error while saving');
                 }
 
                 if (!$saved) {
-                    throw new Exception('Error while saving');
+                    throw new RuntimeException('Error while saving');
                 }
-                
-                $storage->delete($path. '/' . $toDelete);
+
+                $storage->delete($path . '/' . $toDelete);
                 return asset('storage/' . $path . '/' . $fileName);
             }
         );
     }
 
     /**
-     * @param UploadedFile $file
-     * @param string $path
-     * @param Closure $callback
-     * @return mixed
      * @throws Exception
      * @throws Throwable
+     *
+     * @param Closure|null $callback
+     * @param              $file
+     * @param string       $path
+     *
+     * @return mixed
      */
-    public function storeImage(UploadedFile $file, string $path, Closure $callback)
+    public function storeImage($file, string $path, ?Closure $callback)
     {
-        $fileName = $file->getClientOriginalName();
-        $extension = $file->guessClientExtension();
-
-        if ($extension === null) {
-            throw new Exception('File type is not recognized');
+        if ($file instanceof Image) {
+            $fileName = $file->filename ?? 'sample';
+            $extension = $file->extension ?? 'png';
+        } elseif ($file instanceof UploadedFile) {
+            $fileName = $file->getClientOriginalName();
+            $extension = $file->guessClientExtension();
+        } else {
+            throw new TypeError('File type not recognized');
         }
 
-        $newName = $this->generateNewName($fileName, $extension);
 
-        $isMoved = $file->storePubliclyAs('public/' . $path, $newName);
+        if ($extension === null) {
+            throw new RuntimeException('File type is not recognized');
+        }
+
+        // TODO: Check image extension
+
+        $newName = $this->generateNewName($fileName, $extension);
+        $isMoved = false;
+
+        if ($file instanceof Image) {
+            $isMoved = $this->storage->put($path . '/' . $newName, $file->stream()->detach());
+        } elseif ($file instanceof UploadedFile) {
+            $isMoved = $file->storePubliclyAs('public/' . $path, $newName);
+        }
 
         if (!$isMoved) {
-            throw new Exception('File is not moved');
+            throw new RuntimeException('File is not moved');
         }
 
         try {
-            return $callback($this->storage, $isMoved, $newName);
+            if ($callback !== null) {
+                return $callback($this->storage, $isMoved, $newName);
+            }
+            return $isMoved;
         } catch (Throwable $e) {
             $this->storage->delete($isMoved);
             throw $e;
         }
-
     }
 
     private function generateNewName(string $clientName, string $extension): string
     {
-        return hash('sha3-256', Carbon::now()->getTimestamp() . '$' . $clientName) . '.' . $extension;
+        return hash(self::HASH_ALGORITHM, Carbon::now()->getTimestamp() . '$' . $clientName) . '.' . $extension;
     }
 }
