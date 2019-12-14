@@ -19,14 +19,6 @@ Route::middleware(['jwt.auth'])->get('/me', static function (Request $request) {
     return ok(new User($request->user()));
 });
 
-Route::post('/request-password-change', 'AuthApi\PasswordChangeController@requestNewPassword');
-Route::middleware(['jwt.auth'])
-    ->post('/change-password', 'AuthApi\PasswordChangeController@changePassword');
-
-
-Route::prefix('auth')->group(static function () {
-    Route::post('login', 'AuthApi\LoginController@login');
-});
 
 Route::middleware(['jwt.auth'])->prefix('application')->group(static function () {
     Route::post('/', 'ApplicationController@createApplication');

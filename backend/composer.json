@@ -21,9 +21,12 @@
         "laravel/socialite": "^4.2",
         "laravel/telescope": "^2.1",
         "laravel/tinker": "^1.0",
+        "nesbot/carbon": "^2.26.0",
         "sendgrid/sendgrid": "~7",
         "silber/bouncer": "v1.0.0-rc.6",
-        "tymon/jwt-auth": "1.0.0-rc.5"
+        "tymon/jwt-auth": "^1.0.0-rc.5",
+        "uonsoftware/laravel-auth": "^0.0.8",
+        "uonsoftware/rsa-signer": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
