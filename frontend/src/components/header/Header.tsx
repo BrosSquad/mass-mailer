@@ -1,10 +1,12 @@
 import React from 'react';
+
 import './header.css';
+import Navbar from "../nav/Navbar";
 
 
-const Header = () => (
-    <h2>Hello World</h2>
-);
+const Header = () => {
+	return ( <Navbar/> )
+};
 
 
 export default Header;
