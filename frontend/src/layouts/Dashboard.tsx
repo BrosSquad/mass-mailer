@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from 'react';
+import React, {FC, PropsWithChildren} from 'react';
 import Header from "../components/header/Header";
 
-const Dashboard = ( { children }: PropsWithChildren<any> ) => {
+const Dashboard: FC = ( { children }: PropsWithChildren<any> ) => {
 	
 	return (
 		<>

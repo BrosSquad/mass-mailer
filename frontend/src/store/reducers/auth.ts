@@ -1,3 +1,6 @@
+import {Action} from "redux";
+import {AuthActions} from "../actions/actions";
+
 export interface User {
   name: string;
   surname: string;
@@ -19,6 +22,13 @@ const initialState: AuthState = {
   auth: null
 };
 
-export default (state: AuthState = initialState, action: any) => {
-  return state;
+
+
+export default (state: AuthState = initialState, action: Action) => {
+  switch (action.type) {
+    case AuthActions.LOGIN:
+      return state;
+    default:
+      return state;
+  }
 };
