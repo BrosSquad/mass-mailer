@@ -23,7 +23,7 @@
         "laravel/tinker": "^1.0",
         "nesbot/carbon": "^2.26.0",
         "sendgrid/sendgrid": "~7",
-        "silber/bouncer": "v1.0.0-rc.6",
+        "spatie/laravel-permission": "^3.3",
         "tymon/jwt-auth": "^1.0.0-rc.5",
         "uonsoftware/laravel-auth": "^0.1.3",
         "uonsoftware/rsa-signer": "^1.0.9"

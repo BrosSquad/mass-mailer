@@ -4,16 +4,16 @@
 namespace App\Services\Applications;
 
 
+use App\User;
 use App\AppKey;
 use App\Application;
-use App\Contracts\Applications\ApplicationContract;
-use App\Contracts\MassMailerKeyContract;
-use App\Dto\CreateApplication;
 use App\SendGridKey;
-use App\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use RuntimeException;
+use App\Dto\CreateApplication;
+use Illuminate\Support\Facades\DB;
+use App\Contracts\MassMailerKeyContract;
+use App\Contracts\Applications\ApplicationContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ApplicationService implements ApplicationContract
 {
@@ -24,11 +24,19 @@ class ApplicationService implements ApplicationContract
         $this->keyContract = $keyContract;
     }
 
-    public function getApplications()
+    public function getApplications(int $page, int $perPage)
     {
-
+        return Application::query()
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
+    /**
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *
+     * @param int $id
+     *
+     * @return \App\Application
+     */
     public function getApplication(int $id): Application
     {
         /** @var Application $application */
@@ -39,25 +47,30 @@ class ApplicationService implements ApplicationContract
 
     /**
      * @param CreateApplication $createApplication
-     * @param User $user
+     * @param User              $user
+     *
      * @return Application
      */
     public function createApplication(CreateApplication $createApplication, User $user): Application
     {
         DB::beginTransaction();
-        $application = new Application([
-            'app_name' => $createApplication->appName
-        ]);
+        $application = new Application(
+            [
+                'app_name' => $createApplication->appName,
+            ]
+        );
 
         if (!$user->applications()->save($application)) {
             DB::rollBack();
             throw new RuntimeException('Cannot save application');
         }
 
-        $sendGridKey = new SendGridKey([
-            'key' => $createApplication->sendgridKey,
-            'number_of_messages' => $createApplication->sendGridNumberOfMessages
-        ]);
+        $sendGridKey = new SendGridKey(
+            [
+                'key'                => $createApplication->sendgridKey,
+                'number_of_messages' => $createApplication->sendGridNumberOfMessages,
+            ]
+        );
 
         if (!$application->sendGridKey()->save($sendGridKey)) {
             DB::rollBack();
@@ -69,20 +82,24 @@ class ApplicationService implements ApplicationContract
     }
 
     /**
-     * @param int $appId
-     * @param User $user
-     * @return string
      * @throws ModelNotFoundException
+     *
+     * @param User $user
+     * @param int  $appId
+     *
+     * @return string
      */
     public function generateNewAppKey(int $appId, User $user): string
     {
         DB::beginTransaction();
         /** @var Application $application */
         $application = Application::query()->findOrFail($appId);
-        $key = new AppKey([
-            'key' => $this->keyContract->generateKey($application->app_name),
-            'user_id' => $user->id
-        ]);
+        $key = new AppKey(
+            [
+                'key'     => $this->keyContract->generateKey($application->app_name),
+                'user_id' => $user->id,
+            ]
+        );
 
 
         if (!$application->appKeys()->save($key)) {
@@ -95,6 +112,7 @@ class ApplicationService implements ApplicationContract
 
     /**
      * @param int $appId
+     *
      * @return bool
      */
     public function deleteApplication(int $appId): bool

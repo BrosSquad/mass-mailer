@@ -4,23 +4,24 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Hashids\HashidsInterface;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * Class User
+ *
  * @package App
- * @property integer $id
- * @property string $name
- * @property string $surname
- * @property string $email
- * @property string $password
- * @property string $remember_token
- * @property string $background_image
- * @property string $avatar
+ * @property integer         $id
+ * @property string          $name
+ * @property string          $surname
+ * @property string          $email
+ * @property string          $password
+ * @property string          $remember_token
+ * @property string          $background_image
+ * @property string          $avatar
  * @property CarbonInterface $email_verified_at
  * @property CarbonInterface $created_at
  * @property CarbonInterface $last_login
@@ -28,13 +29,12 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
-    use HasRolesAndAbilities;
+    use Notifiable, HasRoles;
 
     /**
      * @var HashidsInterface
      */
-    protected static $hashids;
+    protected static HashidsInterface $hashids;
 
     /**
      * The attributes that are mass assignable.
@@ -47,7 +47,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'avatar',
-        'background_image'
+        'background_image',
     ];
 
     /**
@@ -61,7 +61,7 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'email_verified_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -71,7 +71,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'last_login' => 'datetime',
+        'last_login'        => 'datetime',
     ];
 
     public static function setHashids(HashidsInterface $hashids)
@@ -112,10 +112,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'name' => $this->name,
+            'name'    => $this->name,
             'surname' => $this->surname,
-            'email' => $this->email,
-            'role' => $this->getRoles()->first(),
+            'email'   => $this->email,
+            //            'role' => $this->getRoles()->first(),
         ];
     }
 

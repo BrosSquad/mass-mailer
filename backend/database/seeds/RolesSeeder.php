@@ -1,19 +1,12 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Silber\Bouncer\Bouncer;
 
 class RolesSeeder extends Seeder
 {
-    /**
-     * @var Bouncer
-     */
-    private $bouncer;
 
-
-    public function __construct(Bouncer $bouncer)
+    public function __construct()
     {
-        $this->bouncer = $bouncer;
     }
 
     /**
@@ -21,17 +14,8 @@ class RolesSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
 
-        $this->bouncer->role()->firstOrCreate([
-            'name' => 'user',
-            'title' => 'User'
-        ]);
-
-        $this->bouncer->role()->firstOrCreate([
-            'name' => 'admin',
-            'title' => 'administrator'
-        ]);
     }
 }
