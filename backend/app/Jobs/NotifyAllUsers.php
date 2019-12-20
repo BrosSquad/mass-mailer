@@ -21,7 +21,7 @@ class NotifyAllUsers implements ShouldQueue
 
     private Message $message;
     private User $user;
-    private Application $application;
+    private $application;
 
     /**
      * Create a new job instance.
@@ -59,8 +59,7 @@ class NotifyAllUsers implements ShouldQueue
             ->cursor()
             ->each(
                 function (Subscription $item, int $index) use (&$sendAt, $sendgrid) {
-                    SendEmailToUser::dispatch($item, $this->application, $this->message, $sendgrid)
-                        ->delay($sendAt);
+                    SendEmailToUser::dispatch($item, $this->application, $this->message, $sendgrid)->delay($sendAt);
                     if ($index % 500 === 0) {
                         $sendAt = $sendAt->addHour();
                         // TODO: Send notification to administrators

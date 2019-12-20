@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected array $commands = [
+    protected $commands = [
         ImportSubscribersCSV::class,
     ];
 
@@ -28,7 +28,6 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('telescope:prune')->daily();
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
-        $schedule->command('key:generate --no-interaction --force')->monthly();
         $schedule->command('jwt:secret --no-interaction --force --no-ansi')->monthly();
         $schedule->command('refresh:remove')->hourly();
     }
