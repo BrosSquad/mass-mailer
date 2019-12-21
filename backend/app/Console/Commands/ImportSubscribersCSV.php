@@ -2,11 +2,12 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Application;
-use App\Contracts\Subscription\SubscriptionContract;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Contracts\Subscription\SubscriptionContract;
 
 class ImportSubscribersCSV extends Command
 {
@@ -37,9 +38,11 @@ class ImportSubscribersCSV extends Command
     /**
      * Execute the console command.
      *
-     * @param SubscriptionContract $subscriptionContract
-     * @return mixed
      * @throws \Throwable
+     *
+     * @param  SubscriptionContract  $subscriptionContract
+     *
+     * @return mixed
      */
     public function handle(SubscriptionContract $subscriptionContract)
     {
@@ -55,21 +58,25 @@ class ImportSubscribersCSV extends Command
         $application = Application::query()->findOrFail($appId);
         for ($i = 0; ($data = fgets($handle)) !== false; $i++) {
             $csv = str_getcsv($data);
-            echo $i . PHP_EOL;
+            echo $i.PHP_EOL;
             DB::beginTransaction();
 
             try {
-                $id = DB::table('subscriptions')->insertGetId([
-                    'name' => $csv[0],
-                    'surname' => $csv[1],
-                    'email' => $csv[2],
-                ]);
-                DB::table('application_subscriptions')->insert([
-                    'application_id' => $application->id,
-                    'subscription_id' => $id
-                ]);
+                $id = DB::table('subscriptions')->insertGetId(
+                    [
+                        'name'    => $csv[0],
+                        'surname' => $csv[1],
+                        'email'   => $csv[2],
+                    ]
+                );
+                DB::table('application_subscriptions')->insert(
+                    [
+                        'application_id'  => $application->id,
+                        'subscription_id' => $id,
+                    ]
+                );
                 DB::commit();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 DB::rollBack();
                 Log::error($e->getMessage());
             }

@@ -2,19 +2,19 @@
 
 namespace App\Providers;
 
-use App\Contracts\Applications\ApplicationContract;
-use App\Contracts\MassMailerKeyContract;
-use App\Contracts\Message\MessageContract;
+use App\Services\User\ChangeImage;
+use App\Services\Auth\MassMailerKey;
+use App\Services\Messages\MjmlService;
 use App\Contracts\Message\MjmlContract;
-use App\Contracts\Subscription\SubscriptionContract;
+use Illuminate\Support\ServiceProvider;
+use App\Contracts\MassMailerKeyContract;
+use App\Services\Messages\MessageService;
+use App\Contracts\Message\MessageContract;
 use App\Contracts\User\ChangeImageContract;
 use App\Services\Applications\ApplicationService;
-use App\Services\Auth\MassMailerKey;
-use App\Services\Messages\MessageService;
-use App\Services\Messages\MjmlService;
 use App\Services\Subscription\SubscriptionService;
-use App\Services\User\ChangeImage;
-use Illuminate\Support\ServiceProvider;
+use App\Contracts\Applications\ApplicationContract;
+use App\Contracts\Subscription\SubscriptionContract;
 
 class AppServiceProvider extends ServiceProvider
 {

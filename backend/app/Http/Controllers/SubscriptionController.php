@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Throwable;
-use App\Contracts\Subscription\SubscriptionContract;
+use Illuminate\Http\Request;
 use App\Dto\CreateSubscriber;
 use App\Http\Requests\SubscribeRequest;
-use Illuminate\Http\Request;
+use App\Contracts\Subscription\SubscriptionContract;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SubscriptionController extends Controller
@@ -34,7 +34,7 @@ class SubscriptionController extends Controller
         try {
             return ok(['data' => $this->subscriptionService->getSubscriber($request->user(), $id)]);
         } catch (ModelNotFoundException $e) {
-            return notFound(['message' => 'Subscriber with id: ' . $id . ' is not Found']);
+            return notFound(['message' => 'Subscriber with id: '.$id.' is not Found']);
         }
     }
 

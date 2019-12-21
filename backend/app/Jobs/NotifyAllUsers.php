@@ -2,25 +2,27 @@
 
 namespace App\Jobs;
 
-use App\Application;
-use App\Message;
 use App\User;
+use SendGrid;
+use App\Message;
+use App\Application;
 use App\Subscription;
+use RuntimeException;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Queueable;
 use App\Mail\NumberOfMailsSent;
-use Illuminate\Contracts\Mail\Mailer;
 use App\Notifications\AllMailsQueued;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use RuntimeException;
-use SendGrid;
 
 class NotifyAllUsers implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Queueable;
+    use Dispatchable;
+    use SerializesModels;
+    use InteractsWithQueue;
 
     private Message $message;
     private User $user;
@@ -29,9 +31,9 @@ class NotifyAllUsers implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Message         $message
-     * @param User            $user
-     * @param int|Application $applicationId
+     * @param  Message  $message
+     * @param  User  $user
+     * @param  int|Application  $applicationId
      */
     public function __construct(Message $message, User $user, $applicationId)
     {

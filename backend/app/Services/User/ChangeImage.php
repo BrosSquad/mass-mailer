@@ -2,16 +2,16 @@
 
 namespace App\Services\User;
 
-use RuntimeException;
-use App\Contracts\User\ChangeImageContract;
-use App\User;
-use Carbon\Carbon;
 use Closure;
+use App\User;
 use Exception;
-use Illuminate\Contracts\Filesystem\Factory as StorageFactory;
-use Illuminate\Contracts\Filesystem\Filesystem as Storage;
-use Illuminate\Http\UploadedFile;
 use Throwable;
+use Carbon\Carbon;
+use RuntimeException;
+use Illuminate\Http\UploadedFile;
+use App\Contracts\User\ChangeImageContract;
+use Illuminate\Contracts\Filesystem\Filesystem as Storage;
+use Illuminate\Contracts\Filesystem\Factory as StorageFactory;
 
 class ChangeImage implements ChangeImageContract
 {
@@ -23,7 +23,7 @@ class ChangeImage implements ChangeImageContract
     /**
      * ChangeImage constructor.
      *
-     * @param StorageFactory $storageFactory
+     * @param  StorageFactory  $storageFactory
      */
     public function __construct(StorageFactory $storageFactory)
     {
@@ -33,9 +33,9 @@ class ChangeImage implements ChangeImageContract
     /**
      * @throws Throwable
      *
-     * @param User         $user
-     * @param UploadedFile $file
-     * @param string       $type
+     * @param  User  $user
+     * @param  UploadedFile  $file
+     * @param  string  $type
      *
      * @return string
      */
@@ -73,8 +73,8 @@ class ChangeImage implements ChangeImageContract
                     throw new RuntimeException('Error while saving');
                 }
 
-                $storage->delete($path . '/' . $toDelete);
-                return asset('storage/' . $path . '/' . $fileName);
+                $storage->delete($path.'/'.$toDelete);
+                return asset('storage/'.$path.'/'.$fileName);
             }
         );
     }
@@ -83,9 +83,9 @@ class ChangeImage implements ChangeImageContract
      * @throws Exception
      * @throws Throwable
      *
-     * @param Closure      $callback
-     * @param UploadedFile $file
-     * @param string       $path
+     * @param  Closure  $callback
+     * @param  UploadedFile  $file
+     * @param  string  $path
      *
      * @return mixed
      */
@@ -100,7 +100,7 @@ class ChangeImage implements ChangeImageContract
 
         $newName = $this->generateNewName($fileName, $extension);
 
-        $isMoved = $file->storePubliclyAs('public/' . $path, $newName);
+        $isMoved = $file->storePubliclyAs('public/'.$path, $newName);
 
         if (!$isMoved) {
             throw new RuntimeException('File is not moved');
@@ -116,6 +116,6 @@ class ChangeImage implements ChangeImageContract
 
     private function generateNewName(string $clientName, string $extension): string
     {
-        return hash('sha3-256', Carbon::now()->getTimestamp() . '$' . $clientName) . '.' . $extension;
+        return hash('sha3-256', Carbon::now()->getTimestamp().'$'.$clientName).'.'.$extension;
     }
 }

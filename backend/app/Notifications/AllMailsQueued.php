@@ -4,9 +4,9 @@ namespace App\Notifications;
 
 use App\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class AllMailsQueued extends Notification implements ShouldQueue
 {
@@ -19,7 +19,7 @@ class AllMailsQueued extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param string $estimatedTime
+     * @param  string  $estimatedTime
      */
     public function __construct(string $estimatedTime)
     {
@@ -39,32 +39,32 @@ class AllMailsQueued extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param \App\User $notifiable
+     * @param  \App\User  $notifiable
      *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail(User $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->line('Dear: ' . $notifiable->name)
+        return (new MailMessage())
+            ->line('Dear: '.$notifiable->name)
             ->line('All emails have been queued')
-            ->line('Expected completion: ' . $this->estimatedTime)
+            ->line('Expected completion: '.$this->estimatedTime)
             ->line('Thank you for using our application!');
     }
 
     /**
      * Get the array representation of the notification.
      *
-     * @param User $notifiable
+     * @param  User  $notifiable
      *
      * @return array
      */
     public function toArray($notifiable): array
     {
         return [
-            'Dear: ' . $notifiable->name,
+            'Dear: '.$notifiable->name,
             'All emails have been queued',
-            'Expected completion: ' . $this->estimatedTime,
+            'Expected completion: '.$this->estimatedTime,
             'Thank you for using our application',
         ];
     }

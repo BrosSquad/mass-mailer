@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use Throwable;
 use Exception;
 use Illuminate\Http\Request;
-use App\Contracts\Applications\ApplicationContract;
 use App\Dto\CreateApplication;
-use App\Http\Requests\ApplicationRequest;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\CreateAppKey;
+use App\Contracts\MassMailerKeyContract;
+use App\Http\Requests\ApplicationRequest;
+use App\Contracts\Applications\ApplicationContract;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ApplicationController extends Controller
 {
     private ApplicationContract $applicationService;
+    private MassMailerKeyContract $mailerKeyContract;
 
-    public function __construct(ApplicationContract $applicationService)
+    public function __construct(ApplicationContract $applicationService, MassMailerKeyContract $mailerKeyContract)
     {
         $this->applicationService = $applicationService;
+        $this->mailerKeyContract = $mailerKeyContract;
     }
 
-    public function getApplications(Request $request)
+    public function getApplications(Request $request): JsonResponse
     {
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 10);
@@ -34,7 +38,7 @@ class ApplicationController extends Controller
         );
     }
 
-    public function getApplication(int $id, Request $request)
+    public function getApplication(int $id, Request $request): JsonResponse
     {
         try {
             return ok(
@@ -43,11 +47,11 @@ class ApplicationController extends Controller
                 ]
             );
         } catch (ModelNotFoundException $e) {
-            return notFound(['message' => 'Application with id: ' . $id . ' is not found']);
+            return notFound(['message' => 'Application with id: '.$id.' is not found']);
         }
     }
 
-    public function createApplication(ApplicationRequest $request)
+    public function createApplication(ApplicationRequest $request): JsonResponse
     {
         $createApplication = new CreateApplication($request->validated());
 
@@ -59,7 +63,7 @@ class ApplicationController extends Controller
         }
     }
 
-    public function createAppKey(CreateAppKey $request)
+    public function createAppKey(CreateAppKey $request): JsonResponse
     {
         try {
             $key = $this->applicationService->generateNewAppKey($request->input('appId'), $request->user());
@@ -71,11 +75,20 @@ class ApplicationController extends Controller
         }
     }
 
-    public function deleteAppKey(int $id)
+    public function deleteAppKey(int $id): JsonResponse
     {
+        if ($this->mailerKeyContract->deleteKey($id)) {
+            return noContent();
+        }
+
+        return internalServerError(
+            [
+                'message' => 'Cannot delete key with id: '.$id,
+            ]
+        );
     }
 
-    public function deleteApplication(int $id)
+    public function deleteApplication(int $id): JsonResponse
     {
         try {
             $deleted = $this->applicationService->deleteApplication($id);

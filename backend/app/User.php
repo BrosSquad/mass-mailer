@@ -4,16 +4,17 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Hashids\HashidsInterface;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Silber\Bouncer\Database\HasRolesAndAbilities;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
+ *
  * @package App
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $surname
  * @property string $email
@@ -47,7 +48,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'avatar',
-        'background_image'
+        'background_image',
     ];
 
     /**
@@ -61,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
         'email_verified_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -71,7 +72,7 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'last_login' => 'datetime',
+        'last_login'        => 'datetime',
     ];
 
     public static function setHashids(HashidsInterface $hashids)
@@ -112,10 +113,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [
-            'name' => $this->name,
+            'name'    => $this->name,
             'surname' => $this->surname,
-            'email' => $this->email,
-            'role' => $this->getRoles()->first(),
+            'email'   => $this->email,
+            'role'    => $this->getRoles()->first(),
         ];
     }
 

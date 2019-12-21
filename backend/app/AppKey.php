@@ -10,13 +10,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Class AppKey
  *
  * @package App
- * @property integer         $id
- * @property string          $key
- * @property string          $secret
- * @property integer         $user_id
- * @property Application     $application
- * @property User            $User
- * @property integer         $application_id
+ * @property int $id
+ * @property string $key
+ * @property string $secret
+ * @property int $user_id
+ * @property Application $application
+ * @property User $User
+ * @property int $application_id
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  */

@@ -5,10 +5,11 @@ namespace App\Dto;
 
 /**
  * Class CreateApplication
+ *
  * @package App\Dto
  * @property string $appName
  * @property string $sendgridKey
- * @property integer $sendGridNumberOfMessages
+ * @property int $sendGridNumberOfMessages
  */
 class CreateApplication extends Base
 {

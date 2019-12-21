@@ -64,7 +64,7 @@ class Kernel extends HttpKernel
             'refresh.token',
             'throttle:60,1',
             'bindings',
-            'cors'
+            'cors',
         ],
     ];
 

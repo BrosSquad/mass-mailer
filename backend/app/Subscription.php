@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Class Subscription
+ *
  * @package App
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $surname
  * @property string $email

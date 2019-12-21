@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Resources\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,12 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['jwt.auth'])->get('/me', static function (Request $request) {
-    return ok(new User($request->user()));
-});
-
+Route::middleware(['jwt.auth'])->get('/me','HomeController@me');
 
 Route::middleware(['jwt.auth'])->prefix('application')->group(static function () {
+    Route::get('/', 'ApplicationController@getApplications');
+    Route::get('/{id}', 'ApplicationController@getApplication');
     Route::post('/', 'ApplicationController@createApplication');
     Route::post('/app-key', 'ApplicationController@createAppKey');
     Route::delete('/{id}', 'ApplicationController@deleteApplication');

@@ -13,9 +13,11 @@ interface MjmlContract
 
 
     /**
-     * @param string $mjml
-     * @return string
      * @throws MjmlException
+     *
+     * @param  string  $mjml
+     *
+     * @return string
      */
     public function parse(string $mjml): string;
 }

@@ -10,7 +10,8 @@ class Login extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param Request $request
+     * @param  Request  $request
+     *
      * @return array
      */
     public function toArray($request): array
@@ -18,11 +19,11 @@ class Login extends JsonResource
         return [
             'user' => new User($this->resource->user),
             'auth' => [
-                'token' => $this->resource->token,
-                'refresh' => $this->resource->refreshToken,
-                'type' => 'Bearer',
+                'token'     => $this->resource->token,
+                'refresh'   => $this->resource->refreshToken,
+                'type'      => 'Bearer',
                 'expiresIn' => $this->resource->expiresIn,
-            ]
+            ],
         ];
     }
 }

@@ -5,8 +5,9 @@ namespace App\Exceptions\RsaSigning;
 
 
 use Throwable;
+use Exception;
 
-class TokenBadlyFormatted extends \Exception
+class TokenBadlyFormatted extends Exception
 {
     public function __construct($message = 'Token is badly formatted', $code = 0, Throwable $previous = null)
     {

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\Message\MessageContract;
+use Throwable;
 use App\Dto\CreateMessage;
 use App\Exceptions\MjmlException;
 use App\Http\Requests\MessageRequest;
-use Throwable;
+use App\Contracts\Message\MessageContract;
 
 class MessageController extends Controller
 {
@@ -23,11 +23,9 @@ class MessageController extends Controller
         try {
             $message = $this->messageService->createNewMessage($createMessage, $applicationId, $request->user());
             return created($message);
-        }
-        catch (MjmlException $e) {
+        } catch (MjmlException $e) {
             return badRequest(['message' => $e->getMessage(), 'errors' => $e->getErrors()]);
-        }
-        catch (Throwable $e) {
+        } catch (Throwable $e) {
             return internalServerError($e);
         }
     }

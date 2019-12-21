@@ -16,7 +16,7 @@ class HashidsProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../../config/hashids.php', 'hashids');
+        $this->mergeConfigFrom(__DIR__.'/../../config/hashids.php', 'hashids');
         $this->app->singleton(
             HashidsInterface::class,
             static function () {
@@ -30,7 +30,7 @@ class HashidsProvider extends ServiceProvider
     /**
      * Bootstrap services.
      *
-     * @param HashidsInterface $hashids
+     * @param  HashidsInterface  $hashids
      *
      * @return void
      */

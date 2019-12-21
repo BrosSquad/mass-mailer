@@ -2,23 +2,26 @@
 
 namespace App\Jobs;
 
+use SendGrid;
 use Exception;
-use App\Application;
-use App\Message;
 use App\Notify;
+use App\Message;
+use App\Application;
 use App\Subscription;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Log;
-use SendGrid;
 
 class SendEmailToUser implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Queueable;
+    use Dispatchable;
+    use SerializesModels;
+    use InteractsWithQueue;
 
     private Subscription $subscription;
 
@@ -31,10 +34,10 @@ class SendEmailToUser implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Subscription $subscription
-     * @param Application  $application
-     * @param Message      $message
-     * @param SendGrid     $sendGrid
+     * @param  Subscription  $subscription
+     * @param  Application  $application
+     * @param  Message  $message
+     * @param  SendGrid  $sendGrid
      */
     public function __construct(
         Subscription $subscription,
@@ -53,7 +56,7 @@ class SendEmailToUser implements ShouldQueue
      *
      * @throws \Throwable
      *
-     * @param UrlGenerator $urlGenerator
+     * @param  UrlGenerator  $urlGenerator
      *
      * @return void
      */
@@ -88,7 +91,7 @@ class SendEmailToUser implements ShouldQueue
             $mail->setFrom($this->message->from_email, $this->message->from_name);
             $mail->setReplyTo($this->message->reply_to);
             $mail->setSubject($this->message->subject);
-            $mail->addTo($this->subscription->email, $this->subscription->name . ' ' . $this->subscription->surname);
+            $mail->addTo($this->subscription->email, $this->subscription->name.' '.$this->subscription->surname);
             $mail->addContent('text/html', $html);
         } catch (SendGrid\Mail\TypeException $e) {
             Log::error($e->getMessage());

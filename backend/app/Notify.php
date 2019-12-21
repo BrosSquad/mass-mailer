@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Notify
+ *
  * @package App
- * @property integer $id
+ * @property int $id
  * @property string $email
- * @property boolean $success
- * @property integer $application_id
- * @property integer $message_id
- * @property integer $sendgrid_id
+ * @property bool $success
+ * @property int $application_id
+ * @property int $message_id
+ * @property int $sendgrid_id
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  */
@@ -28,7 +29,7 @@ class Notify extends Model
         'message_id',
         'success',
         'subscription_id',
-        'sendgrid_id'
+        'sendgrid_id',
     ];
 
     public function message(): BelongsTo

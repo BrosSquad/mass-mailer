@@ -4,9 +4,9 @@
 namespace App\Contracts\Applications;
 
 
+use App\User;
 use App\Application;
 use App\Dto\CreateApplication;
-use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface ApplicationContract
@@ -16,8 +16,8 @@ interface ApplicationContract
     public function getApplication(User $user, int $id): Application;
 
     /**
-     * @param CreateApplication $createApplication
-     * @param User              $user
+     * @param  CreateApplication  $createApplication
+     * @param  User  $user
      *
      * @return Application
      */
@@ -26,15 +26,15 @@ interface ApplicationContract
     /**
      * @throws ModelNotFoundException
      *
-     * @param User $user
-     * @param int  $appId
+     * @param  User  $user
+     * @param  int  $appId
      *
      * @return string
      */
     public function generateNewAppKey(int $appId, User $user): string;
 
     /**
-     * @param int $appId
+     * @param  int  $appId
      *
      * @return bool
      */

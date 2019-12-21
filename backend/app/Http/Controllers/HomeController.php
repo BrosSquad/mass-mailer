@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Support\Renderable;
+use App\Http\Resources\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\Support\Renderable;
 
 class HomeController extends Controller
 {
@@ -25,6 +27,11 @@ class HomeController extends Controller
     public function index(): Renderable
     {
         return view('home');
+    }
+
+    public function me(Request $request): JsonResponse
+    {
+        return ok(new User($request->user()));
     }
 
 

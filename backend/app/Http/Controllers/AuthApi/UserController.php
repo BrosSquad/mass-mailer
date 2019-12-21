@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\AuthApi;
 
-use App\Contracts\User\ChangeImageContract;
+use Exception;
 use App\Contracts\UserContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangeImageRequest;
-use Exception;
+use App\Contracts\User\ChangeImageContract;
 
 class UserController extends Controller
 {

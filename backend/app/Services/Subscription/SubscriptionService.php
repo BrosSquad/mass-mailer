@@ -5,20 +5,20 @@ namespace App\Services\Subscription;
 
 
 use App\User;
-use App\Application;
-use RuntimeException;
-use App\Contracts\Subscription\SubscriptionContract;
-use App\Dto\CreateSubscriber;
-use App\Subscription;
 use Throwable;
+use App\Application;
+use App\Subscription;
+use RuntimeException;
+use App\Dto\CreateSubscriber;
+use App\Contracts\Subscription\SubscriptionContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SubscriptionService implements SubscriptionContract
 {
     /**
-     * @param \App\User $user
-     * @param int       $page
-     * @param int       $perPage
+     * @param  \App\User  $user
+     * @param  int  $page
+     * @param  int  $perPage
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
@@ -30,25 +30,10 @@ class SubscriptionService implements SubscriptionContract
     }
 
     /**
-     * @param \App\User $user
-     * @param int       $id
-     *
-     * @return \App\Subscription
-     */
-    public function getSubscriber(User $user, int $id): Subscription
-    {
-        // TODO: Check the permission
-        /** @var Subscription $subscription */
-        $subscription = Subscription::query()->findOrFail($id);
-
-        return $subscription;
-    }
-
-    /**
      * @throws Throwable
      *
-     * @param int              $appId
-     * @param CreateSubscriber $createSubscriber
+     * @param  int  $appId
+     * @param  CreateSubscriber  $createSubscriber
      *
      * @return Subscription
      */
@@ -91,8 +76,8 @@ class SubscriptionService implements SubscriptionContract
     }
 
     /**
-     * @param int $applicationId
-     * @param int $id
+     * @param  int  $applicationId
+     * @param  int  $id
      *
      * @return bool
      */
@@ -101,5 +86,20 @@ class SubscriptionService implements SubscriptionContract
         /** @var Application $application */
         $application = Application::with(['subscriptions'])->findOrFail($applicationId);
         return $application->subscriptions()->detach($id) !== 0;
+    }
+
+    /**
+     * @param  \App\User  $user
+     * @param  int  $id
+     *
+     * @return \App\Subscription
+     */
+    public function getSubscriber(User $user, int $id): Subscription
+    {
+        // TODO: Check the permission
+        /** @var Subscription $subscription */
+        $subscription = Subscription::query()->findOrFail($id);
+
+        return $subscription;
     }
 }

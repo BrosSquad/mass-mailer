@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
 class SubscribeRequest extends FormRequest
 {
@@ -25,9 +25,9 @@ class SubscribeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name'    => 'required',
             'surname' => 'required',
-            'email' => 'required|email|unique:subscriptions'
+            'email'   => 'required|email|unique:subscriptions',
         ];
     }
 }

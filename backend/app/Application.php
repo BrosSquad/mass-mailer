@@ -4,18 +4,18 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class Application
  *
  * @package App
- * @property integer $id
+ * @property int $id
  * @property string $app_name
- * @property integer $user_id
+ * @property int $user_id
  * @property AppKey $appKey
  * @property User $user
  * @property SendGridKey $sendGridKey

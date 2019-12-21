@@ -4,16 +4,16 @@
 namespace App\Services\Applications;
 
 
+use App\User;
 use App\AppKey;
 use App\Application;
-use App\Contracts\Applications\ApplicationContract;
-use App\Contracts\MassMailerKeyContract;
-use App\Dto\CreateApplication;
 use App\SendGridKey;
-use App\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 use RuntimeException;
+use App\Dto\CreateApplication;
+use Illuminate\Support\Facades\DB;
+use App\Contracts\MassMailerKeyContract;
+use App\Contracts\Applications\ApplicationContract;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ApplicationService implements ApplicationContract
@@ -26,9 +26,9 @@ class ApplicationService implements ApplicationContract
     }
 
     /**
-     * @param \App\User $user
-     * @param int       $page
-     * @param int       $perPage
+     * @param  \App\User  $user
+     * @param  int  $page
+     * @param  int  $perPage
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
@@ -50,8 +50,8 @@ class ApplicationService implements ApplicationContract
     }
 
     /**
-     * @param CreateApplication $createApplication
-     * @param User              $user
+     * @param  CreateApplication  $createApplication
+     * @param  User  $user
      *
      * @return Application
      */
@@ -88,8 +88,8 @@ class ApplicationService implements ApplicationContract
     /**
      * @throws ModelNotFoundException
      *
-     * @param User $user
-     * @param int  $appId
+     * @param  User  $user
+     * @param  int  $appId
      *
      * @return string
      */
@@ -115,7 +115,7 @@ class ApplicationService implements ApplicationContract
     }
 
     /**
-     * @param int $appId
+     * @param  int  $appId
      *
      * @return bool
      */

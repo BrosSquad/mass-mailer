@@ -4,16 +4,16 @@
 namespace App\Services\Messages;
 
 
+use App\User;
+use Throwable;
+use App\Message;
+use RuntimeException;
+use GuzzleHttp\Client;
+use App\Dto\CreateMessage;
+use App\Jobs\NotifyAllUsers;
+use App\Exceptions\MjmlException;
 use App\Contracts\Message\MjmlContract;
 use App\Contracts\Message\MessageContract;
-use App\Dto\CreateMessage;
-use App\Exceptions\MjmlException;
-use App\Jobs\NotifyAllUsers;
-use App\Message;
-use App\User;
-use GuzzleHttp\Client;
-use RuntimeException;
-use Throwable;
 
 class MessageService implements MessageContract
 {
@@ -30,9 +30,9 @@ class MessageService implements MessageContract
      * @throws MjmlException
      * @throws Throwable
      *
-     * @param User          $user
-     * @param CreateMessage $createMessage
-     * @param int           $applicationId
+     * @param  User  $user
+     * @param  CreateMessage  $createMessage
+     * @param  int  $applicationId
      *
      * @return Message
      */

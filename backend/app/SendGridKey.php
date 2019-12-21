@@ -4,16 +4,17 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class SendGridKey
+ *
  * @package App
- * @property integer $id
+ * @property int $id
  * @property string $key
- * @property integer $number_of_messages
- * @property integer $application_id
+ * @property int $number_of_messages
+ * @property int $application_id
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  */
@@ -21,7 +22,7 @@ class SendGridKey extends Model
 {
     protected $fillable = [
         'key',
-        'number_of_messages'
+        'number_of_messages',
     ];
 
     protected $hidden = [
@@ -29,7 +30,7 @@ class SendGridKey extends Model
         'key',
         'created_at',
         'number_of_messages',
-        'updated_at'
+        'updated_at',
     ];
 
     protected $table = 'sendgrid_keys';

@@ -4,16 +4,18 @@
 namespace App\Contracts;
 
 
-use App\Dto\CreateUser;
 use App\User;
 use Throwable;
+use App\Dto\CreateUser;
 
 interface UserContract
 {
     /**
-     * @param CreateUser $createUser
-     * @return User
      * @throws Throwable
+     *
+     * @param  CreateUser  $createUser
+     *
+     * @return User
      */
     public function createUser(CreateUser $createUser): User;
 

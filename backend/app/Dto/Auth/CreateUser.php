@@ -6,10 +6,11 @@ namespace App\Dto;
 
 /**
  * Class CreateUser
- * @property string $name
+ *
+ * @package App\Dto
  * @property string $surname
  * @property string $email
- * @package App\Dto
+ * @property string $name
  */
 class CreateUser extends Base
 {
