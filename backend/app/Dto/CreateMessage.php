@@ -6,13 +6,14 @@ namespace App\Dto;
 
 /**
  * Class CreateMessage
- * @property string $text
+ *
+ * @package App\Dto
  * @property string $fromEmail
  * @property string $fromName
  * @property string|null $replyTo
  * @property bool $isMjml
  * @property string $subject
- * @package App\Dto
+ * @property string $text
  */
 class CreateMessage extends Base
 {

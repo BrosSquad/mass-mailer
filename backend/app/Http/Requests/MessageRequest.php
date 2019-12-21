@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
 class MessageRequest extends FormRequest
 {
@@ -25,12 +25,12 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'text' => 'required',
+            'text'      => 'required',
             'fromEmail' => 'required|email',
-            'fromName' => 'required',
-            'replyTo' => 'required|email',
-            'subject' => 'required',
-            'isMjml' => 'required|boolean'
+            'fromName'  => 'required',
+            'replyTo'   => 'required|email',
+            'subject'   => 'required',
+            'isMjml'    => 'required|boolean',
         ];
     }
 }

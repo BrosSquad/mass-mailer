@@ -4,16 +4,17 @@
 namespace App\Services\Auth;
 
 
+use App\AppKey;
 use Carbon\Carbon;
 use App\Application;
+use RuntimeException;
+use Illuminate\Support\Facades\DB;
 use App\Contracts\MassMailerKeyContract;
 use App\Exceptions\InvalidAppKeyException;
-use RuntimeException;
 use UonSoftware\RsaSigner\Contracts\RsaSigner;
 
 class MassMailerKey implements MassMailerKeyContract
 {
-    public const HASH_ALGORITHM = 'sha3-256';
 
     private RsaSigner $rsaSigner;
 
@@ -26,16 +27,16 @@ class MassMailerKey implements MassMailerKeyContract
     /**
      * @throws \UonSoftware\RsaSigner\Exceptions\SignatureCorrupted
      *
-     * @param string $appName
+     * @param  string  $appName
      *
      * @return array
      */
     public function generateKey(string $appName): array
     {
-        $key = 'MM' . '.' . hash(self::HASH_ALGORITHM, Carbon::now()->getTimestamp() . $appName);
+        $key = 'MM'.'.'.hash(self::HASH_ALGORITHM, Carbon::now()->getTimestamp().$appName);
         return [
             'public'    => $key,
-            'signedKey' => $key . '-' . $this->rsaSigner->sign($key),
+            'signedKey' => $key.'-'.$this->rsaSigner->sign($key),
         ];
     }
 
@@ -43,7 +44,7 @@ class MassMailerKey implements MassMailerKeyContract
      * @throws InvalidAppKeyException
      * @throws RuntimeException
      *
-     * @param string $key
+     * @param  string  $key
      */
     public function verifyKey(string $key): void
     {
@@ -57,5 +58,23 @@ class MassMailerKey implements MassMailerKeyContract
         Application::query()
             ->with(['appKey'])
             ->where('appKey.key', '=', $key);
+    }
+
+    /**
+     * @param  int  $id
+     *
+     * @return bool
+     */
+    public function deleteKey(int $id): bool
+    {
+        DB::beginTransaction();
+
+        if (AppKey::query()->where('id', '=', $id)->delete() > 0) {
+            DB::commit();
+            return true;
+        }
+
+        DB::rollBack();
+        return false;
     }
 }

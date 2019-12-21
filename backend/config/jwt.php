@@ -60,7 +60,7 @@ return [
         |
         */
 
-        'public' => env('JWT_PUBLIC_KEY', 'file://' . __DIR__ . '/../keys/public.pem'),
+        'public' => env('JWT_PUBLIC_KEY', 'file://'.__DIR__.'/../keys/public.pem'),
 
         /*
         |--------------------------------------------------------------------------
@@ -73,7 +73,7 @@ return [
         |
         */
 
-        'private' => env('JWT_PRIVATE_KEY', 'file://' . __DIR__ . '/../keys/private.pem'),
+        'private' => env('JWT_PRIVATE_KEY', 'file://'.__DIR__.'/../keys/private.pem'),
 
         /*
         |--------------------------------------------------------------------------

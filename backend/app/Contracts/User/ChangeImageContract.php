@@ -2,37 +2,42 @@
 
 namespace App\Contracts\User;
 
-use App\User;
 use Closure;
+use App\User;
 use Exception;
-use Illuminate\Http\UploadedFile;
 use Throwable;
+use Illuminate\Http\UploadedFile;
 
 /**
  * Interface ChangeImageContract
+ *
  * @package App\Contracts\User
  */
 interface ChangeImageContract
 {
     public const BACKGROUND_IMAGE = 'background';
-    public const AVATAR = 'avatar';
+    public const AVATAR           = 'avatar';
 
     /**
-     * @param UploadedFile $file
-     * @param string $path
-     * @param Closure $callback
-     * @return mixed
      * @throws Exception
      * @throws Throwable
+     *
+     * @param  Closure  $callback
+     * @param  UploadedFile  $file
+     * @param  string  $path
+     *
+     * @return mixed
      */
     public function storeImage(UploadedFile $file, string $path, Closure $callback);
 
     /**
-     * @param string $type
-     * @param User $user
-     * @param UploadedFile $file
-     * @return string
      * @throws Throwable
+     *
+     * @param  User  $user
+     * @param  UploadedFile  $file
+     * @param  string  $type
+     *
+     * @return string
      */
     public function changeImage(string $type, User $user, UploadedFile $file): string;
 }

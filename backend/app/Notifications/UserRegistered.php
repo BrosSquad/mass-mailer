@@ -4,9 +4,9 @@ namespace App\Notifications;
 
 use App\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class UserRegistered extends Notification implements ShouldQueue
 {
@@ -17,7 +17,7 @@ class UserRegistered extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param User $user
+     * @param  User  $user
      */
     public function __construct(User $user)
     {
@@ -28,7 +28,8 @@ class UserRegistered extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
+     *
      * @return array
      */
     public function via($notifiable)
@@ -39,12 +40,13 @@ class UserRegistered extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
+     *
      * @return MailMessage
      */
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->line('The introduction to the notification.')
             ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
@@ -53,7 +55,8 @@ class UserRegistered extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
+     *
      * @return array
      */
     public function toArray($notifiable)

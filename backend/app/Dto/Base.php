@@ -18,7 +18,7 @@ abstract class Base
         if (property_exists($this, $name)) {
             return $this->{$name};
         }
-        return NULL;
+        return null;
     }
 
     public function __set($name, $value)

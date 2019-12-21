@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\AuthApi;
 
-use App\Contracts\User\ChangeImageContract;
+use Exception;
 use App\Contracts\UserContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangeImageRequest;
-use Exception;
+use App\Contracts\User\ChangeImageContract;
 
 class UserController extends Controller
 {
-    private $userService;
-    private $changeImageContract;
+    private UserContract $userService;
+    private ChangeImageContract $changeImageContract;
 
     public function __construct(UserContract $userContract, ChangeImageContract $changeImageContract)
     {

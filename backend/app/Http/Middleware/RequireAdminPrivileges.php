@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\User;
 use Closure;
-use Illuminate\Auth\AuthenticationException;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class RequireAdminPrivileges
@@ -13,10 +13,12 @@ class RequireAdminPrivileges
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
-     * @return mixed
      * @throws AuthenticationException
+     *
+     * @param  Closure  $next
+     * @param  Request  $request
+     *
+     * @return mixed
      */
     public function handle($request, Closure $next)
     {

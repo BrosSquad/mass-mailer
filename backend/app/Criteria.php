@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class Criteria
+ *
  * @package App
- * @property integer $id
+ * @property int $id
  * @property string $field
  * @property string $operator
  * @property string $value
- * @property integer $message_id
+ * @property int $message_id
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  */
@@ -24,7 +25,7 @@ class Criteria extends Model
     protected $fillable = [
         'field',
         'operator',
-        'value'
+        'value',
     ];
 
     public function message(): BelongsTo

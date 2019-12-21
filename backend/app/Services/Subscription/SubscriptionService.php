@@ -4,58 +4,71 @@
 namespace App\Services\Subscription;
 
 
-use App\Application;
-use App\Contracts\Subscription\SubscriptionContract;
-use App\Dto\CreateSubscriber;
-use App\Subscription;
+use App\User;
 use Throwable;
+use App\Application;
+use App\Subscription;
+use RuntimeException;
+use App\Dto\CreateSubscriber;
+use App\Contracts\Subscription\SubscriptionContract;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SubscriptionService implements SubscriptionContract
 {
     /**
+     * @param  \App\User  $user
+     * @param  int  $page
+     * @param  int  $perPage
      *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getSubscribers()
+    public function getSubscribers(User $user, int $page = 1, int $perPage = 10): LengthAwarePaginator
     {
-
+        // TODO: Check for permissions
+        return Subscription::query()
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
-     * @param CreateSubscriber $createSubscriber
-     * @param int $appId
-     * @return Subscription
      * @throws Throwable
+     *
+     * @param  int  $appId
+     * @param  CreateSubscriber  $createSubscriber
+     *
+     * @return Subscription
      */
     public function addSubscriber(CreateSubscriber $createSubscriber, $appId): Subscription
     {
         $application = null;
         /** @var Application $application */
-        if(is_int($appId)) {
+        if (is_int($appId)) {
             $application = Application::query()
                 ->findOrFail($appId);
-        } else if($appId instanceof Application) {
+        } elseif ($appId instanceof Application) {
             $application = $appId;
         } else {
-            throw new \RuntimeException('Application is not found');
+            throw new RuntimeException('Application is not found');
         }
         /** @var Subscription $subscription */
 
         $subscription = Subscription::query()
-            ->where('email' ,'=', $createSubscriber->email)
+            ->where('email', '=', $createSubscriber->email)
             ->first();
 
-        if($subscription === null) {
-            $subscription = new Subscription([
-                'email' => $createSubscriber->email,
-                'name' => $createSubscriber->name,
-                'surname' => $createSubscriber->surname,
-            ]);
+        if ($subscription === null) {
+            $subscription = new Subscription(
+                [
+                    'email'   => $createSubscriber->email,
+                    'name'    => $createSubscriber->name,
+                    'surname' => $createSubscriber->surname,
+                ]
+            );
             $subscription->saveOrFail();
         }
 
         $appSub = $application->subscriptions()->find($subscription->id);
 
-        if(!$appSub) {
+        if (!$appSub) {
             $application->subscriptions()->attach($subscription->id);
         }
 
@@ -63,8 +76,9 @@ class SubscriptionService implements SubscriptionContract
     }
 
     /**
-     * @param int $applicationId
-     * @param int $id
+     * @param  int  $applicationId
+     * @param  int  $id
+     *
      * @return bool
      */
     public function unsubscribe(int $applicationId, int $id): bool
@@ -72,5 +86,20 @@ class SubscriptionService implements SubscriptionContract
         /** @var Application $application */
         $application = Application::with(['subscriptions'])->findOrFail($applicationId);
         return $application->subscriptions()->detach($id) !== 0;
+    }
+
+    /**
+     * @param  \App\User  $user
+     * @param  int  $id
+     *
+     * @return \App\Subscription
+     */
+    public function getSubscriber(User $user, int $id): Subscription
+    {
+        // TODO: Check the permission
+        /** @var Subscription $subscription */
+        $subscription = Subscription::query()->findOrFail($id);
+
+        return $subscription;
     }
 }

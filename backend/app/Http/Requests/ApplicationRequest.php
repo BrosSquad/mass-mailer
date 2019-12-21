@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
 
 class ApplicationRequest extends FormRequest
 {
@@ -26,19 +26,19 @@ class ApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appName' => [
+            'appName'                  => [
                 'required',
-                'unique:applications,app_name'
+                'unique:applications,app_name',
             ],
-            'sendgridKey' => [
+            'sendgridKey'              => [
                 'required',
                 'regex:/^SG\.([a-zA-Z0-9\-\_]{22})\.([a-zA-Z0-9\-\_]{43})$/',
-                'unique:sendgrid_keys,key'
+                'unique:sendgrid_keys,key',
             ],
             'sendGridNumberOfMessages' => [
                 'required',
-                'integer'
-            ]
+                'integer',
+            ],
         ];
     }
 }

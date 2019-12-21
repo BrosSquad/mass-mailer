@@ -6,6 +6,7 @@ namespace App\Dto;
 
 /**
  * Class CreateSubscriber
+ *
  * @package App\Dto
  * @property string $name
  * @property string $surname

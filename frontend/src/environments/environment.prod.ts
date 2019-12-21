@@ -1,6 +1,6 @@
-import { Environment } from './environment';
+import {Env} from './env';
 
-export const environment: Environment = {
+export const environment: Env = {
   production: true,
-  api: '',
+  api: 'http://localhost'
 };

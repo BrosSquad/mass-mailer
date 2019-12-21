@@ -5,7 +5,6 @@ namespace App\Exceptions;
 
 
 use Exception;
-use Throwable;
 
 class MjmlException extends Exception
 {

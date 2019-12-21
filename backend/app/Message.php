@@ -4,19 +4,19 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  *
- * @property integer $id
+ * @property int $id
  * @property string $subject
  * @property string $from_email
  * @property string $from_name
  * @property string $reply_to
  * @property string $text
- * @property integer $application_id
- * @property integer $user_id
+ * @property int $application_id
+ * @property int $user_id
  * @property User $user
  * @property Application $application
  * @property Criteria[] $criteria
@@ -34,7 +34,7 @@ class Message extends Model
         'subject',
         'application_id',
         'mjml',
-        'parsed'
+        'parsed',
     ];
 
     public function criteria(): HasMany

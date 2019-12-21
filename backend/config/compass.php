@@ -81,7 +81,7 @@ return [
 
     'template' => [
         'slate' => [
-            'output' => 'public/docs',
+            'output'           => 'public/docs',
             'example_requests' => [
                 'bash',
             ],

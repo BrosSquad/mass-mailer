@@ -4,22 +4,22 @@
 namespace App\Services;
 
 
-use App\Contracts\UserContract;
-use App\Dto\CreateUser;
-use App\Notifications\UserRegistered;
 use App\User;
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Throwable;
+use App\Dto\CreateUser;
 use Tymon\JWTAuth\Manager;
+use Illuminate\Support\Str;
+use App\Contracts\UserContract;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\UrlGenerator;
+use App\Notifications\UserRegistered;
+use Illuminate\Contracts\Hashing\Hasher;
 
 class UserService implements UserContract
 {
-    private Hasher $hasher;
-    private Manager $manager;
-    private UrlGenerator $urlGenerator;
+    protected Hasher $hasher;
+    protected Manager $manager;
+    protected UrlGenerator $urlGenerator;
 
     public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator)
     {
@@ -31,7 +31,7 @@ class UserService implements UserContract
     /**
      * @throws Throwable
      *
-     * @param CreateUser $createUser
+     * @param  CreateUser  $createUser
      *
      * @return User
      */
