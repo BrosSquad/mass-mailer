@@ -30,16 +30,10 @@ class CreateAccessesTable extends Migration
                 ->index();
             $table->ipAddress('ipAccess')
                 ->nullable();
-            $table->
             $table->unsignedBigInteger('user_id')
                 ->default(null)
+                ->index()
                 ->nullable();
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('set null')
-                ->onUpdate('set null');
 
             $table->timestamps();
         });

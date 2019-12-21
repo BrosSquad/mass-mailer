@@ -14,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * Class User
  *
  * @package App
- * @property integer         $id
+ * @property int $id
  * @property string          $name
  * @property string          $surname
  * @property string          $email
@@ -29,7 +29,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable, HasRoles;
+    use HasRoles;
+    use Notifiable;
 
     /**
      * @var HashidsInterface
