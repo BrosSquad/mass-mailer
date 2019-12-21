@@ -10,7 +10,7 @@ use Throwable;
 
 class MessageController extends Controller
 {
-    private $messageService;
+    private MessageContract $messageService;
 
     public function __construct(MessageContract $messageService)
     {

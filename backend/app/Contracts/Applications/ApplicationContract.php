@@ -11,27 +11,31 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface ApplicationContract
 {
-    public function getApplications();
+    public function getApplications(User $user, int $page, int $perPage);
 
-    public function getApplication(int $id): Application;
+    public function getApplication(User $user, int $id): Application;
 
     /**
      * @param CreateApplication $createApplication
-     * @param User $user
+     * @param User              $user
+     *
      * @return Application
      */
     public function createApplication(CreateApplication $createApplication, User $user): Application;
 
     /**
-     * @param int $appId
-     * @param User $user
-     * @return string
      * @throws ModelNotFoundException
+     *
+     * @param User $user
+     * @param int  $appId
+     *
+     * @return string
      */
     public function generateNewAppKey(int $appId, User $user): string;
 
     /**
      * @param int $appId
+     *
      * @return bool
      */
     public function deleteApplication(int $appId): bool;

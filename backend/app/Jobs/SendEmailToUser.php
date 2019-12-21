@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Application;
 use App\Message;
 use App\Notify;
@@ -101,7 +102,7 @@ class SendEmailToUser implements ShouldQueue
             if ($status > 200 && $status < 300) {
                 $success = true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
         }
 

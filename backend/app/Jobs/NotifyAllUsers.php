@@ -8,6 +8,9 @@ use App\User;
 use App\Subscription;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Queueable;
+use App\Mail\NumberOfMailsSent;
+use Illuminate\Contracts\Mail\Mailer;
+use App\Notifications\AllMailsQueued;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -62,9 +65,9 @@ class NotifyAllUsers implements ShouldQueue
                     SendEmailToUser::dispatch($item, $this->application, $this->message, $sendgrid)->delay($sendAt);
                     if ($index % 500 === 0) {
                         $sendAt = $sendAt->addHour();
-                        // TODO: Send notification to administrators
                     }
                 }
             );
+        $this->user->notify(new AllMailsQueued($sendAt->diffForHumans()));
     }
 }

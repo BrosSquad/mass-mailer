@@ -10,8 +10,8 @@ use Exception;
 
 class UserController extends Controller
 {
-    private $userService;
-    private $changeImageContract;
+    private UserContract $userService;
+    private ChangeImageContract $changeImageContract;
 
     public function __construct(UserContract $userContract, ChangeImageContract $changeImageContract)
     {

@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use RuntimeException;
 use App\Contracts\User\ChangeImageContract;
 use App\User;
 use Carbon\Carbon;
@@ -17,10 +18,11 @@ class ChangeImage implements ChangeImageContract
     /**
      * @var Storage
      */
-    private $storage;
+    private Storage $storage;
 
     /**
      * ChangeImage constructor.
+     *
      * @param StorageFactory $storageFactory
      */
     public function __construct(StorageFactory $storageFactory)
@@ -29,11 +31,13 @@ class ChangeImage implements ChangeImageContract
     }
 
     /**
-     * @param string $type
-     * @param User $user
-     * @param UploadedFile $file
-     * @return string
      * @throws Throwable
+     *
+     * @param User         $user
+     * @param UploadedFile $file
+     * @param string       $type
+     *
+     * @return string
      */
     public function changeImage(string $type, User $user, UploadedFile $file): string
     {
@@ -46,8 +50,10 @@ class ChangeImage implements ChangeImageContract
                 $path .= 'backgrounds';
                 break;
         }
-        return $this->storeImage($file, $path,
-            function (Storage $storage, $imagePath, $fileName) use ($user, $type, $path) {
+        return $this->storeImage(
+            $file,
+            $path,
+            static function (Storage $storage, $imagePath, $fileName) use ($user, $type, $path) {
                 switch ($type) {
                     case self::AVATAR:
                         $toDelete = $user->avatar;
@@ -60,26 +66,28 @@ class ChangeImage implements ChangeImageContract
                         $saved = $user->save();
                         break;
                     default:
-                        throw new Exception('Error while saving');
+                        throw new RuntimeException('Error while saving');
                 }
 
                 if (!$saved) {
-                    throw new Exception('Error while saving');
+                    throw new RuntimeException('Error while saving');
                 }
-                
-                $storage->delete($path. '/' . $toDelete);
+
+                $storage->delete($path . '/' . $toDelete);
                 return asset('storage/' . $path . '/' . $fileName);
             }
         );
     }
 
     /**
-     * @param UploadedFile $file
-     * @param string $path
-     * @param Closure $callback
-     * @return mixed
      * @throws Exception
      * @throws Throwable
+     *
+     * @param Closure      $callback
+     * @param UploadedFile $file
+     * @param string       $path
+     *
+     * @return mixed
      */
     public function storeImage(UploadedFile $file, string $path, Closure $callback)
     {
@@ -87,7 +95,7 @@ class ChangeImage implements ChangeImageContract
         $extension = $file->guessClientExtension();
 
         if ($extension === null) {
-            throw new Exception('File type is not recognized');
+            throw new RuntimeException('File type is not recognized');
         }
 
         $newName = $this->generateNewName($fileName, $extension);
@@ -95,7 +103,7 @@ class ChangeImage implements ChangeImageContract
         $isMoved = $file->storePubliclyAs('public/' . $path, $newName);
 
         if (!$isMoved) {
-            throw new Exception('File is not moved');
+            throw new RuntimeException('File is not moved');
         }
 
         try {
@@ -104,7 +112,6 @@ class ChangeImage implements ChangeImageContract
             $this->storage->delete($isMoved);
             throw $e;
         }
-
     }
 
     private function generateNewName(string $clientName, string $extension): string

@@ -17,9 +17,9 @@ use Tymon\JWTAuth\Manager;
 
 class UserService implements UserContract
 {
-    private Hasher $hasher;
-    private Manager $manager;
-    private UrlGenerator $urlGenerator;
+    protected Hasher $hasher;
+    protected Manager $manager;
+    protected UrlGenerator $urlGenerator;
 
     public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator)
     {
