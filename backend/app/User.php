@@ -4,9 +4,9 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Hashids\HashidsInterface;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
-use Silber\Bouncer\Database\HasRolesAndAbilities;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -29,13 +29,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable implements JWTSubject
 {
+    use HasRoles;
     use Notifiable;
-    use HasRolesAndAbilities;
 
     /**
      * @var HashidsInterface
      */
-    protected static $hashids;
+    protected static HashidsInterface $hashids;
 
     /**
      * The attributes that are mass assignable.
@@ -116,7 +116,7 @@ class User extends Authenticatable implements JWTSubject
             'name'    => $this->name,
             'surname' => $this->surname,
             'email'   => $this->email,
-            'role'    => $this->getRoles()->first(),
+            //            'role' => $this->getRoles()->first(),
         ];
     }
 

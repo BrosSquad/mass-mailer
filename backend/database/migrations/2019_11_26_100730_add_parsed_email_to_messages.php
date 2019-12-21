@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddParsedEmailToMessages extends Migration
 {
@@ -13,12 +13,15 @@ class AddParsedEmailToMessages extends Migration
      */
     public function up(): void
     {
-        Schema::table('messages', static function (Blueprint $table) {
-            $table->boolean('mjml')->default(true);
-            $table->mediumText('parsed')
-                ->nullable()
-                ->default(null);
-        });
+        Schema::table(
+            'messages',
+            static function (Blueprint $table) {
+                $table->boolean('mjml')->default(true);
+                $table->mediumText('parsed')
+                    ->nullable()
+                    ->default(null);
+            }
+        );
     }
 
     /**
@@ -28,9 +31,12 @@ class AddParsedEmailToMessages extends Migration
      */
     public function down(): void
     {
-        Schema::table('messages', static function (Blueprint $table) {
-            $table->dropColumn('mjml');
-            $table->dropColumn('parsed');
-        });
+        Schema::table(
+            'messages',
+            static function (Blueprint $table) {
+                $table->dropColumn('mjml');
+                $table->dropColumn('parsed');
+            }
+        );
     }
 }

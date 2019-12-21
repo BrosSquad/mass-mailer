@@ -11,9 +11,16 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface ApplicationContract
 {
-    public function getApplications(User $user, int $page, int $perPage);
+    public function getApplications(int $page, int $perPage);
 
-    public function getApplication(User $user, int $id): Application;
+    /**
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *
+     * @param  int  $id
+     *
+     * @return \App\Application
+     */
+    public function getApplication(int $id): Application;
 
     /**
      * @param  CreateApplication  $createApplication
