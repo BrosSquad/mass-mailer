@@ -12,8 +12,6 @@ class AllMailsQueued extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $delay = 10;
-
     protected string $estimatedTime;
 
     /**
@@ -23,6 +21,7 @@ class AllMailsQueued extends Notification implements ShouldQueue
      */
     public function __construct(string $estimatedTime)
     {
+        $this->delay = 10;
         $this->estimatedTime = $estimatedTime;
     }
 

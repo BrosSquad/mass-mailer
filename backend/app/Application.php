@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * Class Application
  *
  * @package App
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\AppKey[] $appKeys
+ * @property-read int|null $app_keys_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Message[] $messages
+ * @property-read int|null $messages_count
+ * @property-read int|null $notified_users_count
+ * @property-read int|null $subscriptions_count
+ * @method static Builder|Application newModelQuery()
+ * @method static Builder|Application newQuery()
+ * @method static Builder|Application query()
+ * @method static Builder|Application whereAppName($value)
+ * @method static Builder|Application whereCreatedAt($value)
+ * @method static Builder|Application whereId($value)
+ * @method static Builder|Application whereUpdatedAt($value)
+ * @method static Builder|Application whereUserId($value)
+ * @mixin \Eloquent
  * @property int $id
  * @property string $app_name
  * @property int $user_id

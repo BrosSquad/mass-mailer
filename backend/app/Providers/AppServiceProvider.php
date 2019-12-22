@@ -11,6 +11,8 @@ use App\Contracts\MassMailerKeyContract;
 use App\Services\Messages\MessageService;
 use App\Contracts\Message\MessageContract;
 use App\Contracts\User\ChangeImageContract;
+use App\Services\Applications\AppKeyService;
+use App\Contracts\Applications\AppKeyContract;
 use App\Services\Applications\ApplicationService;
 use App\Services\Subscription\SubscriptionService;
 use App\Contracts\Applications\ApplicationContract;
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ApplicationContract::class, ApplicationService::class);
         $this->app->singleton(SubscriptionContract::class, SubscriptionService::class);
         $this->app->singleton(MessageContract::class, MessageService::class);
+        $this->app->singleton(AppKeyContract::class, AppKeyService::class);
     }
 
     /**

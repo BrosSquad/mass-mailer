@@ -11,11 +11,10 @@ interface MassMailerKeyContract
     /**
      * @param  string  $appName
      *
-     * @return array ['key' => string, 'public' => string, 'signedKey' => string]
+     * @return array
      */
     public function generateKey(string $appName): array;
 
     public function verifyKey(string $key);
 
-    public function deleteKey(int $id): bool;
 }
