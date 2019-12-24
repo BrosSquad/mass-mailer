@@ -38,11 +38,11 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function subscribe($applicationId, SubscribeRequest $request)
+    public function subscribe(SubscribeRequest $request)
     {
         $createSubscriber = new CreateSubscriber($request->validated());
         try {
-            $sub = $this->subscriptionService->addSubscriber($createSubscriber, (int)$applicationId);
+            $sub = $this->subscriptionService->addSubscriber($createSubscriber, $request->getApplication());
             return created($sub);
         } catch (Throwable $e) {
             return internalServerError($e);

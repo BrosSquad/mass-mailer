@@ -9,7 +9,7 @@ use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\Authorize;
-use App\Http\Middleware\RequireAdminPrivileges;
+use App\Http\Middleware\CheckMassMailerKey;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Http\Middleware\SetCacheHeaders;
 use Illuminate\Session\Middleware\StartSession;
@@ -89,7 +89,7 @@ class Kernel extends HttpKernel
         'signed'             => ValidateSignature::class,
         'throttle'           => ThrottleRequests::class,
         'verified'           => EnsureEmailIsVerified::class,
-        'admin'              => RequireAdminPrivileges::class,
+        'app_key'            => CheckMassMailerKey::class,
         'cors'               => HandleCors::class,
         'role'               => RoleMiddleware::class,
         'permission'         => PermissionMiddleware::class,

@@ -25,8 +25,7 @@ Route::middleware(['jwt.auth'])->prefix('application')->group(static function ()
 });
 
 Route::middleware('jwt.auth')->prefix('users')->group(static function () {
-    Route::middleware(['admin'])
-        ->post('/', 'AuthApi\UserController@create');
+    Route::post('/', 'AuthApi\UserController@create');
     Route::delete('/{id}', 'AuthApi\UserController@delete');
     Route::post('/change-image', 'AuthApi\UserController@changeImage');
 });
@@ -34,8 +33,8 @@ Route::middleware('jwt.auth')->prefix('users')->group(static function () {
 Route::middleware(['jwt.auth'])->prefix('messages')->group(static function () {
     Route::post('/{applicationId}', 'MessageController@createMessage');
 });
-Route::middleware(['jwt.auth'])->prefix('subscribers')->group(static function () {
-    Route::post('/{applicationId}', 'SubscriptionController@subscribe');
+Route::middleware(['app_key'])->prefix('subscribers')->group(static function () {
+    Route::post('/', 'SubscriptionController@subscribe');
 });
 
 

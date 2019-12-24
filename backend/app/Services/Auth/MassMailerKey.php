@@ -43,8 +43,10 @@ class MassMailerKey implements MassMailerKeyContract
      * @throws RuntimeException
      *
      * @param  string  $key
+     *
+     * @return \App\Application
      */
-    public function verifyKey(string $key): void
+    public function verifyKey(string $key): Application
     {
         [$key, $signature] = explode('-', $key);
 
@@ -53,8 +55,8 @@ class MassMailerKey implements MassMailerKeyContract
             throw new InvalidAppKeyException();
         }
 
-        Application::query()
+        return Application::query()
             ->with(['appKey'])
-            ->where('appKey.key', '=', $key);
+            ->where('appKey.key', $key);
     }
 }
