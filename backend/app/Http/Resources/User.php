@@ -23,11 +23,14 @@ class User extends JsonResource
             asset('storage/images/avatars/'.$this->resource->avatar) :
             null;
 
+        /** @var \App\User $user */
+        $user = $this->resource;
         return [
             'name'            => $this->resource->name,
             'surname'         => $this->resource->surname,
             'email'           => $this->resource->email,
-            'role'            => $this->resource->getRoles()->first(),
+            'permissions'     => $user->getPermissionNames()->toArray(),
+            // 'role'            => $this->resource->getRoles()->first(),
             'avatar'          => $avatar,
             'backgroundImage' => $backgroundImage,
             'bio'             => $this->resource->bio,

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\AuthApi;
 
-use Exception;
 use App\Contracts\UserContract;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangeImageRequest;
@@ -40,7 +39,7 @@ class UserController extends Controller
 
             $image = $this->changeImageContract->changeImage($type, $request->user(), $file);
             return ok(['image' => $image]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return internalServerError(['message' => $e->getMessage()]);
         }
     }
