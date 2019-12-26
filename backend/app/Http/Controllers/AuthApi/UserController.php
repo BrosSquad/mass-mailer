@@ -23,8 +23,16 @@ class UserController extends Controller
         $this->changeImageContract = $changeImageContract;
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @param  \App\Http\Requests\CreateUserRequest  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function create(CreateUserRequest $request)
     {
+        $this->authorize('create', User::class);
         $createUser = new CreateUser($request->validated());
         try {
             $user = $this->userService->createUser($createUser);
@@ -57,8 +65,16 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete(int $id)
     {
+        $this->authorize('delete', User::class);
         try {
             if ($this->userService->deleteUser($id)) {
                 return noContent();

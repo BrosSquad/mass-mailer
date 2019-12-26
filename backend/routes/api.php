@@ -32,8 +32,8 @@ Route::middleware('jwt.auth')
     ->prefix('users')
     ->group(
         static function () {
-            Route::middleware('permission:create-users')->post('/', 'AuthApi\UserController@create');
-            Route::middleware(['permission:delete-user'])->delete('/{id}', 'AuthApi\UserController@delete');
+            Route::post('/', 'AuthApi\UserController@create');
+            Route::delete('/{id}', 'AuthApi\UserController@delete');
             Route::post('/change-image', 'AuthApi\UserController@changeImage');
         }
     );
