@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormTitleService } from '../../services/form-title.service';
 
 @Component({
   selector: 'app-login',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(private readonly formTitleService: FormTitleService) { }
 
   ngOnInit() {
+    this.formTitleService.next('Login');
   }
 
 }

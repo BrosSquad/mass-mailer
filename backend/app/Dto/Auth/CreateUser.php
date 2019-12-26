@@ -11,10 +11,12 @@ namespace App\Dto;
  * @property string $surname
  * @property string $email
  * @property string $name
+ * @property string $role
  */
 class CreateUser extends Base
 {
-    protected $name;
-    protected $surname;
-    protected $email;
+    protected string $name;
+    protected string $surname;
+    protected string $email;
+    protected string $role;
 }

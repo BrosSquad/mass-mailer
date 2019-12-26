@@ -6,7 +6,7 @@ import {Env} from './env';
 
 export const environment: Env = {
   production: false,
-  api: 'http://localhost:8000'
+  api: 'http://api.massmailer.test'
 };
 
 /*

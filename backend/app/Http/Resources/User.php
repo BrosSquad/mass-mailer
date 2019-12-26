@@ -10,6 +10,8 @@ class User extends JsonResource
     /**
      * Transform the resource into an array.
      *
+     * @throws \Exception
+     *
      * @param  Request  $request
      *
      * @return array
@@ -29,8 +31,8 @@ class User extends JsonResource
             'name'            => $this->resource->name,
             'surname'         => $this->resource->surname,
             'email'           => $this->resource->email,
-            'permissions'     => $user->getPermissionNames()->toArray(),
-            // 'role'            => $this->resource->getRoles()->first(),
+            'permissions'     => $user->getAllPermissions()->pluck('display'),
+            'role'            => $user->getRoleNames()->first(),
             'avatar'          => $avatar,
             'backgroundImage' => $backgroundImage,
             'bio'             => $this->resource->bio,

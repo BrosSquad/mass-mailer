@@ -26,63 +26,63 @@ class RolesSeeder extends Seeder
 
         $permissions = [
             // Applications
-            'get-applications',
-            'get-own-applications',
-            'create-application',
-            'delete-application',
-            'delete-own-application',
-            'update-application',
-            'update-own-application',
+            'Get Applications' => 'get-applications',
+            'Get Only Owned Applications' => 'get-own-applications',
+            'Create Application' => 'create-application',
+            'Delete Applications' => 'delete-application',
+            'Delete Only Owned Applications' => 'delete-own-application',
+            'Update Applications' => 'update-application',
+            'Update Only Owned Applications' => 'update-own-application',
 
             // App keys
-            'get-app-keys',
-            'get-own-app-keys',
-            'create-app-keys',
-            'create-own-app-keys',
-            'delete-app-keys',
-            'delete-own-app-keys',
+            'Get Application Keys' => 'get-app-keys',
+            'Get Only Owned Application Keys' => 'get-own-app-keys',
+            'Create Application Key' => 'create-app-keys',
+            'Create Keys for Own Applications' => 'create-own-app-keys',
+            'Delete Application Keys' => 'delete-app-keys',
+            'Delete Only Owned Application Keys' => 'delete-own-app-keys',
 
             // Message
-            'create-new-message',
-            'get-messages',
-            'get-own-messages',
-            'delete-messages',
-            'delete-own-messages',
+            'Create Message' => 'create-new-message',
+            'Get Messages' => 'get-messages',
+            'Get Only Owned Messages' => 'get-own-messages',
+            'Delete Messages' => 'delete-messages',
+            'Delete Only Owned Messages' => 'delete-own-messages',
 
             // SendGrid keys
-            'get-sendgrid-keys',
-            'get-own-sendgrid-keys',
-            'delete-sendgrid-key',
-            'delete-own-sendgrid-key',
-            'update-sendgrid-key',
-            'update-own-sendgrid-key',
+            'Get SendGrid Keys' => 'get-sendgrid-keys',
+            'Get Only Owned SendGrid Keys' => 'get-own-sendgrid-keys',
+            'Delete SendGrid Keys' => 'delete-sendgrid-key',
+            'Delete Only Owned SendGrid Keys' => 'delete-own-sendgrid-key',
+            'Update SendGridKeys' => 'update-sendgrid-key',
+            'Update Only Owned SendGrid Keys' => 'update-own-sendgrid-key',
 
             // Subscriptions
-            'create-subscriber',
-            'delete-subscriber',
-            'delete-own-subscriber',
-            'update-subscriber',
-            'update-own-subscriber',
-            'get-subscribers',
-            'get-own-subscribers',
+            'Add Subscriber' => 'create-subscriber',
+            'Delete Subscriber' => 'delete-subscriber',
+            'Delete Owned Subscriber' => 'delete-own-subscriber',
+            'Update Subscriber' => 'update-subscriber',
+            'Update Owned Subscriber' => 'update-own-subscriber',
+            'Get Subscribers' => 'get-subscribers',
+            'Get Owned Subscribers' => 'get-own-subscribers',
 
             // Users
-            'create-users',
-            'get-users',
-            'update-own-profile',
-            'update-profile',
-            'delete-user',
+            'Create User' => 'create-users',
+            'Get Users' => 'get-users',
+            'Update Own Profile' => 'update-own-profile',
+            'Update Profile' => 'update-profile',
+            'Delete User' => 'delete-user',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+        foreach ($permissions as $description => $permission) {
+            Permission::create(['name' => $permission, 'display' => $description]);
         }
 
 
-        Role::create(['name' => 'administrator'])
+        Role::create(['name' => 'administrator', 'display' => 'Administrator'])
             ->givePermissionTo($permissions);
 
-        $applicationManager = Role::create(['name' => 'application-manager'])
+        $applicationManager = Role::create(['name' => 'application-manager', 'display' => 'Application Manager'])
             ->givePermissionTo(
                 [
                     // Applications
@@ -97,7 +97,7 @@ class RolesSeeder extends Seeder
                 ]
             );
 
-        Role::create(['name' => 'subscriber-manager'])
+        Role::create(['name' => 'subscriber-manager', 'display' => 'Subscriber Manager'])
             ->givePermissionTo(
                 [ // Subscriptions
                   'create-subscriber',
@@ -110,7 +110,7 @@ class RolesSeeder extends Seeder
                   'update-own-profile',
                 ]
             );
-        Role::create(['name' => 'user-manager'])
+        Role::create(['name' => 'user-manager', 'display' => 'User Manager'])
             ->givePermissionTo(
                 [
                     // Users
@@ -122,7 +122,7 @@ class RolesSeeder extends Seeder
                 ]
             );
 
-        Role::create(['name' => 'messages-manager'])
+        Role::create(['name' => 'messages-manager', 'display' => 'Messages Manager'])
             ->givePermissionTo(
                 [
                     // Message
@@ -135,7 +135,7 @@ class RolesSeeder extends Seeder
                 ]
             );
 
-        Role::create(['name' => 'user'])
+        Role::create(['name' => 'user', 'display' => 'Application User'])
             ->givePermissionTo(
                 [
                     'get-own-applications',
