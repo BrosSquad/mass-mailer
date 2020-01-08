@@ -20,7 +20,8 @@ class CreatePermissionTables extends Migration
             $tableNames['permissions'],
             function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('name');
+                $table->string('name')->unique();
+                $table->string('display', 50);
                 $table->string('guard_name');
                 $table->timestamps();
             }
@@ -30,7 +31,8 @@ class CreatePermissionTables extends Migration
             $tableNames['roles'],
             function (Blueprint $table) {
                 $table->bigIncrements('id');
-                $table->string('name');
+                $table->string('name')->unique();
+                $table->string('display', 50);
                 $table->string('guard_name');
                 $table->timestamps();
             }

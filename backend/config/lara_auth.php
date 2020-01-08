@@ -36,7 +36,7 @@ return [
         'surname' => 'surname',
         'email'   => 'email',
     ],
-    'user_resource'        => UonSoftware\LaraAuth\Http\Resources\User::class,
+    'user_resource'        => \App\Http\Resources\User::class,
     'password_reset'       => [
         'frontend_url'                  => [
             'base'            => env('FRONTEND_URL', 'http://localhost:3000'),

@@ -26,16 +26,6 @@ class ImportSubscribersCSV extends Command
     protected $description = 'Import subscribers from csv';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @throws \Throwable
@@ -53,7 +43,6 @@ class ImportSubscribersCSV extends Command
         if (!$handle) {
             return 1;
         }
-        $multiple = [];
         /** @var Application $application */
         $application = Application::query()->findOrFail($appId);
         for ($i = 0; ($data = fgets($handle)) !== false; $i++) {

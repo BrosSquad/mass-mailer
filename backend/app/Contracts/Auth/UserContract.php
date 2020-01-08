@@ -19,6 +19,14 @@ interface UserContract
      */
     public function createUser(CreateUser $createUser): User;
 
+
+    /**
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Throwable
+     * @param  int  $id
+     *
+     * @return bool
+     */
     public function deleteUser(int $id): bool;
 
     public function updateUserAccount(User $user);

@@ -50,19 +50,32 @@ class UserService implements UserContract
 
         $user->saveOrFail();
 
+        $user->assignRole($createUser->role);
+
         $user->notify(new UserRegistered($user));
 
 
         return $user;
     }
 
+    /**
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Throwable
+     * @param  int  $id
+     *
+     * @return bool
+     */
     public function deleteUser(int $id): bool
     {
-        return DB::transaction(
-            static function () use ($id) {
-                return User::destroy($id) > 0;
+        return DB::transaction(function () use ($id) {
+            $user = User::query()->findOrFail($id);
+
+            if($user->delete()) {
+                return true;
             }
-        );
+
+            return false;
+        });
     }
 
     public function updateUserAccount(User $user)

@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubscribeRequest extends FormRequest
+class SubscribeRequest extends MassMailerRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::user() !== null;
     }
@@ -25,9 +25,9 @@ class SubscribeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'    => 'required',
-            'surname' => 'required',
-            'email'   => 'required|email|unique:subscriptions',
+            'name'    => 'required|min:2|max:70',
+            'surname' => 'required|min:2|max:70',
+            'email'   => 'required|email|max:255',
         ];
     }
 }

@@ -4,11 +4,9 @@
 namespace App\Services\Auth;
 
 
-use App\AppKey;
 use Carbon\Carbon;
 use App\Application;
 use RuntimeException;
-use Illuminate\Support\Facades\DB;
 use App\Contracts\MassMailerKeyContract;
 use App\Exceptions\InvalidAppKeyException;
 use UonSoftware\RsaSigner\Contracts\RsaSigner;
@@ -45,8 +43,10 @@ class MassMailerKey implements MassMailerKeyContract
      * @throws RuntimeException
      *
      * @param  string  $key
+     *
+     * @return \App\Application
      */
-    public function verifyKey(string $key): void
+    public function verifyKey(string $key): Application
     {
         [$key, $signature] = explode('-', $key);
 
@@ -55,26 +55,8 @@ class MassMailerKey implements MassMailerKeyContract
             throw new InvalidAppKeyException();
         }
 
-        Application::query()
+        return Application::query()
             ->with(['appKey'])
-            ->where('appKey.key', '=', $key);
-    }
-
-    /**
-     * @param  int  $id
-     *
-     * @return bool
-     */
-    public function deleteKey(int $id): bool
-    {
-        DB::beginTransaction();
-
-        if (AppKey::query()->where('id', '=', $id)->delete() > 0) {
-            DB::commit();
-            return true;
-        }
-
-        DB::rollBack();
-        return false;
+            ->where('appKey.key', $key);
     }
 }

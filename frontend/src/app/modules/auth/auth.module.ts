@@ -1,10 +1,13 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {LayoutComponent} from './components/layout/layout.component';
-import {RouterModule, Routes} from '@angular/router';
-import {LoginComponent} from './components/login/login.component';
-import {RequestPasswordChangeComponent} from './components/request-password-change/request-password-change.component';
-import {ChangePasswordComponent} from './components/change-password/change-password.component';
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { LayoutComponent } from './components/layout/layout.component'
+import { RouterModule, Routes } from '@angular/router'
+import { LoginComponent } from './components/login/login.component'
+import { RequestPasswordChangeComponent } from './components/request-password-change/request-password-change.component'
+import { ChangePasswordComponent } from './components/change-password/change-password.component'
+import { FormTitleService } from './services/form-title.service'
+import { ReactiveFormsModule } from '@angular/forms'
+import { NgBootstrapFormValidationModule } from 'ng-bootstrap-form-validation'
 
 const routes: Routes = [
   {
@@ -13,19 +16,19 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: LoginComponent
+        component: LoginComponent,
       },
       {
         path: 'request-new-password',
-        component: RequestPasswordChangeComponent
+        component: RequestPasswordChangeComponent,
       },
       {
         path: 'change-password',
-        component: ChangePasswordComponent
-      }
-    ]
-  }
-];
+        component: ChangePasswordComponent,
+      },
+    ],
+  },
+]
 
 @NgModule({
   declarations: [
@@ -37,10 +40,13 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    NgBootstrapFormValidationModule,
+    ReactiveFormsModule,
   ],
   exports: [
     RouterModule,
-  ]
+  ],
+  providers: [FormTitleService],
 })
 export class AuthModule {
 }

@@ -5,7 +5,6 @@ namespace App\Services\Applications;
 
 
 use App\User;
-use App\AppKey;
 use App\Application;
 use App\SendGridKey;
 use RuntimeException;
@@ -13,8 +12,7 @@ use App\Dto\CreateApplication;
 use Illuminate\Support\Facades\DB;
 use App\Contracts\MassMailerKeyContract;
 use App\Contracts\Applications\ApplicationContract;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class ApplicationService implements ApplicationContract
 {
@@ -25,36 +23,41 @@ class ApplicationService implements ApplicationContract
         $this->keyContract = $keyContract;
     }
 
-    /**
-     * @param  \App\User  $user
-     * @param  int  $page
-     * @param  int  $perPage
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getApplications(User $user, int $page, int $perPage): LengthAwarePaginator
+
+    public function getApplications(User $user, int $page, int $perPage)
     {
         $builder = Application::query();
-        // TODO: check the permissions
-        return $builder->paginate($perPage, ['*'], 'page', $page);
+        if ($user->hasPermissionTo('get-applications')) {
+            return $builder->paginate($perPage, ['*'], 'page', $page);
+        }
+
+        if ($user->hasPermissionTo('get-own-applications')) {
+            return $builder
+                ->where('user_id', '=', $user->id)
+                ->paginate($perPage, ['*'], 'page', $page);
+        }
+
+        throw new UnauthorizedException(403);
     }
+
 
     public function getApplication(User $user, int $id): Application
     {
         $builder = Application::query();
 
-        /** @var Application $application */
-        $application = $builder->findOrFail($id);
+        if ($user->hasPermissionTo('get-applications')) {
+            return $builder->findOrFail($id);
+        }
 
-        return $application;
+        if ($user->hasPermissionTo('get-own-applications')) {
+            /** @var Application $application */
+            $application = $user->applications()->findOrFail($id);
+            return $application;
+        }
+
+        throw new UnauthorizedException(403);
     }
 
-    /**
-     * @param  CreateApplication  $createApplication
-     * @param  User  $user
-     *
-     * @return Application
-     */
     public function createApplication(CreateApplication $createApplication, User $user): Application
     {
         DB::beginTransaction();
@@ -85,44 +88,22 @@ class ApplicationService implements ApplicationContract
         return $application;
     }
 
+
     /**
-     * @throws ModelNotFoundException
+     * @throws UnauthorizedException
+     * @throws \Throwable
      *
+     * @param  int  $appId
      * @param  User  $user
-     * @param  int  $appId
-     *
-     * @return string
-     */
-    public function generateNewAppKey(int $appId, User $user): string
-    {
-        DB::beginTransaction();
-        /** @var Application $application */
-        $application = Application::query()->findOrFail($appId);
-        $key = new AppKey(
-            [
-                'key'     => $this->keyContract->generateKey($application->app_name),
-                'user_id' => $user->id,
-            ]
-        );
-
-
-        if (!$application->appKeys()->save($key)) {
-            DB::rollBack();
-            throw new RuntimeException('Cannot save application key');
-        }
-
-        return $key->key;
-    }
-
-    /**
-     * @param  int  $appId
      *
      * @return bool
      */
-    public function deleteApplication(int $appId): bool
+    public function deleteApplication(User $user, int $appId): bool
     {
+        $application = Application::query()->findOrFail($appId);
+        throw_if(!$user->can('delete', $application), new UnauthorizedException(403));
         DB::beginTransaction();
-        if (Application::destroy($appId) === 0) {
+        if (!$application->delete()) {
             DB::rollBack();
             throw new RuntimeException('Cannot delete application');
         }

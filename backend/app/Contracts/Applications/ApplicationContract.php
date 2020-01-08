@@ -7,22 +7,37 @@ namespace App\Contracts\Applications;
 use App\User;
 use App\Application;
 use App\Dto\CreateApplication;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 interface ApplicationContract
 {
-    public function getApplications(int $page, int $perPage);
+    /**
+     * @throws UnauthorizedException
+     *
+     * @param  \App\User  $user
+     * @param  int  $page
+     * @param  int  $perPage
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getApplications(User $user, int $page, int $perPage);
 
     /**
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws UnauthorizedException
      *
+     * @param  User  $user
      * @param  int  $id
+     *
      *
      * @return \App\Application
      */
-    public function getApplication(int $id): Application;
+    public function getApplication(User $user, int $id): Application;
 
     /**
+     * @throws UnauthorizedException
+     * @throws \Throwable
+     *
      * @param  CreateApplication  $createApplication
      * @param  User  $user
      *
@@ -31,19 +46,13 @@ interface ApplicationContract
     public function createApplication(CreateApplication $createApplication, User $user): Application;
 
     /**
-     * @throws ModelNotFoundException
+     * @throws \Spatie\Permission\Exceptions\UnauthorizedException
+     * @throws \Throwable
      *
+     * @param  int  $appId
      * @param  User  $user
-     * @param  int  $appId
-     *
-     * @return string
-     */
-    public function generateNewAppKey(int $appId, User $user): string;
-
-    /**
-     * @param  int  $appId
      *
      * @return bool
      */
-    public function deleteApplication(int $appId): bool;
+    public function deleteApplication(User $user, int $appId): bool;
 }
