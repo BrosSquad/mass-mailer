@@ -22,6 +22,8 @@ class MassMailerKey implements MassMailerKeyContract
      */
     protected HashidsInterface $hashids;
 
+    private const KEY_LENGTH = SODIUM_CRYPTO_GENERICHASH_BYTES_MAX;
+
     public function __construct(HashidsInterface $hashids)
     {
         $this->hashids = $hashids;
@@ -62,7 +64,7 @@ class MassMailerKey implements MassMailerKeyContract
         $formattedKey = sprintf($generatedKey, $this->hashids->encodeHex($applicationKey->id));
 
 
-        $applicationKey->key = sodium_crypto_generichash($formattedKey, '', SODIUM_CRYPTO_GENERICHASH_BYTES_MAX);
+        $applicationKey->key = sodium_crypto_generichash($formattedKey, '', self::KEY_LENGTH);
 
         $applicationKey->saveOrFail();
 
@@ -99,7 +101,7 @@ class MassMailerKey implements MassMailerKeyContract
         $appKey = AppKey::with(['application'])->findOrFail($this->hashids->decode($hashedId));
 
         if (sodium_memcmp(
-                sodium_crypto_generichash($appKey->key),
+                sodium_crypto_generichash($appKey->key, '', self::KEY_LENGTH),
                 sodium_base642bin($key, SODIUM_BASE64_VARIANT_ORIGINAL_NO_PADDING)
             ) !== 0
         ) {

@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\CarbonInterface;
+use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
@@ -66,6 +67,7 @@ class User extends Authenticatable
 {
     use HasRoles;
     use Notifiable;
+    use HasApiTokensAu;
 
 
     /**

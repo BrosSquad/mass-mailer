@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Hashids\Hashids;
-use Illuminate\Support\Str;
 use Hashids\HashidsInterface;
+use Laravel\Passport\Passport;
 use App\Services\Auth\UserService;
 use App\Contracts\Auth\UserContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -30,8 +30,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         $this->app->singleton(UserContract::class, UserService::class);
-        $this->app->singleton(HashidsInterface::class, static function () {
-            return new Hashids(env('HASHIDS_SALT'), 15);
-        });
+
+        $this->app->singleton(
+            HashidsInterface::class,
+            static function () {
+                return new Hashids(env('HASHIDS_SALT'), 15);
+            }
+        );
+
+        Passport::routes();
     }
 }

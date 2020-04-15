@@ -17,6 +17,7 @@
         "fideloper/proxy": "^4.3",
         "hashids/hashids": "^4.0",
         "laravel/framework": "7.6.*",
+        "laravel/passport": "^8.4",
         "laravel/socialite": "^4.3",
         "laravel/telescope": "^3.2",
         "laravel/tinker": "^2.4",

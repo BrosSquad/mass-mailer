@@ -23,7 +23,7 @@ class MjmlService implements MjmlContract
     }
 
     /**
-     * @throws MjmlException
+     * @throws MjmlException|\JsonException
      *
      * @param  string  $mjml
      *
@@ -33,6 +33,7 @@ class MjmlService implements MjmlContract
     {
         $url = $this->config->get('mjml.url').$this->config->get('mjml.render');
         $authType = $this->config->get('mjml.auth');
+
         $response = $this->guzzleClient->post(
             $url,
             array_merge(
