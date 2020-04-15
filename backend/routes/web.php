@@ -20,7 +20,7 @@ Auth::routes(['register' => false]);
 
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/subscribers/unsubscribe', 'SubscriptionController@unsubscribe')
+Route::get('/subscribers/unsubscribe', 'SubscriptionController@delete')
     ->name('unsub')
     ->middleware(['signed']);
 

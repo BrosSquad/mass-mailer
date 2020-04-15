@@ -13,46 +13,52 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:api'])->get('/me', 'HomeController@me');
+Route::middleware(['signed'])->get('/unsubscribe/{appId}/{subscriberId}', 'SubscriptionController@delete');
 
-Route::middleware(['auth:api'])
-    ->prefix('application')
-    ->group(
-        static function () {
-            Route::get('/', 'ApplicationController@getApplications');
-            Route::get('/{id}', 'ApplicationController@getApplication');
-            Route::post('/', 'ApplicationController@createApplication');
-            Route::post('/app-key', 'ApplicationController@createAppKey');
-            Route::delete('/{id}', 'ApplicationController@deleteApplication');
-            Route::delete('/app-key/{id}', 'ApplicationController@deleteAppKey');
-        }
-    );
+Route::middleware(['auth:api'])->group(
+    static function () {
+        Route::get('/me', 'HomeController@me');
+        Route::prefix('application')->group(
+            static function () {
+                Route::get('/', 'ApplicationController@getApplications');
+                Route::get('/{id}', 'ApplicationController@getApplication');
+                Route::post('/', 'ApplicationController@createApplication');
+                Route::post('/app-key', 'ApplicationController@createAppKey');
+                Route::delete('/{id}', 'ApplicationController@deleteApplication');
+                Route::delete('/app-key/{id}', 'ApplicationController@deleteAppKey');
+            }
+        );
+        Route::prefix('users')->group(
+            static function () {
+                Route::post('/', 'AuthApi\UserController@create');
+                Route::delete('/{id}', 'AuthApi\UserController@delete');
+                Route::post('/change-image', 'AuthApi\UserController@changeImage');
+            }
+        );
 
-Route::middleware('auth:api')
-    ->prefix('users')
-    ->group(
-        static function () {
-            Route::post('/', 'AuthApi\UserController@create');
-            Route::delete('/{id}', 'AuthApi\UserController@delete');
-            Route::post('/change-image', 'AuthApi\UserController@changeImage');
-        }
-    );
+    }
+);
 
-Route::middleware(['auth:api'])
-    ->prefix('messages')
-    ->group(
-        static function () {
-            Route::post('/{applicationId}', 'MessageController@createMessage');
-        }
-    );
+Route::prefix('subscribers')->group(
+    static function () {
+        Route::post('/', 'SubscriptionController@store');
+        Route::get('/', 'SubscriptionController@get');
+        Route::get('/{id}', 'SubscriptionController@getOne');
+        Route::put('/{id}', 'SubscriptionController@update');
+    }
+);
 
 
-Route::middleware(['app_key'])
-    ->prefix('subscribers')
-    ->group(
-        static function () {
-            Route::post('/', 'SubscriptionController@subscribe');
-        }
-    );
+
+Route::middleware(['app_key'])->group(
+    static function () {
+        Route::prefix('/messages')->group(
+            static function () {
+                Route::post('/', 'MessageController@createMessage');
+            }
+        );
+    }
+);
+
 
 

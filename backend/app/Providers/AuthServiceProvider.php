@@ -7,6 +7,8 @@ use Hashids\HashidsInterface;
 use Laravel\Passport\Passport;
 use App\Services\Auth\UserService;
 use App\Contracts\Auth\UserContract;
+use App\Contracts\AuthorizationChecker;
+use App\Services\AuthorizationChecker as AuthorizationCheckerInstance;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 
@@ -30,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         $this->app->singleton(UserContract::class, UserService::class);
-
+        $this->app->singleton(AuthorizationChecker::class, AuthorizationCheckerInstance::class);
         $this->app->singleton(
             HashidsInterface::class,
             static function () {

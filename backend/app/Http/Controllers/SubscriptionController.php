@@ -2,60 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
-use App\Dto\CreateSubscriber;
+use Illuminate\Http\JsonResponse;
+use App\Services\AuthorizationChecker;
 use App\Http\Requests\SubscribeRequest;
+use App\Http\Resources\SubscriptionResource;
 use App\Contracts\Subscription\SubscriptionContract;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SubscriptionController extends Controller
 {
     protected SubscriptionContract $subscriptionService;
 
-    public function __construct(SubscriptionContract $subscriptionService)
+    public function __construct(SubscriptionContract $subscriptionService, AuthorizationChecker $authChecker)
     {
         $this->subscriptionService = $subscriptionService;
-    }
 
-    public function getSubscribers(Request $request)
-    {
-        $page = $request->query('page', 1);
-        $perPage = $request->query('perPage', 10);
-        return ok(
-            [
-                'data' => $this->subscriptionService->getSubscribers($request->user(), $page, $perPage),
-            ]
+        $authChecker->check(
+            function ($type) {
+                if (strtolower($type) === 'massmailer') {
+                    $this->middleware('app_key')->except('delete');
+                } else {
+                    $this->middleware('auth:api')->except('delete');
+                }
+            }
         );
     }
 
-    public function getSubscriber(int $id, Request $request)
+    public function get(Request $request): ?JsonResponse
     {
-        try {
-            return ok(['data' => $this->subscriptionService->getSubscriber($request->user(), $id)]);
-        } catch (ModelNotFoundException $e) {
-            return notFound(['message' => 'Subscriber with id: '.$id.' is not Found']);
-        }
+        $page = $request->query('page', 1);
+        $perPage = $request->query('perPage', 10);
+
+        $data = $this->subscriptionService->get(
+            $request->user() ?? $request->attributes->get('application'),
+            $page,
+            $perPage
+        );
+
+        return ok(new SubscriptionResource($data));
     }
 
-    public function subscribe(SubscribeRequest $request)
+    public function getOne(int $id, Request $request): ?JsonResponse
     {
-        $createSubscriber = new CreateSubscriber($request->validated());
-        try {
-            $sub = $this->subscriptionService->addSubscriber($createSubscriber, $request->getApplication());
-            return created($sub);
-        } catch (Throwable $e) {
-            return internalServerError($e);
-        }
+        $data = $this->subscriptionService->getOne(
+            $request->user() ?? $request->attributes->get('application'),
+            $id
+        );
+
+        return ok(new SubscriptionResource($data));
     }
 
-    public function unsubscribe(Request $request)
+    public function store(SubscribeRequest $request)
     {
-        $applicationId = $request->query('application');
-        $id = $request->query('subscriber');
-        if ($this->subscriptionService->unsubscribe($applicationId, $id)) {
+        $sub = $this->subscriptionService->store(
+            $request->validated(),
+            $request->user() ?? $request->attributes->get('application')
+        );
+        return created(new SubscriptionResource($sub));
+    }
+
+    public function update($id, SubscribeRequest $request): ?JsonResponse
+    {
+        $data = $this->subscriptionService->update(
+            $request->user() ?? $request->attributes->get('application'),
+            $id,
+            $request->validated()
+        );
+        return ok(new SubscriptionResource($data));
+    }
+
+    public function delete($applicationId, $id)
+    {
+        if ($this->subscriptionService->delete($applicationId, $id)) {
             return view('subscriptions.success');
         }
+
         return view('errors.500');
     }
 }

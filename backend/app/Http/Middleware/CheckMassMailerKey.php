@@ -42,17 +42,11 @@ class CheckMassMailerKey
             );
         }
 
-
         try {
-            $application = $this->massMailerKeyCheck->verifyKey($typeAndToken[1]);
-
-            $massMailerRequest = MassMailerRequest::createFrom($request);
-
-            $massMailerRequest->setApplication($application);
-
-            return $next($massMailerRequest);
+            $request->attributes->set('application', $this->massMailerKeyCheck->verifyKey($typeAndToken[1]));
+            return $next($request);
         } catch (InvalidAppKeyException $e) {
-            return unprocessableEntity(['message' => $e->getMessage()]);
+            return unauthorized(['message' => $e->getMessage()]);
         } catch (Throwable $e) {
             return notFound(['message' => 'App key is not found']);
         }

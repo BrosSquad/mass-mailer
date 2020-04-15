@@ -13,28 +13,43 @@ use App\Dto\CreateSubscriber;
 interface SubscriptionContract
 {
     /**
-     * @param  \App\User  $user
+     * @param  \App\User|Application  $user
      * @param  int  $page
      * @param  int  $perPage
      */
-    public function getSubscribers(User $user, int $page, int $perPage);
-
+    public function get($user, int $page, int $perPage);
 
     /**
-     * @throws Throwable
+     * @param $userOrApplication
+     * @param  int  $id
      *
-     * @param  int|string|Application  $appId
-     * @param  CreateSubscriber  $createSubscriber
+     * @return \App\Subscription
+     */
+    public function getOne($userOrApplication, int $id): Subscription;
+
+    /**
+     * @param  array  $createSubscriber
+     *
+     * @param Application|User $userOrApplication
      *
      * @return Subscription
      */
-    public function addSubscriber(CreateSubscriber $createSubscriber, $appId): Subscription;
+    public function store(array $createSubscriber, $userOrApplication): Subscription;
 
     /**
-     * @param  int  $applicationId
+     * @param $userOrApplication
+     * @param $id
+     * @param  array  $data
+     *
+     * @return \App\Subscription
+     */
+    public function update($userOrApplication, $id, array $data): Subscription;
+
+    /**
+     * @param  int  $application
      * @param  int  $id
      *
      * @return bool
      */
-    public function unsubscribe(int $applicationId, int $id): bool;
+    public function delete(int $application, int $id): bool;
 }
