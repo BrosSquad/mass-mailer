@@ -28,19 +28,19 @@ class RolesSeeder extends Seeder
             // Applications
             'Get Applications' => 'get-applications',
             'Get Only Owned Applications' => 'get-own-applications',
-            'Create Application' => 'create-application',
+            'Create ApplicationResource' => 'create-application',
             'Delete Applications' => 'delete-application',
             'Delete Only Owned Applications' => 'delete-own-application',
             'Update Applications' => 'update-application',
             'Update Only Owned Applications' => 'update-own-application',
 
             // App keys
-            'Get Application Keys' => 'get-app-keys',
-            'Get Only Owned Application Keys' => 'get-own-app-keys',
-            'Create Application Key' => 'create-app-keys',
+            'Get ApplicationResource Keys' => 'get-app-keys',
+            'Get Only Owned ApplicationResource Keys' => 'get-own-app-keys',
+            'Create ApplicationResource Key' => 'create-app-keys',
             'Create Keys for Own Applications' => 'create-own-app-keys',
-            'Delete Application Keys' => 'delete-app-keys',
-            'Delete Only Owned Application Keys' => 'delete-own-app-keys',
+            'Delete ApplicationResource Keys' => 'delete-app-keys',
+            'Delete Only Owned ApplicationResource Keys' => 'delete-own-app-keys',
 
             // Message
             'Create Message' => 'create-new-message',
@@ -82,7 +82,7 @@ class RolesSeeder extends Seeder
         Role::create(['name' => 'administrator', 'display' => 'Administrator'])
             ->givePermissionTo($permissions);
 
-        $applicationManager = Role::create(['name' => 'application-manager', 'display' => 'Application Manager'])
+        $applicationManager = Role::create(['name' => 'application-manager', 'display' => 'ApplicationResource Manager'])
             ->givePermissionTo(
                 [
                     // Applications
@@ -135,7 +135,7 @@ class RolesSeeder extends Seeder
                 ]
             );
 
-        Role::create(['name' => 'user', 'display' => 'Application User'])
+        Role::create(['name' => 'user', 'display' => 'ApplicationResource User'])
             ->givePermissionTo(
                 [
                     'get-own-applications',

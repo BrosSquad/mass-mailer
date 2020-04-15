@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,15 +38,15 @@ class SendGridKey extends Model
     protected $fillable = [
         'key',
         'number_of_messages',
+        'application_id',
     ];
 
     protected $hidden = [
-        'id',
         'key',
         'created_at',
-        'number_of_messages',
         'updated_at',
     ];
+
 
     protected $table = 'sendgrid_keys';
 

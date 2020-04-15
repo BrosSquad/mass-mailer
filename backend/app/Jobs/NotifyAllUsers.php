@@ -44,7 +44,7 @@ class NotifyAllUsers implements ShouldQueue
         } elseif ($applicationId instanceof Application) {
             $this->application = $applicationId;
         } else {
-            throw new RuntimeException('Application is not found');
+            throw new RuntimeException('ApplicationResource is not found');
         }
     }
 

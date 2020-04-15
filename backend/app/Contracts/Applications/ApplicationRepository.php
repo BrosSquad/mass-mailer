@@ -6,10 +6,9 @@ namespace App\Contracts\Applications;
 
 use App\User;
 use App\Application;
-use App\Dto\CreateApplication;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
-interface ApplicationContract
+interface ApplicationRepository
 {
     /**
      * @throws UnauthorizedException
@@ -20,7 +19,7 @@ interface ApplicationContract
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getApplications(User $user, int $page, int $perPage);
+    public function get(User $user, int $page, int $perPage);
 
     /**
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
@@ -32,18 +31,15 @@ interface ApplicationContract
      *
      * @return \App\Application
      */
-    public function getApplication(User $user, int $id): Application;
+    public function getOne(User $user, int $id): Application;
 
     /**
-     * @throws UnauthorizedException
-     * @throws \Throwable
-     *
-     * @param  CreateApplication  $createApplication
+     * @param  array  $createApplication
      * @param  User  $user
      *
      * @return Application
      */
-    public function createApplication(CreateApplication $createApplication, User $user): Application;
+    public function store(array $createApplication, User $user): Application;
 
     /**
      * @throws \Spatie\Permission\Exceptions\UnauthorizedException

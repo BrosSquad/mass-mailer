@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class User extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,11 +19,9 @@ class User extends JsonResource
     public function toArray($request): array
     {
         $backgroundImage = $this->resource->background_image ?
-            asset('storage/images/backgrounds/'.$this->resource->background_image) :
-            null;
+            asset('storage/images/backgrounds/'.$this->resource->background_image) : null;
         $avatar = $this->resource->avatar ?
-            asset('storage/images/avatars/'.$this->resource->avatar) :
-            null;
+            asset('storage/images/avatars/'.$this->resource->avatar) : null;
 
         /** @var \App\User $user */
         $user = $this->resource;
@@ -36,6 +34,8 @@ class User extends JsonResource
             'avatar'          => $avatar,
             'backgroundImage' => $backgroundImage,
             'bio'             => $this->resource->bio,
+            'created_at'      => $this->resource->created_at,
+            'created'         => $this->resource->created_at->diffForHumans(),
         ];
     }
 }

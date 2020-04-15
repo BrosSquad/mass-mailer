@@ -5,12 +5,10 @@ namespace App\Contracts\Subscription;
 
 
 use App\User;
-use Throwable;
 use App\Application;
 use App\Subscription;
-use App\Dto\CreateSubscriber;
 
-interface SubscriptionContract
+interface SubscriptionRepository
 {
     /**
      * @param  \App\User|Application  $user

@@ -2,57 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Http\Requests\CreateAppKey;
-use App\Contracts\Applications\AppKeyContract;
-use Spatie\Permission\Exceptions\UnauthorizedException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Http\Requests\CreateAppKeyRequest;
+use App\Http\Resources\AppKeyResource;
+use App\Contracts\Applications\AppKeyRepository;
 
 class AppKeyController extends Controller
 {
-    private AppKeyContract $appKeyService;
+    private AppKeyRepository $appKeyService;
 
     /**
      * AppKeyController constructor.
      *
-     * @param  \App\Contracts\Applications\AppKeyContract  $appKeyService
+     * @param  \App\Contracts\Applications\AppKeyRepository  $appKeyService
      */
-    public function __construct(AppKeyContract $appKeyService)
+    public function __construct(AppKeyRepository $appKeyService)
     {
         $this->appKeyService = $appKeyService;
     }
 
 
-    public function createAppKey(CreateAppKey $request): JsonResponse
+    /**
+     * @throws \Throwable
+     *
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function get(Request $request): JsonResponse
     {
-        try {
-            $key = $this->appKeyService->generateNewAppKey($request->input('appId'), $request->user());
-            return created(['appKey' => $key]);
-        } catch (ModelNotFoundException $e) {
-            return notFound(['message' => 'Application is not found']);
-        } catch (Throwable $e) {
-            return internalServerError($e);
-        }
+        // TODO: Check permissions
+        $data = $this->appKeyService->get(
+            $request->user(),
+            $request->query('page', 1),
+            $request->query('perPage', 10)
+        );
+        return ok(AppKeyResource::collection($data));
+    }
+
+    /**
+     * @throws \Throwable
+     *
+     * @param  \App\Http\Requests\CreateAppKeyRequest  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(CreateAppKeyRequest $request): JsonResponse
+    {
+        // TODO: Check permissions
+        $data = $this->appKeyService->store($request->input('appId'), $request->user());
+        return created(new AppKeyResource($data));
     }
 
 
-    public function deleteAppKey(int $id, Request $request): JsonResponse
-    {
-        try {
-            if ($this->appKeyService->deleteKey($request->user(), $id)) {
-                return noContent();
-            }
-        } catch (UnauthorizedException $e) {
-            return forbidden(['message' => $e->getMessage()]);
-        } catch (Throwable $e) {
-        }
 
-        return internalServerError(
-            [
-                'message' => 'Cannot delete key with id: '.$id,
-            ]
-        );
+    /**
+     * @throws \Throwable
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(int $id, Request $request): JsonResponse
+    {
+        // TODO: Check permissions
+        $this->appKeyService->delete($request->user(), $id);
+
+        return noContent();
     }
 }

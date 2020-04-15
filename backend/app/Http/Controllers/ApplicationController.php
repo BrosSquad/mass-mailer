@@ -5,47 +5,35 @@ namespace App\Http\Controllers;
 use Throwable;
 use App\Application;
 use Illuminate\Http\Request;
-use App\Dto\CreateApplication;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ApplicationRequest;
-use App\Contracts\Applications\ApplicationContract;
+use App\Http\Resources\ApplicationResource;
+use App\Contracts\Applications\ApplicationRepository;
 use Spatie\Permission\Exceptions\UnauthorizedException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ApplicationController extends Controller
 {
-    private ApplicationContract $applicationService;
+    private ApplicationRepository $applicationService;
 
-    public function __construct(ApplicationContract $applicationService)
+    public function __construct(ApplicationRepository $applicationService)
     {
         $this->applicationService = $applicationService;
     }
 
-    public function getApplications(Request $request): JsonResponse
+    public function get(Request $request): JsonResponse
     {
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 10);
 
-        $user = $request->user();
+        $data = $this->applicationService->get($request->user(), $page, $perPage);
 
-        return ok(
-            [
-                'data' => $this->applicationService->getApplications($user, $page, $perPage),
-            ]
-        );
+        return ok(ApplicationResource::collection($data));
     }
 
-    public function getApplication(int $id, Request $request): JsonResponse
+    public function getOne(int $id, Request $request): JsonResponse
     {
-        try {
-            return ok(
-                [
-                    'data' => $this->applicationService->getApplication($request->user(), $id),
-                ]
-            );
-        } catch (ModelNotFoundException $e) {
-            return notFound(['message' => 'Application with id: '.$id.' is not found']);
-        }
+        $data = $this->applicationService->getOne($request->user(), $id);
+        return ok(new ApplicationResource($data));
     }
 
     /**
@@ -55,13 +43,12 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createApplication(ApplicationRequest $request): JsonResponse
+    public function store(ApplicationRequest $request): JsonResponse
     {
         $this->authorize('create', Application::class);
-        $createApplication = new CreateApplication($request->validated());
 
         try {
-            $app = $this->applicationService->createApplication($createApplication, $request->user());
+            $app = $this->applicationService->store($request->validated(), $request->user());
             return created(['application' => $app]);
         } catch (Throwable $e) {
             return internalServerError($e);

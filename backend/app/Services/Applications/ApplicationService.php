@@ -6,25 +6,29 @@ namespace App\Services\Applications;
 
 use App\User;
 use App\Application;
-use App\SendGridKey;
 use RuntimeException;
-use App\Dto\CreateApplication;
 use Illuminate\Support\Facades\DB;
 use App\Contracts\MassMailerKeyContract;
-use App\Contracts\Applications\ApplicationContract;
+use App\Contracts\Applications\SendGridRepository;
+use App\Contracts\Applications\ApplicationRepository;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 
-class ApplicationService implements ApplicationContract
+class ApplicationService implements ApplicationRepository
 {
     protected MassMailerKeyContract $keyContract;
+    /**
+     * @var \App\Contracts\Applications\SendGridRepository
+     */
+    protected SendGridRepository $sendGridRepository;
 
-    public function __construct(MassMailerKeyContract $keyContract)
+    public function __construct(MassMailerKeyContract $keyContract, SendGridRepository $sendGridRepository)
     {
         $this->keyContract = $keyContract;
+        $this->sendGridRepository = $sendGridRepository;
     }
 
 
-    public function getApplications(User $user, int $page, int $perPage)
+    public function get(User $user, int $page, int $perPage)
     {
         $builder = Application::query();
         if ($user->hasPermissionTo('get-applications')) {
@@ -41,7 +45,7 @@ class ApplicationService implements ApplicationContract
     }
 
 
-    public function getApplication(User $user, int $id): Application
+    public function getOne(User $user, int $id): Application
     {
         $builder = Application::query();
 
@@ -58,30 +62,36 @@ class ApplicationService implements ApplicationContract
         throw new UnauthorizedException(403);
     }
 
-    public function createApplication(CreateApplication $createApplication, User $user): Application
+    /**
+     * @throws \Throwable
+     *
+     * @param  \App\User  $user
+     * @param  array  $createApplication
+     *
+     * @return \App\Application
+     */
+    public function store(array $createApplication, User $user): Application
     {
         return DB::transaction(
             static function () use ($createApplication, $user) {
                 $application = new Application(
                     [
-                        'app_name' => $createApplication->appName,
+                        'app_name' => $createApplication['appName'],
+                        'user_id'  => $user->id,
                     ]
                 );
 
-                if (!$user->applications()->save($application)) {
-                    throw new RuntimeException('Cannot save application');
-                }
+                $application->saveOrFail();
 
-                $sendGridKey = new SendGridKey(
+                $this->sendGridRepository->store(
                     [
-                        'key'                => $createApplication->sendgridKey,
-                        'number_of_messages' => $createApplication->sendGridNumberOfMessages,
-                    ]
+                        [
+                            'key'            => $createApplication['sendgridKey'],
+                            'number_of_keys' => $createApplication['sendGridNumberOfMessages'],
+                        ],
+                    ],
+                    $application
                 );
-
-                if (!$application->sendGridKey()->save($sendGridKey)) {
-                    throw new RuntimeException('Cannot save sendgrid key');
-                }
 
                 return $application;
             }

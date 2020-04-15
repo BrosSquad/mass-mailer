@@ -12,11 +12,13 @@ use App\Services\Messages\MessageService;
 use App\Contracts\Message\MessageContract;
 use App\Contracts\User\ChangeImageContract;
 use App\Services\Applications\AppKeyService;
-use App\Contracts\Applications\AppKeyContract;
+use App\Services\Applications\SendGridService;
+use App\Contracts\Applications\AppKeyRepository;
 use App\Services\Applications\ApplicationService;
 use App\Services\Subscription\SubscriptionService;
-use App\Contracts\Applications\ApplicationContract;
-use App\Contracts\Subscription\SubscriptionContract;
+use App\Contracts\Applications\SendGridRepository;
+use App\Contracts\Applications\ApplicationRepository;
+use App\Contracts\Subscription\SubscriptionRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,10 +32,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(MjmlContract::class, MjmlService::class);
         $this->app->singleton(MassMailerKeyContract::class, MassMailerKey::class);
         $this->app->singleton(ChangeImageContract::class, ChangeImage::class);
-        $this->app->singleton(ApplicationContract::class, ApplicationService::class);
-        $this->app->singleton(SubscriptionContract::class, SubscriptionService::class);
         $this->app->singleton(MessageContract::class, MessageService::class);
-        $this->app->singleton(AppKeyContract::class, AppKeyService::class);
+        $this->addRepositories();
     }
 
     /**
@@ -43,5 +43,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+    }
+
+
+    private function addRepositories(): void
+    {
+        $this->app->singleton(ApplicationRepository::class, ApplicationService::class);
+        $this->app->singleton(SubscriptionRepository::class, SubscriptionService::class);
+        $this->app->singleton(AppKeyRepository::class, AppKeyService::class);
+        $this->app->singleton(SendGridRepository::class, SendGridService::class);
     }
 }

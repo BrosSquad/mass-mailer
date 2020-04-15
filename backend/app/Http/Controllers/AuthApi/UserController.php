@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\AuthApi;
 
 use Throwable;
-use App\Dto\CreateUser;
-use App\Http\Resources\User;
-use App\Contracts\Auth\UserContract;
+use App\User;
+use App\Http\Resources\UserResource;
+use App\Contracts\Auth\UserRepository;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
@@ -15,10 +15,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
-    private UserContract $userService;
+    private UserRepository $userService;
     private ChangeImageContract $changeImageContract;
 
-    public function __construct(UserContract $userContract, ChangeImageContract $changeImageContract)
+    public function __construct(UserRepository $userContract, ChangeImageContract $changeImageContract)
     {
         $this->userService = $userContract;
         $this->changeImageContract = $changeImageContract;
@@ -34,11 +34,10 @@ class UserController extends Controller
     public function create(CreateUserRequest $request): ?JsonResponse
     {
         $this->authorize('create', User::class);
-        $createUser = new CreateUser($request->validated());
         try {
-            $user = $this->userService->createUser($createUser);
+            $user = $this->userService->store($request->validated());
 
-            return (new User($user))->toResponse($request)->setStatusCode(CREATED);
+            return (new UserResource($user))->toResponse($request)->setStatusCode(CREATED);
         }catch (Throwable $e) {
             return internalServerError(['message' => 'Cannot create user']);
         }
@@ -77,7 +76,7 @@ class UserController extends Controller
     {
         $this->authorize('delete', User::class);
         try {
-            if ($this->userService->deleteUser($id)) {
+            if ($this->userService->delete($id)) {
                 return noContent();
             }
             return badRequest(['message' => 'Cannot delete user']);

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * Class Application
+ * Class ApplicationResource
  *
  * @package App
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\AppKey[] $appKeys

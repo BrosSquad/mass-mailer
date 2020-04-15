@@ -7,13 +7,11 @@ namespace App\Services\Subscription;
 use App\User;
 use App\Application;
 use App\Subscription;
-use App\Dto\CreateSubscriber;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
-use App\Contracts\Subscription\SubscriptionContract;
+use App\Contracts\Subscription\SubscriptionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class SubscriptionService implements SubscriptionContract
+class SubscriptionService implements SubscriptionRepository
 {
     /**
      * @param $userOrApplication

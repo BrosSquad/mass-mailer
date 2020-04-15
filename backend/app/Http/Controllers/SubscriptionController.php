@@ -7,13 +7,13 @@ use Illuminate\Http\JsonResponse;
 use App\Services\AuthorizationChecker;
 use App\Http\Requests\SubscribeRequest;
 use App\Http\Resources\SubscriptionResource;
-use App\Contracts\Subscription\SubscriptionContract;
+use App\Contracts\Subscription\SubscriptionRepository;
 
 class SubscriptionController extends Controller
 {
-    protected SubscriptionContract $subscriptionService;
+    protected SubscriptionRepository $subscriptionService;
 
-    public function __construct(SubscriptionContract $subscriptionService, AuthorizationChecker $authChecker)
+    public function __construct(SubscriptionRepository $subscriptionService, AuthorizationChecker $authChecker)
     {
         $this->subscriptionService = $subscriptionService;
 
@@ -39,7 +39,7 @@ class SubscriptionController extends Controller
             $perPage
         );
 
-        return ok(new SubscriptionResource($data));
+        return ok(SubscriptionResource::collection($data));
     }
 
     public function getOne(int $id, Request $request): ?JsonResponse

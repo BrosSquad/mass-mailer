@@ -10,12 +10,12 @@ use App\Application;
 use Hashids\HashidsInterface;
 use Illuminate\Support\Facades\DB;
 use App\Contracts\MassMailerKeyContract;
-use App\Contracts\Applications\AppKeyContract;
+use App\Contracts\Applications\AppKeyRepository;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class AppKeyService implements AppKeyContract
+class AppKeyService implements AppKeyRepository
 {
     protected MassMailerKeyContract $keyContract;
     /**
@@ -45,7 +45,7 @@ class AppKeyService implements AppKeyContract
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAppKeys(User $user, int $page, int $perPage): LengthAwarePaginator
+    public function get(User $user, int $page, int $perPage): LengthAwarePaginator
     {
         $builder = null;
         if ($user->hasPermissionTo('get-app-keys')) {
@@ -72,7 +72,7 @@ class AppKeyService implements AppKeyContract
      *
      * @return string
      */
-    public function generateNewAppKey(int $appId, User $user): string
+    public function store(int $appId, User $user): string
     {
         DB::beginTransaction();
 
@@ -84,7 +84,7 @@ class AppKeyService implements AppKeyContract
             throw new UnauthorizedException(403);
         }
 
-        return  $this->keyContract->generateKey($application, $user);
+        return $this->keyContract->generateKey($application, $user);
     }
 
 
@@ -97,10 +97,9 @@ class AppKeyService implements AppKeyContract
      *
      * @return bool
      */
-    public function deleteKey(User $user, int $id): bool
+    public function delete(User $user, int $id): bool
     {
         DB::beginTransaction();
-        $appKey = null;
         if ($user->hasPermissionTo('delete-app-keys')) {
             $appKey = AppKey::query()->where('id', '=', $id);
         } elseif ($user->hasPermissionTo('delete-own-app-keys')) {

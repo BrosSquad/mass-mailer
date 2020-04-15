@@ -37,9 +37,9 @@ class MassMailerKey implements MassMailerKeyContract
      * @param  \App\User  $user
      * @param  \App\Application  $application
      *
-     * @return string
+     * @return array
      */
-    public function generateKey(Application $application, User $user): string
+    public function generateKey(Application $application, User $user): array
     {
         $nonce = Str::random(32);
 
@@ -74,7 +74,10 @@ class MassMailerKey implements MassMailerKeyContract
 
         sodium_memzero($laravelKey);
 
-        return $signed;
+        return [
+            'key' => $signed,
+            'application_key' => $applicationKey,
+        ];
     }
 
     /**

@@ -20,9 +20,9 @@ Route::middleware(['auth:api'])->group(
         Route::get('/me', 'HomeController@me');
         Route::prefix('application')->group(
             static function () {
-                Route::get('/', 'ApplicationController@getApplications');
-                Route::get('/{id}', 'ApplicationController@getApplication');
-                Route::post('/', 'ApplicationController@createApplication');
+                Route::get('/', 'ApplicationController@get');
+                Route::get('/{id}', 'ApplicationController@getOne');
+                Route::post('/', 'ApplicationController@store');
                 Route::post('/app-key', 'ApplicationController@createAppKey');
                 Route::delete('/{id}', 'ApplicationController@deleteApplication');
                 Route::delete('/app-key/{id}', 'ApplicationController@deleteAppKey');

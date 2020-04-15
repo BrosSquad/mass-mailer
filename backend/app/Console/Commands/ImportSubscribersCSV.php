@@ -7,7 +7,7 @@ use App\Application;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Contracts\Subscription\SubscriptionContract;
+use App\Contracts\Subscription\SubscriptionRepository;
 
 class ImportSubscribersCSV extends Command
 {
@@ -30,11 +30,11 @@ class ImportSubscribersCSV extends Command
      *
      * @throws \Throwable
      *
-     * @param  SubscriptionContract  $subscriptionContract
+     * @param  SubscriptionRepository  $subscriptionContract
      *
      * @return mixed
      */
-    public function handle(SubscriptionContract $subscriptionContract)
+    public function handle(SubscriptionRepository $subscriptionContract)
     {
         $file = $this->argument('file');
         $appId = $this->argument('appId');

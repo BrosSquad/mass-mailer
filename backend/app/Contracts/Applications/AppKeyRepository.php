@@ -8,7 +8,7 @@ use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-interface AppKeyContract
+interface AppKeyRepository
 {
     /**
      * @throws \Spatie\Permission\Exceptions\UnauthorizedException
@@ -20,7 +20,7 @@ interface AppKeyContract
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAppKeys(User $user, int $page, int $perPage): LengthAwarePaginator;
+    public function get(User $user, int $page, int $perPage): LengthAwarePaginator;
 
     /**
      * @throws ModelNotFoundException
@@ -32,7 +32,7 @@ interface AppKeyContract
      *
      * @return string
      */
-    public function generateNewAppKey(int $appId, User $user): string;
+    public function store(int $appId, User $user): string;
 
     /**
      * @throws \Spatie\Permission\Exceptions\UnauthorizedException
@@ -43,5 +43,5 @@ interface AppKeyContract
      *
      * @return bool
      */
-    public function deleteKey(User $user, int $id): bool;
+    public function delete(User $user, int $id): bool;
 }

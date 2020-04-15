@@ -13,7 +13,7 @@ class ChangeImageRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::user() !== null;
     }
@@ -23,7 +23,7 @@ class ChangeImageRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'type'       => ['required', 'regex:#^(background|avatar)$#'],
@@ -38,14 +38,9 @@ class ChangeImageRequest extends FormRequest
                 ),
             ],
             'background' => [
+                Rule::requiredIf($this->request->get('type') === 'background'),
                 'image',
                 // TODO: Add Dimensions
-
-                Rule::requiredIf(
-                    function () {
-                        return $this->request->get('type') === 'background';
-                    }
-                ),
             ],
         ];
     }

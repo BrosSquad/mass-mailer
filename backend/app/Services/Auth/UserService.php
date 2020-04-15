@@ -4,16 +4,14 @@
 namespace App\Services\Auth;
 
 use App\User;
-use Throwable;
-use App\Dto\CreateUser;
 use Illuminate\Support\Str;
-use App\Contracts\Auth\UserContract;
+use App\Contracts\Auth\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\UrlGenerator;
 use App\Notifications\UserRegistered;
 use Illuminate\Contracts\Hashing\Hasher;
 
-class UserService implements UserContract
+class UserService implements UserRepository
 {
     protected Hasher $hasher;
     protected UrlGenerator $urlGenerator;
@@ -25,34 +23,40 @@ class UserService implements UserContract
     }
 
     /**
-     * @throws Throwable
+     * @throws \Throwable
      *
-     * @param  CreateUser  $createUser
+     * @param  array  $createUser
      *
      * @return User
      */
-    public function createUser(CreateUser $createUser): User
+    public function store(array $createUser): User
     {
         $randomPassword = Str::random(16);
 
         $user = new User(
             [
-                'name'     => $createUser->name,
-                'surname'  => $createUser->surname,
-                'email'    => $createUser->email,
+                'name'     => $createUser['name'],
+                'surname'  => $createUser['surname'],
+                'email'    => $createUser['email'],
                 'password' => $this->hasher->make($randomPassword),
             ]
         );
 
         $user->saveOrFail();
 
-        $user->assignRole($createUser->role);
+        $user->assignRole($createUser['role']);
 
         $user->notify(new UserRegistered($user));
 
 
         return $user;
     }
+
+
+    public function update(User $user, array $data): void
+    {
+    }
+
 
     /**
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
@@ -61,24 +65,17 @@ class UserService implements UserContract
      *
      * @return bool
      */
-    public function deleteUser(int $id): bool
+    public function delete(int $id): bool
     {
         return DB::transaction(
             static function () use ($id) {
-            $user = User::query()->findOrFail($id);
+                $user = User::query()->findOrFail($id);
 
-            if($user->delete()) {
-                return true;
-            }
+                if($user->delete()) {
+                    return true;
+                }
 
-            return false;
-        });
+                return false;
+            });
     }
-
-    public function updateUserAccount(User $user): void
-    {
-        // TODO: Implement updateUserAccount() method.
-    }
-
-
 }
