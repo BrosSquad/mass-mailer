@@ -52,12 +52,12 @@ class Notify extends Model
 
     public function message(): BelongsTo
     {
-        return $this->belongsTo(Message::class, 'message_id', 'id');
+        return $this->belongsTo(Message::class);
     }
 
     public function application(): BelongsTo
     {
-        return $this->belongsTo(Application::class, 'application_id', 'id');
+        return $this->belongsTo(Application::class);
     }
 
     public function sendGridKey(): BelongsTo

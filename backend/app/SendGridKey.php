@@ -51,7 +51,7 @@ class SendGridKey extends Model
 
     public function application(): BelongsTo
     {
-        return $this->belongsTo(Application::class, 'application_id', 'id');
+        return $this->belongsTo(Application::class);
     }
 
     public function messages(): HasMany

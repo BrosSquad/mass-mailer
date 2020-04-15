@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['jwt.auth'])->get('/me', 'HomeController@me');
+Route::middleware(['auth:api'])->get('/me', 'HomeController@me');
 
-Route::middleware(['jwt.auth'])
+Route::middleware(['auth:api'])
     ->prefix('application')
     ->group(
         static function () {
@@ -28,7 +28,7 @@ Route::middleware(['jwt.auth'])
         }
     );
 
-Route::middleware('jwt.auth')
+Route::middleware('auth:api')
     ->prefix('users')
     ->group(
         static function () {
@@ -38,7 +38,7 @@ Route::middleware('jwt.auth')
         }
     );
 
-Route::middleware(['jwt.auth'])
+Route::middleware(['auth:api'])
     ->prefix('messages')
     ->group(
         static function () {

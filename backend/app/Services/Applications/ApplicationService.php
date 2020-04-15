@@ -60,32 +60,32 @@ class ApplicationService implements ApplicationContract
 
     public function createApplication(CreateApplication $createApplication, User $user): Application
     {
-        DB::beginTransaction();
-        $application = new Application(
-            [
-                'app_name' => $createApplication->appName,
-            ]
+        return DB::transaction(
+            static function () use ($createApplication, $user) {
+                $application = new Application(
+                    [
+                        'app_name' => $createApplication->appName,
+                    ]
+                );
+
+                if (!$user->applications()->save($application)) {
+                    throw new RuntimeException('Cannot save application');
+                }
+
+                $sendGridKey = new SendGridKey(
+                    [
+                        'key'                => $createApplication->sendgridKey,
+                        'number_of_messages' => $createApplication->sendGridNumberOfMessages,
+                    ]
+                );
+
+                if (!$application->sendGridKey()->save($sendGridKey)) {
+                    throw new RuntimeException('Cannot save sendgrid key');
+                }
+
+                return $application;
+            }
         );
-
-        if (!$user->applications()->save($application)) {
-            DB::rollBack();
-            throw new RuntimeException('Cannot save application');
-        }
-
-        $sendGridKey = new SendGridKey(
-            [
-                'key'                => $createApplication->sendgridKey,
-                'number_of_messages' => $createApplication->sendGridNumberOfMessages,
-            ]
-        );
-
-        if (!$application->sendGridKey()->save($sendGridKey)) {
-            DB::rollBack();
-            throw new RuntimeException('Cannot save sendgrid key');
-        }
-        DB::commit();
-
-        return $application;
     }
 
 

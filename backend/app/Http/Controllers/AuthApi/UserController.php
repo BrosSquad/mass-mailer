@@ -5,7 +5,8 @@ namespace App\Http\Controllers\AuthApi;
 use Throwable;
 use App\Dto\CreateUser;
 use App\Http\Resources\User;
-use App\Contracts\UserContract;
+use App\Contracts\Auth\UserContract;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\ChangeImageRequest;
@@ -30,7 +31,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create(CreateUserRequest $request)
+    public function create(CreateUserRequest $request): ?JsonResponse
     {
         $this->authorize('create', User::class);
         $createUser = new CreateUser($request->validated());
@@ -72,7 +73,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(int $id)
+    public function delete(int $id): ?JsonResponse
     {
         $this->authorize('delete', User::class);
         try {

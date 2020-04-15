@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use App\User;
-use App\Application;
-use App\Policies\UserPolicy;
-use App\Services\UserService;
-use App\Contracts\UserContract;
-use App\Policies\ApplicationPolicy;
+use Hashids\Hashids;
+use Illuminate\Support\Str;
+use Hashids\HashidsInterface;
+use App\Services\Auth\UserService;
+use App\Contracts\Auth\UserContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,15 +18,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Application::class => ApplicationPolicy::class,
-        User::class => UserPolicy::class
+        // 'App\Model' => 'App\Policies\ModelPolicy',
     ];
-
-    public function register(): void
-    {
-        parent::register();
-        $this->app->singleton(UserContract::class, UserService::class);
-    }
 
     /**
      * Register any authentication / authorization services.
@@ -36,5 +29,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        $this->app->singleton(UserContract::class, UserService::class);
+        $this->app->singleton(HashidsInterface::class, static function () {
+            return new Hashids(env('HASHIDS_SALT'), 15);
+        });
     }
 }

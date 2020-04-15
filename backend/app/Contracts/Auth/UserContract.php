@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Contracts;
+namespace App\Contracts\Auth;
 
 
 use App\User;

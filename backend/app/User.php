@@ -3,9 +3,7 @@
 namespace App;
 
 use Carbon\CarbonInterface;
-use Hashids\HashidsInterface;
 use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -26,7 +24,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Permission[] $permissions
  * @property-read int|null $permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\RefreshToken[] $refreshTokens
  * @property-read int|null $refresh_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\Spatie\Permission\Models\Role[] $roles
  * @property-read int|null $roles_count
@@ -65,15 +62,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property string|null $phone
  * @property string|null $bio
  */
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
     use HasRoles;
     use Notifiable;
 
-    /**
-     * @var HashidsInterface
-     */
-    protected static HashidsInterface $hashids;
 
     /**
      * The attributes that are mass assignable.
@@ -113,53 +106,20 @@ class User extends Authenticatable implements JWTSubject
         'last_login'        => 'datetime',
     ];
 
-    public static function setHashids(HashidsInterface $hashids)
-    {
-        static::$hashids = $hashids;
-    }
 
     public function applications(): HasMany
     {
-        return $this->hasMany(Application::class, 'user_id', 'id');
+        return $this->hasMany(Application::class);
     }
 
     public function messages(): HasMany
     {
-        return $this->hasMany(Message::class, 'user_id', 'id');
+        return $this->hasMany(Message::class);
     }
 
-    public function refreshTokens(): HasMany
-    {
-        return $this->hasMany(RefreshToken::class, 'user_id', 'id');
-    }
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return static::$hashids->encodeHex($this->id);
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims(): array
-    {
-        return [
-            'name'    => $this->name,
-            'surname' => $this->surname,
-            'email'   => $this->email,
-            //            'role' => $this->getRoles()->first(),
-        ];
-    }
 
     public function keys(): HasMany
     {
-        return $this->hasMany(AppKey::class, 'user_id', 'id');
+        return $this->hasMany(AppKey::class);
     }
 }

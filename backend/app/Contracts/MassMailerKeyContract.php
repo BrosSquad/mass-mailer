@@ -4,18 +4,19 @@
 namespace App\Contracts;
 
 
+use App\User;
+use App\Application;
 use App\Exceptions\InvalidAppKeyException;
 
 interface MassMailerKeyContract
 {
-    public const HASH_ALGORITHM = 'sha3-256';
-
     /**
-     * @param  string  $appName
+     * @param  \App\Application  $application
+     * @param  \App\User  $user
      *
-     * @return array
+     * @return string
      */
-    public function generateKey(string $appName): array;
+    public function generateKey(Application $application, User $user): string;
 
     /**
      * @throws InvalidAppKeyException

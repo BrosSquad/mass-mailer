@@ -90,7 +90,6 @@ class Kernel extends HttpKernel
         'throttle'           => ThrottleRequests::class,
         'verified'           => EnsureEmailIsVerified::class,
         'app_key'            => CheckMassMailerKey::class,
-        'cors'               => HandleCors::class,
         'role'               => RoleMiddleware::class,
         'permission'         => PermissionMiddleware::class,
         'role_or_permission' => RoleOrPermissionMiddleware::class,

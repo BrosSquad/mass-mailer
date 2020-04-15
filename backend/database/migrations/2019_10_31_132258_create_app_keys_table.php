@@ -17,7 +17,8 @@ class CreateAppKeysTable extends Migration
             'app_keys',
             static function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('key', 68)->unique();
+                $table->string('key', 64)->nullable();
+                $table->string('nonce', 32);
                 $table->unsignedInteger('application_id');
                 $table->unsignedInteger('user_id');
 

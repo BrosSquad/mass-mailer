@@ -52,27 +52,27 @@ class Application extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
     }
 
     public function messages(): HasMany
     {
-        return $this->hasMany(Message::class, 'application_id', 'id');
+        return $this->hasMany(Message::class);
     }
 
     public function sendGridKey(): HasOne
     {
-        return $this->hasOne(SendGridKey::class, 'application_id', 'id');
+        return $this->hasOne(SendGridKey::class);
     }
 
     public function notifiedUsers(): HasMany
     {
-        return $this->hasMany(Notify::class, 'application_id', 'id');
+        return $this->hasMany(Notify::class);
     }
 
     public function appKeys(): HasMany
     {
-        return $this->hasMany(AppKey::class, 'application_id', 'id');
+        return $this->hasMany(AppKey::class);
     }
 
     public function subscriptions(): BelongsToMany

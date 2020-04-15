@@ -1,15 +1,13 @@
 <?php
 
 
-namespace App\Services;
-
+namespace App\Services\Auth;
 
 use App\User;
 use Throwable;
 use App\Dto\CreateUser;
-use Tymon\JWTAuth\Manager;
 use Illuminate\Support\Str;
-use App\Contracts\UserContract;
+use App\Contracts\Auth\UserContract;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Routing\UrlGenerator;
 use App\Notifications\UserRegistered;
@@ -18,13 +16,11 @@ use Illuminate\Contracts\Hashing\Hasher;
 class UserService implements UserContract
 {
     protected Hasher $hasher;
-    protected Manager $manager;
     protected UrlGenerator $urlGenerator;
 
-    public function __construct(Hasher $hasher, Manager $manager, UrlGenerator $urlGenerator)
+    public function __construct(Hasher $hasher, UrlGenerator $urlGenerator)
     {
         $this->hasher = $hasher;
-        $this->manager = $manager;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -67,7 +63,8 @@ class UserService implements UserContract
      */
     public function deleteUser(int $id): bool
     {
-        return DB::transaction(function () use ($id) {
+        return DB::transaction(
+            static function () use ($id) {
             $user = User::query()->findOrFail($id);
 
             if($user->delete()) {
@@ -78,7 +75,7 @@ class UserService implements UserContract
         });
     }
 
-    public function updateUserAccount(User $user)
+    public function updateUserAccount(User $user): void
     {
         // TODO: Implement updateUserAccount() method.
     }

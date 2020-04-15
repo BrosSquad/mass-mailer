@@ -12,7 +12,7 @@ class CreateUserRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         /** @var \App\User $user */
         $user = Auth::user();
@@ -25,7 +25,7 @@ class CreateUserRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name'    => ['required', 'min:2', 'max:70'],

@@ -23,3 +23,7 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('/subscribers/unsubscribe', 'SubscriptionController@unsubscribe')
     ->name('unsub')
     ->middleware(['signed']);
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

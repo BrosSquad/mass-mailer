@@ -61,21 +61,21 @@ class Message extends Model
 
     public function criteria(): HasMany
     {
-        return $this->hasMany(Criteria::class, 'message_id', 'id');
+        return $this->hasMany(Criteria::class);
     }
 
     public function notified(): HasMany
     {
-        return $this->hasMany(Notify::class, 'message_id', 'id');
+        return $this->hasMany(Notify::class);
     }
 
     public function application(): BelongsTo
     {
-        return $this->belongsTo(Application::class, 'application_id', 'id');
+        return $this->belongsTo(Application::class);
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
     }
 }

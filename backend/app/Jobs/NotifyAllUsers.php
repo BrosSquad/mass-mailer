@@ -10,7 +10,6 @@ use App\Subscription;
 use RuntimeException;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Queueable;
-use App\Mail\NumberOfMailsSent;
 use App\Notifications\AllMailsQueued;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

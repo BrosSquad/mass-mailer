@@ -31,25 +31,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $application_id
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
+ * @property string $nonce
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\AppKey whereNonce($value)
  */
 class AppKey extends Model
 {
     protected $fillable = [
         'key',
+        'nonce',
         'user_id',
+        'application_id'
     ];
 
     protected $hidden = [
-        'id',
+        'key'
     ];
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class);
     }
 
     public function application(): BelongsTo
     {
-        return $this->belongsTo(Application::class, 'application_id', 'id');
+        return $this->belongsTo(Application::class);
     }
 }

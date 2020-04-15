@@ -7,7 +7,7 @@ namespace App\Services\Applications;
 use App\User;
 use App\AppKey;
 use App\Application;
-use RuntimeException;
+use Hashids\HashidsInterface;
 use Illuminate\Support\Facades\DB;
 use App\Contracts\MassMailerKeyContract;
 use App\Contracts\Applications\AppKeyContract;
@@ -18,15 +18,21 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class AppKeyService implements AppKeyContract
 {
     protected MassMailerKeyContract $keyContract;
+    /**
+     * @var \Hashids\HashidsInterface
+     */
+    protected HashidsInterface $hashids;
 
     /**
      * AppKeyService constructor.
      *
      * @param  \App\Contracts\MassMailerKeyContract  $keyContract
+     * @param  \Hashids\HashidsInterface  $hashids
      */
-    public function __construct(MassMailerKeyContract $keyContract)
+    public function __construct(MassMailerKeyContract $keyContract, HashidsInterface $hashids)
     {
         $this->keyContract = $keyContract;
+        $this->hashids = $hashids;
     }
 
     /**
@@ -51,6 +57,7 @@ class AppKeyService implements AppKeyContract
         }
 
         throw_if(!isset($builder), new UnauthorizedException(403));
+
         return $builder
             ->paginate($perPage, ['*'], 'page', $page);
     }
@@ -68,43 +75,25 @@ class AppKeyService implements AppKeyContract
     public function generateNewAppKey(int $appId, User $user): string
     {
         DB::beginTransaction();
-        $application = null;
-
 
         if ($user->hasPermissionTo('create-app-keys')) {
             $application = Application::query()->findOrFail($appId);
+        } elseif ($user->hasPermissionTo('create-own-app-keys')) {
+            $application = $user->applications()->findOrFail($appId);
         } else {
-            if ($user->hasPermissionTo('create-own-app-keys')) {
-                $application = $user->applications()->findOrFail($appId);
-            } else {
-                throw new UnauthorizedException(403);
-            }
+            throw new UnauthorizedException(403);
         }
 
-        /** @var Application $application */
-        $appKey = $this->keyContract->generateKey($application->app_name);
-        $key = new AppKey(
-            [
-                'key'     => $appKey['public'],
-                'user_id' => $user->id,
-            ]
-        );
-
-
-        if (!$application->appKeys()->save($key)) {
-            DB::rollBack();
-            throw new RuntimeException('Cannot save application key');
-        }
-
-        return $appKey['signedKey'];
+        return  $this->keyContract->generateKey($application, $user);
     }
 
 
     /**
-     * @throws \Exception
-     * @throws \Spatie\Permission\Exceptions\UnauthorizedException
+     * @throws \Throwable
      *
      * @param  int  $id
+     *
+     * @param  \App\User  $user
      *
      * @return bool
      */
@@ -114,13 +103,13 @@ class AppKeyService implements AppKeyContract
         $appKey = null;
         if ($user->hasPermissionTo('delete-app-keys')) {
             $appKey = AppKey::query()->where('id', '=', $id);
-        } else if($user->hasPermissionTo('delete-own-app-keys')) {
+        } elseif ($user->hasPermissionTo('delete-own-app-keys')) {
             $appKey = $user->keys()->where('id', '=', $id);
         } else {
             throw new UnauthorizedException(403);
         }
 
-        if($appKey->delete() > 0) {
+        if ($appKey->delete() > 0) {
             DB::commit();
             return true;
         }
