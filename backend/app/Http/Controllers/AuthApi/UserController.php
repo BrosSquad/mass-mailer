@@ -58,7 +58,7 @@ class UserController extends Controller
                     break;
             }
 
-            $image = $this->changeImageContract->changeImage($type, $request->user(), $file);
+            $image = $this->changeImageContract->update($type, $request->user(), $file);
             return ok(['image' => $image]);
         } catch (Throwable $e) {
             return internalServerError(['message' => $e->getMessage()]);

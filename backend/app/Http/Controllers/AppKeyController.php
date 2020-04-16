@@ -32,12 +32,12 @@ class AppKeyController extends Controller
      */
     public function get(Request $request): JsonResponse
     {
-        // TODO: Check permissions
         $data = $this->appKeyService->get(
             $request->user(),
             $request->query('page', 1),
             $request->query('perPage', 10)
         );
+
         return ok(AppKeyResource::collection($data));
     }
 
@@ -50,7 +50,6 @@ class AppKeyController extends Controller
      */
     public function store(CreateAppKeyRequest $request): JsonResponse
     {
-        // TODO: Check permissions
         $data = $this->appKeyService->store($request->input('appId'), $request->user());
         return created(new AppKeyResource($data));
     }

@@ -25,7 +25,7 @@ class SendGridService implements SendGridRepository
      */
     public function get(int $id): SendGridKey
     {
-        $sendGrid = SendGridKey::query()->firstOrFail($id);
+        $sendGrid = SendGridKey::query()->findOrFail($id);
 
         $sendGrid->key = $this->encrypter->decryptString($sendGrid->key);
 
@@ -63,7 +63,7 @@ class SendGridService implements SendGridRepository
      */
     public function update(int $id, array $data): SendGridKey
     {
-        $sendGrid = SendGridKey::query()->firstOrFail($id);
+        $sendGrid = SendGridKey::query()->findOrFail($id);
 
         $sendGrid->key = $this->encrypter->encryptString($data['key']);
         $sendGrid->number_of_messages = $data['number_of_messages'];

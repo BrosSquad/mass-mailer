@@ -15,15 +15,10 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Auth::routes(['register' => false]);
-
-
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/subscribers/unsubscribe', 'SubscriptionController@delete')
+Route::get('/subscribers/unsubscribe/{appId}/{subscriberId}', 'SubscriptionController@delete')
     ->name('unsub')
     ->middleware(['signed']);
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
+Auth::routes(['register' => false, 'verify' => true]);

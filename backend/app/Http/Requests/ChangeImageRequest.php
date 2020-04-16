@@ -28,14 +28,9 @@ class ChangeImageRequest extends FormRequest
         return [
             'type'       => ['required', 'regex:#^(background|avatar)$#'],
             'avatar'     => [
+                Rule::requiredIf($this->request->get('type') === 'avatar'),
                 'image',
                 // 'dimensions:min_width=100,min_heigh=100,max_width=250,max_height=250', // Dimensions
-                Rule::requiredIf(
-                    function () {
-                        echo $this->request->get('type') === null;
-                        return $this->request->get('type') === 'avatar';
-                    }
-                ),
             ],
             'background' => [
                 Rule::requiredIf($this->request->get('type') === 'background'),

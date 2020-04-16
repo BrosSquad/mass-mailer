@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\User;
+use App\AppKey;
 use Hashids\Hashids;
+use App\Application;
+use App\Policies\UserPolicy;
 use Hashids\HashidsInterface;
 use Laravel\Passport\Passport;
+use App\Policies\AppKeyPolicy;
 use App\Services\Auth\UserService;
+use App\Policies\ApplicationPolicy;
 use App\Contracts\Auth\UserRepository;
 use App\Contracts\AuthorizationChecker;
 use App\Services\AuthorizationChecker as AuthorizationCheckerInstance;
@@ -20,7 +26,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+        Application::class => ApplicationPolicy::class,
+        User::class        => UserPolicy::class,
+        AppKey::class      => AppKeyPolicy::class,
     ];
 
     /**
@@ -31,8 +39,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
         $this->app->singleton(UserRepository::class, UserService::class);
         $this->app->singleton(AuthorizationChecker::class, AuthorizationCheckerInstance::class);
+
         $this->app->singleton(
             HashidsInterface::class,
             static function () {

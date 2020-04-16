@@ -30,9 +30,9 @@ interface AppKeyRepository
      * @param  User  $user
      * @param  int  $appId
      *
-     * @return string
+     * @return array
      */
-    public function store(int $appId, User $user): string;
+    public function store(int $appId, User $user): array;
 
     /**
      * @throws \Spatie\Permission\Exceptions\UnauthorizedException

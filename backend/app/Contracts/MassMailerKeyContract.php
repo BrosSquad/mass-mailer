@@ -10,13 +10,17 @@ use App\Exceptions\InvalidAppKeyException;
 
 interface MassMailerKeyContract
 {
+
     /**
-     * @param  \App\Application  $application
-     * @param  \App\User  $user
      *
-     * @return string
+     * @throws \Throwable
+     *
+     * @param  \App\User  $user
+     * @param  \App\Application  $application
+     *
+     * @return array
      */
-    public function generateKey(Application $application, User $user): string;
+    public function generateKey(Application $application, User $user): array;
 
     /**
      * @throws InvalidAppKeyException

@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
-use App\Dto\CreateMessage;
 use App\Exceptions\MjmlException;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\MessageRequest;
 use App\Contracts\Message\MessageContract;
 
@@ -17,16 +16,21 @@ class MessageController extends Controller
         $this->messageService = $messageService;
     }
 
-    public function createMessage(int $applicationId, MessageRequest $request)
+    /**
+     * @throws \Throwable
+     *
+     * @param  \App\Http\Requests\MessageRequest  $request
+     * @param  int  $applicationId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(int $applicationId, MessageRequest $request): ?JsonResponse
     {
-        $createMessage = new CreateMessage($request->validated());
         try {
-            $message = $this->messageService->createNewMessage($createMessage, $applicationId, $request->user());
+            $message = $this->messageService->store($request->validated(), $applicationId, $request->user());
             return created($message);
         } catch (MjmlException $e) {
             return badRequest(['message' => $e->getMessage(), 'errors' => $e->getErrors()]);
-        } catch (Throwable $e) {
-            return internalServerError($e);
         }
     }
 }

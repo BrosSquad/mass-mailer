@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
-class MessageRequest extends FormRequest
+class UpdateApplicationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +25,10 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'text'       => 'required',
-            'from_email' => 'required|email',
-            'from_name'  => 'required',
-            'reply_to'   => 'required|email',
-            'subject'    => 'required',
-            'is_mjml'    => 'required|boolean',
+            'app_name'                  => [
+                'required',
+                'unique:applications,app_name',
+            ],
         ];
     }
 }

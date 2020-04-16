@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
 use App\Application;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ApplicationRequest;
 use App\Http\Resources\ApplicationResource;
+use App\Http\Requests\UpdateApplicationRequest;
 use App\Contracts\Applications\ApplicationRepository;
-use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class ApplicationController extends Controller
 {
@@ -38,6 +37,7 @@ class ApplicationController extends Controller
 
     /**
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Throwable
      *
      * @param  \App\Http\Requests\ApplicationRequest  $request
      *
@@ -45,32 +45,45 @@ class ApplicationController extends Controller
      */
     public function store(ApplicationRequest $request): JsonResponse
     {
-        $this->authorize('create', Application::class);
+        $app = $this->applicationService->store($request->validated(), $request->user());
+        return created(new ApplicationResource($app));
+    }
 
-        try {
-            $app = $this->applicationService->store($request->validated(), $request->user());
-            return created(['application' => $app]);
-        } catch (Throwable $e) {
-            return internalServerError($e);
-        }
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Throwable
+     *
+     * @param $id
+     * @param  \App\Http\Requests\UpdateApplicationRequest  $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update($id, UpdateApplicationRequest $request): JsonResponse
+    {
+        return ok(
+            new ApplicationResource(
+                $this->applicationService->update(
+                    $id,
+                    $request->validated(),
+                    $request->user()
+                )
+            )
+        );
     }
 
     /**
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @throws \Throwable
+     *
      * @param  int  $id
+     *
+     * @param  \Illuminate\Http\Request  $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteApplication(int $id, Request $request): JsonResponse
+    public function delete(int $id, Request $request): JsonResponse
     {
-        try {
-            $deleted = $this->applicationService->deleteApplication($request->user(), $id);
-            return $deleted ? noContent() : internalServerError(['message' => 'Cannot delete application']);
-        } catch (UnauthorizedException $e) {
-            return forbidden(['message' => $e->getMessage()]);
-        } catch (Throwable $e) {
-            return internalServerError(['message' => 'Cannot delete application']);
-        }
+        $deleted = $this->applicationService->deleteApplication($request->user(), $id);
+        return $deleted ? noContent() : internalServerError(['message' => 'Cannot delete application']);
     }
 }

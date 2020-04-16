@@ -39,7 +39,7 @@ class ChangeImage implements ChangeImageContract
      *
      * @return string
      */
-    public function changeImage(string $type, User $user, UploadedFile $file): string
+    public function update(string $type, User $user, UploadedFile $file): string
     {
         $path = 'images/';
         switch ($type) {
@@ -50,7 +50,7 @@ class ChangeImage implements ChangeImageContract
                 $path .= 'backgrounds';
                 break;
         }
-        return $this->storeImage(
+        return $this->store(
             $file,
             $path,
             static function (Storage $storage, $imagePath, $fileName) use ($user, $type, $path) {
@@ -89,7 +89,7 @@ class ChangeImage implements ChangeImageContract
      *
      * @return mixed
      */
-    public function storeImage(UploadedFile $file, string $path, Closure $callback)
+    public function store(UploadedFile $file, string $path, Closure $callback)
     {
         $fileName = $file->getClientOriginalName();
         $extension = $file->guessClientExtension();

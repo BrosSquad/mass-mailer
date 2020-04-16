@@ -7,13 +7,26 @@ namespace App\Services\Subscription;
 use App\User;
 use App\Application;
 use App\Subscription;
+use RuntimeException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Contracts\Auth\Access\Gate;
 use App\Contracts\Subscription\SubscriptionRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SubscriptionService implements SubscriptionRepository
 {
     /**
+     * @var \Illuminate\Contracts\Auth\Access\Gate
+     */
+    protected Gate $gate;
+
+    public function __construct(Gate $gate) {
+        $this->gate = $gate;
+    }
+
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
      * @param $userOrApplication
      *
      * @return \App\Subscription|\Illuminate\Database\Eloquent\Builder
@@ -23,6 +36,7 @@ class SubscriptionService implements SubscriptionRepository
         $query = Subscription::query();
 
         if ($userOrApplication instanceof User) {
+            $this->gate->authorize('', Subscription::class);
         }
         if ($userOrApplication instanceof Application) {
             $query->applications()->where('id', '=', $userOrApplication->id);
@@ -32,9 +46,12 @@ class SubscriptionService implements SubscriptionRepository
 
 
     /**
-     * @param  User|Application  $userOrApplication
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
      * @param  int  $page
      * @param  int  $perPage
+     *
+     * @param  User|Application  $userOrApplication
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
@@ -47,8 +64,11 @@ class SubscriptionService implements SubscriptionRepository
 
     /**
      *
-     * @param $userOrApplication
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
      * @param  int  $id
+     *
+     * @param $userOrApplication
      *
      * @return \App\Subscription
      */
@@ -70,8 +90,12 @@ class SubscriptionService implements SubscriptionRepository
     public function store(array $createSubscriber, $userOrApplication): Subscription
     {
         if ($userOrApplication instanceof User) {
-            // TODO: Check permissions
-            $app = Application::query()->firstOrFail($createSubscriber['application_id']);
+            $this->gate->authorize('create', Subscription::class);
+            $app = Application::query()->findOrFail($createSubscriber['application_id']);
+        } elseif($userOrApplication instanceof Application) {
+            $app = $userOrApplication;
+        } else {
+            throw new RuntimeException('$userOrApplication parameter needs to be App\\User or App\\Application');
         }
 
         /** @var Subscription $subscription */

@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['signed'])->get('/unsubscribe/{appId}/{subscriberId}', 'SubscriptionController@delete');
-
 Route::middleware(['auth:api'])->group(
     static function () {
         Route::get('/me', 'HomeController@me');
@@ -24,7 +22,7 @@ Route::middleware(['auth:api'])->group(
                 Route::get('/{id}', 'ApplicationController@getOne');
                 Route::post('/', 'ApplicationController@store');
                 Route::post('/app-key', 'ApplicationController@createAppKey');
-                Route::delete('/{id}', 'ApplicationController@deleteApplication');
+                Route::delete('/{id}', 'ApplicationController@delete');
                 Route::delete('/app-key/{id}', 'ApplicationController@deleteAppKey');
             }
         );
@@ -54,7 +52,7 @@ Route::middleware(['app_key'])->group(
     static function () {
         Route::prefix('/messages')->group(
             static function () {
-                Route::post('/', 'MessageController@createMessage');
+                Route::post('/', 'MessageController@store');
             }
         );
     }

@@ -28,7 +28,7 @@ interface ChangeImageContract
      *
      * @return mixed
      */
-    public function storeImage(UploadedFile $file, string $path, Closure $callback);
+    public function store(UploadedFile $file, string $path, Closure $callback);
 
     /**
      * @throws Throwable
@@ -39,5 +39,5 @@ interface ChangeImageContract
      *
      * @return string
      */
-    public function changeImage(string $type, User $user, UploadedFile $file): string;
+    public function update(string $type, User $user, UploadedFile $file): string;
 }

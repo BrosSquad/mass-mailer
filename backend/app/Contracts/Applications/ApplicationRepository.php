@@ -33,13 +33,29 @@ interface ApplicationRepository
      */
     public function getOne(User $user, int $id): Application;
 
+
     /**
-     * @param  array  $createApplication
-     * @param  User  $user
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Throwable
      *
-     * @return Application
+     * @param  \App\User  $user
+     * @param  array  $createApplication
+     *
+     * @return \App\Application
      */
     public function store(array $createApplication, User $user): Application;
+
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Throwable
+     *
+     * @param  array  $data
+     * @param  \App\User  $user
+     * @param  int  $id
+     *
+     * @return \App\Application
+     */
+    public function update(int $id, array $data, User $user): Application;
 
     /**
      * @throws \Spatie\Permission\Exceptions\UnauthorizedException

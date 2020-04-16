@@ -26,16 +26,17 @@ class ApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appName'                  => [
+            'app_name'                  => [
                 'required',
                 'unique:applications,app_name',
             ],
-            'sendgridKey'              => [
+            'sendgrid_keys'              => ['required', 'array'],
+            'sendgrid_keys.*.key' => [
                 'required',
                 'regex:/^SG\.([a-zA-Z0-9\-\_]{22})\.([a-zA-Z0-9\-\_]{43})$/',
                 'unique:sendgrid_keys,key',
             ],
-            'sendGridNumberOfMessages' => [
+            'sendgrid_keys.*.number_of_messages' => [
                 'required',
                 'integer',
             ],

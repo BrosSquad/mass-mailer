@@ -19,12 +19,12 @@ class UserPolicy
         //
     }
 
-    public function create(User $user)
+    public function create(User $user): bool
     {
         return $user->hasPermissionTo('create-users');
     }
 
-    public function delete(User $user)
+    public function delete(User $user): bool
     {
         return $user->hasPermissionTo('delete-user');
     }

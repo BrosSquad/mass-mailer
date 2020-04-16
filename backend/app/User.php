@@ -67,7 +67,7 @@ class User extends Authenticatable
 {
     use HasRoles;
     use Notifiable;
-    use HasApiTokensAu;
+    use HasApiTokens;
 
 
     /**
@@ -82,6 +82,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'background_image',
+        'email_verified_at'
     ];
 
     /**
