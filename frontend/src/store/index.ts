@@ -1,5 +1,6 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
+import Vuex from "vuex";
+import Vue from "vue";
+import user from "./modules/user";
 
 Vue.use(Vuex);
 
@@ -7,6 +8,7 @@ export default new Vuex.Store({
   state: {
     theme: {
       dark: false,
+      drawerMini: false,
     },
   },
   mutations: {
@@ -17,8 +19,10 @@ export default new Vuex.Store({
   },
   actions: {
     setTheme(context, payload) {
-      context.commit('setTheme', payload.dark);
+      context.commit("setTheme", payload.dark);
     },
   },
-  modules: {},
+  modules: {
+    user,
+  },
 });
